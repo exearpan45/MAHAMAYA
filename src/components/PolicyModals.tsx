@@ -41,8 +41,8 @@ export const PolicyModals: React.FC = () => {
             </h3>
             <p>
               {isBn
-                ? 'আমরা কোনো বাণিজ্যিক উদ্দেশ্যে বা বিপণনের জন্য তথ্য সংগ্রহ করি না। শুধুমাত্র ব্যবহারকারী যখন স্বেচ্ছায় নিবন্ধন করেন বা ছবি আপলোড করেন, তখন নাম ও ইমেইল সংরক্ষিত হয়।'
-                : 'We do not collect personal data for commercial or marketing purposes. Only display names and emails provided during voluntary registration are stored for attribution.'}
+                ? 'আমরা কোনো বাণিজ্যিক উদ্দেশ্যে বা বিপণনের জন্য তথ্য সংগ্রহ করি না। প্রশাসনিক ব্যবস্থাপনার জন্য শুধুমাত্র অনুমোদিত কমিটি অ্যাডমিনদের প্রয়োজনীয় তথ্য সংরক্ষণ করা হতে পারে।'
+                : 'We do not collect personal data for commercial or marketing purposes. Only the necessary name and email information of authorized committee administrators may be stored for secure administration.'}
             </p>
             <h3 className="font-bold text-sm text-[#4A0E17] dark:text-[#FBF6EF]">
               {isBn ? 'কোনো বিজ্ঞাপন বা ট্র্যাকিং নেই' : 'No Advertising or Monetization'}
@@ -100,38 +100,7 @@ export const PolicyModals: React.FC = () => {
         )}
 
         {/* Modal: Community Upload Policy */}
-        {activePolicyModal === 'upload-policy' && (
-          <div className="space-y-4 font-sans text-xs sm:text-sm leading-relaxed">
-            <div className="flex items-center gap-2 text-[#9E1B32] dark:text-[#E5C158]">
-              <ImageIcon className="w-5 h-5" />
-              <h2 className="text-xl font-bold font-bengali">
-                {isBn ? 'কমিউনিটি আপলোড নীতি (Community Upload Policy)' : 'Community Upload Policy'}
-              </h2>
-            </div>
-            <p>
-              {isBn
-                ? 'ভক্তবৃন্দকে শুধুমাত্র পিন্দ্রা দুর্গা মন্দির ও দুর্গাপূজা সম্পর্কিত শালীন ছবি আপলোড করার অনুরোধ করা হচ্ছে।'
-                : 'Devotees are requested to upload only dignified and relevant photographs relating to Pinrra Durga Mandir and Durga Puja.'}
-            </p>
-            <ul className="list-disc list-inside space-y-1 text-neutral-600 dark:text-neutral-300">
-              <li>
-                {isBn
-                  ? 'অন্যের কপিরাইটযুক্ত বা অননুমোদিত ছবি আপলোড করবেন না।'
-                  : 'Do not upload copyrighted or unpermitted material.'}
-              </li>
-              <li>
-                {isBn
-                  ? 'কোনো প্রকার বিজ্ঞাপন, রাজনৈতিক বিষয়বস্তু বা আপত্তিকর ছবি কঠোরভাবে নিষিদ্ধ।'
-                  : 'Commercial advertising, political content, or offensive material is strictly prohibited.'}
-              </li>
-              <li>
-                {isBn
-                  ? 'মন্দির কমিটি যেকোনো অনুপযুক্ত ছবি অপসারণ বা ব্যবহারকারী নিষ্ক্রিয় করার পূর্ণ অধিকার সংরক্ষণ করে।'
-                  : 'The committee reserves full rights to moderate, hide, or remove inappropriate submissions immediately.'}
-              </li>
-            </ul>
-          </div>
-        )}
+
 
         {/* Footer Close */}
         <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 text-right">

@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+.dev.vars*
+.wrangler/
+
+.admin-only-backup/
+
+audit.txt

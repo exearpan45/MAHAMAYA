@@ -6,8 +6,6 @@ import {
   Sun,
   Moon,
   Search,
-  User,
-  Shield,
   Menu,
   X,
   Sparkles,
@@ -17,7 +15,6 @@ import {
   History,
   Bell,
   Info,
-  LogOut,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -28,9 +25,6 @@ export const Header: React.FC = () => {
     toggleTheme,
     isAudioPlaying,
     toggleAudio,
-    currentUser,
-    logout,
-    setAuthModalOpen,
     setSearchModalOpen,
     setActiveView,
     activeView,
@@ -74,8 +68,6 @@ export const Header: React.FC = () => {
       }, 60);
     }
   };
-
-  const isAdmin = currentUser?.role && currentUser.role !== 'USER';
 
   return (
     <>
@@ -214,51 +206,6 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
-            {/* User / Admin Portal Button */}
-            {currentUser ? (
-              <div className="flex items-center gap-1.5">
-                {isAdmin ? (
-                  <button
-                    onClick={() => setActiveView('admin')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#9E1B32] to-[#7A1224] text-white text-xs font-medium shadow hover:shadow-md transition cursor-pointer"
-                    title={isBn ? 'অ্যাডমিন প্যানেল' : 'Admin Dashboard'}
-                  >
-                    <Shield className="w-3.5 h-3.5 text-[#E5C158]" />
-                    <span className="hidden md:inline">{isBn ? 'অ্যাডমিন' : 'Admin'}</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setActiveView('profile')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D4AF37]/40 text-neutral-800 dark:text-neutral-200 text-xs font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
-                    title={isBn ? 'ব্যবহারকারী প্রোফাইল' : 'User Profile'}
-                  >
-                    <User className="w-3.5 h-3.5 text-[#9E1B32] dark:text-[#E5C158]" />
-                    <span className="hidden md:inline truncate max-w-[80px]">{currentUser.name.split(' ')[0]}</span>
-                  </button>
-                )}
-
-                {/* Log Out Button */}
-                <button
-                  onClick={() => {
-                    logout();
-                    setActiveView('home');
-                  }}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-300 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 bg-rose-50/90 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-xs font-semibold shadow-xs transition cursor-pointer"
-                  title={isBn ? 'লগআউট করুন' : 'Log Out'}
-                >
-                  <LogOut className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-                  <span className="inline">{isBn ? 'লগআউট' : 'Log Out'}</span>
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setAuthModalOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D4AF37]/40 hover:border-[#9E1B32] text-[#4A0E17] dark:text-[#FBF6EF] text-xs font-semibold hover:bg-[#9E1B32]/10 transition cursor-pointer"
-              >
-                <User className="w-3.5 h-3.5 text-[#9E1B32] dark:text-[#E5C158]" />
-                <span>{isBn ? 'লগইন' : 'Sign In'}</span>
-              </button>
-            )}
 
             {/* Mobile Hamburger Menu Toggle */}
             <button
@@ -294,63 +241,7 @@ export const Header: React.FC = () => {
                 );
               })}
             </div>
-
-            {/* Mobile user / login trigger */}
-            <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 space-y-2">
-              {currentUser ? (
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs text-neutral-600 dark:text-neutral-400">
-                    {currentUser.name} ({currentUser.role})
-                  </span>
-                  <div className="flex items-center gap-3">
-                    {isAdmin ? (
-                      <button
-                        onClick={() => {
-                          setActiveView('admin');
-                          setMobileMenuOpen(false);
-                        }}
-                        className="text-xs font-semibold text-[#9E1B32] dark:text-[#E5C158] underline cursor-pointer"
-                      >
-                        {isBn ? 'অ্যাডমিন ড্যাশবোর্ড' : 'Admin Panel'}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setActiveView('profile');
-                          setMobileMenuOpen(false);
-                        }}
-                        className="text-xs font-semibold text-[#9E1B32] dark:text-[#E5C158] underline cursor-pointer"
-                      >
-                        {isBn ? 'প্রোফাইল' : 'Profile'}
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => {
-                        logout();
-                        setActiveView('home');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1 cursor-pointer"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>{isBn ? 'লগআউট' : 'Log Out'}</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    setAuthModalOpen(true);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-2 text-center text-xs font-semibold text-[#9E1B32] dark:text-[#E5C158] bg-neutral-100 dark:bg-neutral-800/80 rounded-lg"
-                >
-                  {isBn ? 'লগইন / নিবন্ধন করুন' : 'Sign In / Register'}
-                </button>
-              )}
-            </div>
-          </div>
+           </div>
         )}
       </header>
     </>

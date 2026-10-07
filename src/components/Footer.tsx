@@ -168,7 +168,6 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <button
-                  onClick={() => setActivePolicyModal('upload-policy')}
                   className="hover:text-[#FFD700] transition cursor-pointer"
                 >
                   {isBn ? 'কমিউনিটি আপলোড নীতি' : 'Community Upload Policy'}

@@ -1,6 +1,6 @@
 export type Language = 'bn' | 'en';
 
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'CONTENT_MANAGER' | 'GALLERY_MODERATOR' | 'USER';
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN';
 
 export interface User {
   id: string;

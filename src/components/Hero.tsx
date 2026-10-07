@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Sparkles, Calendar, MapPin, ChevronDown, Compass, Camera } from 'lucide-react';
 
 export const Hero: React.FC = () => {
-  const { language, settings, setRealMaaDurgaPhoto } = useApp();
+  const { language, settings, setRealMaaDurgaPhoto, currentUser } = useApp();
   const isBn = language === 'bn';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -14,17 +14,12 @@ export const Hero: React.FC = () => {
     }
   };
 
+  const canManagePhoto = currentUser && ['SUPER_ADMIN', 'ADMIN'].includes(currentUser.role);
+
   const handleRealPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setRealMaaDurgaPhoto(dataUrl);
-      }
-    };
-    reader.readAsDataURL(file);
+    void setRealMaaDurgaPhoto(file);
   };
 
   return (
@@ -43,7 +38,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Real photo attribution & selector badge */}
-      <div className="absolute top-4 right-4 z-20">
+      {canManagePhoto && <div className="absolute top-4 right-4 z-20">
         <input
           type="file"
           ref={fileInputRef}
@@ -59,7 +54,7 @@ export const Hero: React.FC = () => {
           <Camera className="w-3.5 h-3.5 text-[#E56717]" />
           <span>{isBn ? 'মূল প্রতিমার ছবি' : 'Real Temple Photo'}</span>
         </button>
-      </div>
+      </div>}
 
       {/* Main Hero Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8">

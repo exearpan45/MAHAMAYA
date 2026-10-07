@@ -6,7 +6,6 @@ import {
   HistoryMilestone,
   CulturalProgramItem,
   SiteSettings,
-  User,
 } from '../types';
 
 export const INITIAL_SETTINGS: SiteSettings = {
@@ -242,7 +241,7 @@ export const INITIAL_ANNOUNCEMENTS: Announcement[] = [
     id: 'ann-3',
     title_en: 'Community Photo Submissions Open',
     title_bn: 'কমিউনিটি ফটো আপলোড শুরু',
-    description_en: 'Registered community members and devotees can now upload respectful photos of the temple, puja rituals, and celebrations via the website gallery.',
+    description_en: 'The temple gallery is maintained by the Mahamaya Durga Puja Committee.',
     description_bn: 'নিবন্ধিত ভক্ত ও এলাকাবাসী আমাদের ওয়েবসাইট গ্যালারিতে মন্দির ও পূজার ছবি আপলোড করতে পারবেন।',
     date: '2026-10-05',
     priority: 'Normal',
@@ -348,20 +347,3 @@ export const INITIAL_HISTORY_MILESTONES: HistoryMilestone[] = [
 ];
 
 export const INITIAL_CULTURAL_PROGRAMS: CulturalProgramItem[] = [];
-
-export const INITIAL_USERS: User[] = [
-  {
-    id: 'usr-admin-1',
-    name: 'Mandir Pradhan Sevak',
-    email: 'admin@pinrra.org',
-    role: 'SUPER_ADMIN',
-    createdAt: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: 'usr-admin-2',
-    name: 'MAHAMAYA Committee',
-    email: 'committee@pinrra.org',
-    role: 'ADMIN',
-    createdAt: '2026-01-01T00:00:00Z',
-  },
-];

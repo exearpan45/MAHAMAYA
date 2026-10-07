@@ -23,12 +23,9 @@ import { VisitSection } from './components/VisitSection';
 import { Footer } from './components/Footer';
 
 // Modals & Panels
-import { AuthModal } from './components/AuthModal';
-import { UploadModal } from './components/UploadModal';
 import { SearchModal } from './components/SearchModal';
 import { DownloadCalendarModal } from './components/DownloadCalendarModal';
 import { PolicyModals } from './components/PolicyModals';
-import { UserProfile } from './components/UserProfile';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 
 /**
@@ -59,7 +56,7 @@ const MaaDurgaWebsiteBackground: React.FC = () => {
 };
 
 const MainLayout: React.FC = () => {
-  const { hasChosenLanguage, activeView } = useApp();
+  const { hasChosenLanguage, activeView, apiError } = useApp();
 
   // 1. First-time Language Gate Screen
   if (!hasChosenLanguage) {
@@ -72,6 +69,7 @@ const MainLayout: React.FC = () => {
       <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
         <MaaDurgaWebsiteBackground />
         <div className="relative z-10">
+          {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
           <Header />
           <AdminDashboard />
           <Footer />
@@ -86,10 +84,9 @@ const MainLayout: React.FC = () => {
       <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
         <MaaDurgaWebsiteBackground />
         <div className="relative z-10">
+          {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
           <Header />
-          <UserProfile />
-          <Footer />
-          <UploadModal />
+          <Footer/>
           <PolicyModals />
         </div>
       </div>
@@ -101,6 +98,7 @@ const MainLayout: React.FC = () => {
     <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
       <MaaDurgaWebsiteBackground />
       <div className="relative z-10">
+        {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
         <Header />
         <main id="main-content">
           <Hero />
@@ -119,8 +117,6 @@ const MainLayout: React.FC = () => {
         <Footer />
 
         {/* Global Modals */}
-        <AuthModal />
-        <UploadModal />
         <SearchModal />
         <DownloadCalendarModal />
         <PolicyModals />

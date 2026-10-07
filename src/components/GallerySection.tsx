@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { GalleryCategory, GalleryPhoto } from '../types';
-import { Image as ImageIcon, Upload, X, ChevronLeft, ChevronRight, Maximize2, User, Sparkles } from 'lucide-react';
+import { GalleryCategory, GalleryPhoto } from '../types'
+import { Image as ImageIcon, X, ChevronLeft, ChevronRight, Maximize2, User, Sparkles } from 'lucide-react';
 
 export const GallerySection: React.FC = () => {
-  const { language, gallery, currentUser, setAuthModalOpen, setUploadModalOpen } = useApp();
+  const { language, gallery } = useApp();
   const isBn = language === 'bn';
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -24,14 +24,6 @@ export const GallerySection: React.FC = () => {
     if (selectedCategory === 'all') return true;
     return p.category === selectedCategory;
   });
-
-  const handleUploadClick = () => {
-    if (!currentUser) {
-      setAuthModalOpen(true);
-    } else {
-      setUploadModalOpen(true);
-    }
-  };
 
   const handleNextPhoto = () => {
     if (!activePhoto) return;
@@ -69,17 +61,6 @@ export const GallerySection: React.FC = () => {
                 : 'A curated visual record of Maa Durga pratima, festive traditions, Sandhi Puja, and community memories.'}
             </p>
           </div>
-
-          <div className="shrink-0">
-            <button
-              onClick={handleUploadClick}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#9E1B32] to-[#7A1224] hover:from-[#B81D39] hover:to-[#8E152A] text-white text-xs sm:text-sm font-semibold shadow-md border border-[#D4AF37]/40 hover:shadow-lg transition cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              <span>{isBn ? 'ছবি আপলোড করুন' : 'Upload Puja Photo'}</span>
-            </button>
-          </div>
-        </div>
 
         {/* Category Filters */}
         <div className="flex flex-wrap items-center justify-center gap-2 pb-2">
@@ -211,6 +192,7 @@ export const GallerySection: React.FC = () => {
           </div>
         )}
       </div>
+     </div>
     </section>
   );
 };

@@ -1,667 +1,283 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import {
-  Language,
-  User,
-  UserRole,
-  PujaYear,
-  EventItem,
-  Announcement,
-  GalleryPhoto,
-  HistoryMilestone,
-  CulturalProgramItem,
-  SiteSettings,
+  Language, User, UserRole, PujaYear, EventItem, Announcement, GalleryPhoto,
+  HistoryMilestone, CulturalProgramItem, SiteSettings,
 } from '../types';
 import {
-  INITIAL_SETTINGS,
-  INITIAL_PUJA_YEARS,
-  INITIAL_EVENTS,
-  INITIAL_ANNOUNCEMENTS,
-  INITIAL_GALLERY,
-  INITIAL_HISTORY_MILESTONES,
-  INITIAL_CULTURAL_PROGRAMS,
-  INITIAL_USERS,
+  INITIAL_SETTINGS, INITIAL_PUJA_YEARS, INITIAL_EVENTS, INITIAL_ANNOUNCEMENTS,
+  INITIAL_GALLERY, INITIAL_HISTORY_MILESTONES, INITIAL_CULTURAL_PROGRAMS,
 } from '../data/initialData';
 import { devotionalAudio } from '../utils/audio';
+import mandirHeritageImage from '../assets/images/mandir_heritage_1791376373749.jpg';
+import bhogPrasadImage from '../assets/images/bhog_prasad_1791376439598.jpg';
+import sandhiPujaImage from '../assets/images/sandhi_puja_diyas_1791376395307.jpg';
+import sindoorKhelaImage from '../assets/images/sindoor_khela_1791376410172.jpg';
+
+const assetUrls: Record<string, string> = {
+  '/src/assets/images/mandir_heritage_1791376373749.jpg': mandirHeritageImage,
+  '/src/assets/images/bhog_prasad_1791376439598.jpg': bhogPrasadImage,
+  '/src/assets/images/sandhi_puja_diyas_1791376395307.jpg': sandhiPujaImage,
+  '/src/assets/images/sindoor_khela_1791376410172.jpg': sindoorKhelaImage,
+};
+
+const resolveAssetUrl = (url?: string) => (url && assetUrls[url]) || url;
+const canonicalAssetUrl = (url?: string) => (url && Object.entries(assetUrls).find(([, builtUrl]) => builtUrl === url)?.[0]) || url;
+
+interface ServerSnapshot {
+  settings: SiteSettings;
+  pujaYears: PujaYear[];
+  events: EventItem[];
+  announcements: Announcement[];
+  gallery: GalleryPhoto[];
+  historyMilestones: HistoryMilestone[];
+  culturalPrograms: CulturalProgramItem[];
+  currentUser: User | null;
+}
 
 interface AppContextType {
-  // Localization & Theme
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  hasChosenLanguage: boolean;
-  setHasChosenLanguage: (chosen: boolean) => void;
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
-
-  // Background Audio
-  isAudioPlaying: boolean;
-  toggleAudio: () => void;
-
-  // Authentication
+  language: Language; setLanguage: (lang: Language) => void;
+  hasChosenLanguage: boolean; setHasChosenLanguage: (chosen: boolean) => void;
+  theme: 'light' | 'dark'; setTheme: (theme: 'light' | 'dark') => void; toggleTheme: () => void;
+  isAudioPlaying: boolean; toggleAudio: () => void;
   currentUser: User | null;
-  login: (email: string, role?: UserRole, name?: string) => void;
-  logout: () => void;
-  register: (name: string, email: string) => User;
-
-  // Data & State
-  settings: SiteSettings;
-  updateSettings: (newSettings: Partial<SiteSettings>) => void;
-  setRealMaaDurgaPhoto: (dataUrl: string) => void;
-
-  pujaYears: PujaYear[];
-  currentPujaYear: PujaYear;
-  updatePujaYear: (yearData: PujaYear) => void;
-  addPujaYear: (yearData: PujaYear) => void;
-
-  events: EventItem[];
-  addEvent: (event: Omit<EventItem, 'id'>) => void;
-  updateEvent: (id: string, event: Partial<EventItem>) => void;
-  deleteEvent: (id: string) => void;
-
-  announcements: Announcement[];
-  addAnnouncement: (item: Omit<Announcement, 'id'>) => void;
-  updateAnnouncement: (id: string, item: Partial<Announcement>) => void;
-  deleteAnnouncement: (id: string) => void;
-
+  login: (email: string, password: string) => Promise<User>;
+  logout: () => Promise<void>;
+  settings: SiteSettings; updateSettings: (newSettings: Partial<SiteSettings>) => void;
+  setRealMaaDurgaPhoto: (file: File) => Promise<void>;
+  pujaYears: PujaYear[]; currentPujaYear: PujaYear;
+  updatePujaYear: (yearData: PujaYear) => void; addPujaYear: (yearData: PujaYear) => void;
+  events: EventItem[]; addEvent: (event: Omit<EventItem, 'id'>) => void;
+  updateEvent: (id: string, event: Partial<EventItem>) => void; deleteEvent: (id: string) => void;
+  announcements: Announcement[]; addAnnouncement: (item: Omit<Announcement, 'id'>) => void;
+  updateAnnouncement: (id: string, item: Partial<Announcement>) => void; deleteAnnouncement: (id: string) => void;
   gallery: GalleryPhoto[];
-  addGalleryPhoto: (photo: Omit<GalleryPhoto, 'id' | 'createdAt'>) => void;
-  deleteGalleryPhoto: (id: string) => void;
-  toggleFeaturePhoto: (id: string) => void;
-
-  historyMilestones: HistoryMilestone[];
-  addHistoryMilestone: (item: Omit<HistoryMilestone, 'id'>) => void;
-  updateHistoryMilestone: (id: string, item: Partial<HistoryMilestone>) => void;
-  deleteHistoryMilestone: (id: string) => void;
-
-  culturalPrograms: CulturalProgramItem[];
-  addCulturalProgram: (item: Omit<CulturalProgramItem, 'id'>) => void;
-  updateCulturalProgram: (id: string, item: Partial<CulturalProgramItem>) => void;
-  deleteCulturalProgram: (id: string) => void;
-
-  users: User[];
-  updateUserRole: (userId: string, role: UserRole) => void;
-
-  // Backup & Reset
-  exportDataJSON: () => string;
-  importDataJSON: (jsonString: string) => boolean;
-  resetToDefault: () => void;
-
-  // Modals & Active View
-  activeView: string;
-  setActiveView: (view: string) => void;
-  authModalOpen: boolean;
-  setAuthModalOpen: (open: boolean) => void;
-  uploadModalOpen: boolean;
-  setUploadModalOpen: (open: boolean) => void;
-  downloadModalOpen: boolean;
-  setDownloadModalOpen: (open: boolean) => void;
-  searchModalOpen: boolean;
-  setSearchModalOpen: (open: boolean) => void;
-  activePolicyModal: string | null;
-  setActivePolicyModal: (policy: string | null) => void;
+  addGalleryPhoto: (photo: Omit<GalleryPhoto, 'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' | 'uploaderName' | 'uploaderEmail' | 'uploaderId'>, file: File) => Promise<void>;
+  deleteGalleryPhoto: (id: string) => void; toggleFeaturePhoto: (id: string) => void;
+  historyMilestones: HistoryMilestone[]; addHistoryMilestone: (item: Omit<HistoryMilestone, 'id'>) => void;
+  updateHistoryMilestone: (id: string, item: Partial<HistoryMilestone>) => void; deleteHistoryMilestone: (id: string) => void;
+  culturalPrograms: CulturalProgramItem[]; addCulturalProgram: (item: Omit<CulturalProgramItem, 'id'>) => void;
+  updateCulturalProgram: (id: string, item: Partial<CulturalProgramItem>) => void; deleteCulturalProgram: (id: string) => void;
+  exportDataJSON: () => string; importDataJSON: (jsonString: string) => Promise<boolean>; resetToDefault: () => void;
+  activeView: string; setActiveView: (view: string) => void;
+  downloadModalOpen: boolean; setDownloadModalOpen: (open: boolean) => void;
+  searchModalOpen: boolean; setSearchModalOpen: (open: boolean) => void;
+  activePolicyModal: string | null; setActivePolicyModal: (policy: string | null) => void;
+  apiError: string | null; clearApiError: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+function preference(key: string): string | null {
+  try { return window.localStorage.getItem(key); } catch { return null; }
+}
+
+function savePreference(key: string, value: string): void {
+  try { window.localStorage.setItem(key, value); } catch { /* Preference storage is optional. */ }
+}
+
+async function parseResponse<T>(response: Response): Promise<T> {
+  const result: unknown = await response.json().catch(() => null);
+  if (!response.ok) {
+    const message = typeof result === 'object' && result !== null && 'error' in result && typeof result.error === 'string'
+      ? result.error : 'The request could not be completed.';
+    throw new Error(message);
+  }
+  return result as T;
+}
+
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Language initialization
-  const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('pinrra_lang');
-    return (saved === 'bn' || saved === 'en') ? saved : 'bn';
-  });
-
-  const [hasChosenLanguage, setHasChosenLanguageState] = useState<boolean>(() => {
-    return localStorage.getItem('pinrra_lang_chosen') === 'true';
-  });
-
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('pinrra_lang', lang);
-    document.documentElement.lang = lang;
-  };
-
-  const setHasChosenLanguage = (chosen: boolean) => {
-    setHasChosenLanguageState(chosen);
-    localStorage.setItem('pinrra_lang_chosen', chosen ? 'true' : 'false');
-  };
-
-  // Theme initialization
-  const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('pinrra_theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return 'light';
-  });
-
-  const applyThemeToDOM = (t: 'light' | 'dark') => {
-    const root = document.documentElement;
-    const body = document.body;
-    if (t === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-      root.setAttribute('data-theme', 'dark');
-      root.style.colorScheme = 'dark';
-      if (body) {
-        body.classList.add('dark');
-        body.classList.remove('light');
-      }
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-      root.setAttribute('data-theme', 'light');
-      root.style.colorScheme = 'light';
-      if (body) {
-        body.classList.remove('dark');
-        body.classList.add('light');
-      }
-    }
-  };
-
-  const setTheme = (t: 'light' | 'dark') => {
-    setThemeState(t);
-    localStorage.setItem('pinrra_theme', t);
-    applyThemeToDOM(t);
-  };
-
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-  };
-
-  useEffect(() => {
-    applyThemeToDOM(theme);
-  }, [theme]);
-
-  // Audio state
+  const [language, setLanguageState] = useState<Language>(() => preference('pinrra_lang') === 'en' ? 'en' : 'bn');
+  const [hasChosenLanguage, setHasChosenLanguageState] = useState(() => preference('pinrra_lang_chosen') === 'true');
+  const [theme, setThemeState] = useState<'light' | 'dark'>(() => preference('pinrra_theme') === 'dark' ? 'dark' : 'light');
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const toggleAudio = () => {
-    const playing = devotionalAudio.toggle();
-    setIsAudioPlaying(playing);
-  };
-
-  // Authentication
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('pinrra_current_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('pinrra_users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
-  });
-
-  const login = (email: string, role?: UserRole, name?: string) => {
-    const normalizedEmail = email.toLowerCase().trim();
-    const existing = users.find((u) => u.email.toLowerCase() === normalizedEmail);
-
-    let userToSet: User;
-    if (existing) {
-      userToSet = existing;
-    } else {
-      userToSet = {
-        id: 'usr-' + Date.now(),
-        name: name || (normalizedEmail.includes('admin') ? 'Mandir Sevak' : normalizedEmail.split('@')[0]),
-        email: normalizedEmail,
-        role: role || (normalizedEmail === 'admin@pinrra.org' ? 'SUPER_ADMIN' : normalizedEmail === 'committee@pinrra.org' ? 'ADMIN' : 'USER'),
-        createdAt: new Date().toISOString(),
-      };
-      setUsers((prev) => [...prev, userToSet]);
-    }
-
-    setCurrentUser(userToSet);
-    localStorage.setItem('pinrra_current_user', JSON.stringify(userToSet));
-  };
-
-  const logout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem('pinrra_current_user');
-  };
-
-  const register = (name: string, email: string): User => {
-    const normalizedEmail = email.toLowerCase().trim();
-    const newUser: User = {
-      id: 'usr-' + Date.now(),
-      name: name.trim(),
-      email: normalizedEmail,
-      role: 'USER', // normal users NEVER become admin by registering
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [...users.filter((u) => u.email.toLowerCase() !== normalizedEmail), newUser];
-    setUsers(updated);
-    localStorage.setItem('pinrra_users', JSON.stringify(updated));
-    setCurrentUser(newUser);
-    localStorage.setItem('pinrra_current_user', JSON.stringify(newUser));
-    return newUser;
-  };
-
-  const updateUserRole = (userId: string, role: UserRole) => {
-    setUsers((prev) => {
-      const next = prev.map((u) => (u.id === userId ? { ...u, role } : u));
-      localStorage.setItem('pinrra_users', JSON.stringify(next));
-      return next;
-    });
-    if (currentUser?.id === userId) {
-      const updated = { ...currentUser, role };
-      setCurrentUser(updated);
-      localStorage.setItem('pinrra_current_user', JSON.stringify(updated));
-    }
-  };
-
-  // Site Settings
-  const [settings, setSettings] = useState<SiteSettings>(() => {
-    const customRealPhoto = localStorage.getItem('pinrra_real_maa_durga');
-    const saved = localStorage.getItem('pinrra_settings');
-    let merged = INITIAL_SETTINGS;
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.heroDeityImage && (parsed.heroDeityImage.includes('pinrra_maa_durga_1791376350293') || parsed.heroDeityImage.includes('WhatsApp Image'))) {
-          parsed.heroDeityImage = INITIAL_SETTINGS.heroDeityImage;
-        }
-        merged = { ...INITIAL_SETTINGS, ...parsed };
-      } catch {
-        merged = INITIAL_SETTINGS;
-      }
-    }
-    if (customRealPhoto) {
-      merged.heroDeityImage = customRealPhoto;
-    }
-    return merged;
-  });
-
-  const updateSettings = (newSettings: Partial<SiteSettings>) => {
-    setSettings((prev) => {
-      const next = { ...prev, ...newSettings };
-      localStorage.setItem('pinrra_settings', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const setRealMaaDurgaPhoto = (dataUrl: string) => {
-    localStorage.setItem('pinrra_real_maa_durga', dataUrl);
-    updateSettings({ heroDeityImage: dataUrl });
-
-    // Update gallery and history entries to real photo
-    setGallery((prev) => {
-      const next = prev.map((g) =>
-        g.id === 'gal-1' || g.imageUrl.includes('pinrra_maa_durga') || g.imageUrl.includes('WhatsApp')
-          ? { ...g, imageUrl: dataUrl, thumbnailUrl: dataUrl }
-          : g
-      );
-      localStorage.setItem('pinrra_gallery', JSON.stringify(next));
-      return next;
-    });
-
-    setHistoryMilestones((prev) => {
-      const next = prev.map((h) =>
-        h.id === 'hist-3' || (h.image && (h.image.includes('pinrra_maa_durga') || h.image.includes('WhatsApp')))
-          ? { ...h, image: dataUrl }
-          : h
-      );
-      localStorage.setItem('pinrra_history', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Puja Calendar / Years
-  const [pujaYears, setPujaYears] = useState<PujaYear[]>(() => {
-    const saved = localStorage.getItem('pinrra_puja_years');
-    return saved ? JSON.parse(saved) : INITIAL_PUJA_YEARS;
-  });
-
-  const currentPujaYear = pujaYears.find((y) => y.year === settings.currentYear) || pujaYears[0];
-
-  const updatePujaYear = (yearData: PujaYear) => {
-    setPujaYears((prev) => {
-      const next = prev.map((y) => (y.year === yearData.year ? yearData : y));
-      localStorage.setItem('pinrra_puja_years', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const addPujaYear = (yearData: PujaYear) => {
-    setPujaYears((prev) => {
-      const next = [...prev.filter((y) => y.year !== yearData.year), yearData].sort((a, b) => a.year - b.year);
-      localStorage.setItem('pinrra_puja_years', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Events
-  const [events, setEvents] = useState<EventItem[]>(() => {
-    const saved = localStorage.getItem('pinrra_events');
-    return saved ? JSON.parse(saved) : INITIAL_EVENTS;
-  });
-
-  const addEvent = (event: Omit<EventItem, 'id'>) => {
-    const newEvent: EventItem = { ...event, id: 'evt-' + Date.now() };
-    setEvents((prev) => {
-      const next = [newEvent, ...prev];
-      localStorage.setItem('pinrra_events', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const updateEvent = (id: string, updated: Partial<EventItem>) => {
-    setEvents((prev) => {
-      const next = prev.map((e) => (e.id === id ? { ...e, ...updated } : e));
-      localStorage.setItem('pinrra_events', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const deleteEvent = (id: string) => {
-    setEvents((prev) => {
-      const next = prev.filter((e) => e.id !== id);
-      localStorage.setItem('pinrra_events', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Announcements
-  const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
-    const saved = localStorage.getItem('pinrra_announcements');
-    return saved ? JSON.parse(saved) : INITIAL_ANNOUNCEMENTS;
-  });
-
-  const addAnnouncement = (item: Omit<Announcement, 'id'>) => {
-    const newItem: Announcement = { ...item, id: 'ann-' + Date.now() };
-    setAnnouncements((prev) => {
-      const next = [newItem, ...prev];
-      localStorage.setItem('pinrra_announcements', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const updateAnnouncement = (id: string, updated: Partial<Announcement>) => {
-    setAnnouncements((prev) => {
-      const next = prev.map((a) => (a.id === id ? { ...a, ...updated } : a));
-      localStorage.setItem('pinrra_announcements', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const deleteAnnouncement = (id: string) => {
-    setAnnouncements((prev) => {
-      const next = prev.filter((a) => a.id !== id);
-      localStorage.setItem('pinrra_announcements', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Gallery
-  const [gallery, setGallery] = useState<GalleryPhoto[]>(() => {
-    const saved = localStorage.getItem('pinrra_gallery');
-    return saved ? JSON.parse(saved) : INITIAL_GALLERY;
-  });
-
-  const addGalleryPhoto = (photo: Omit<GalleryPhoto, 'id' | 'createdAt'>) => {
-    const newPhoto: GalleryPhoto = {
-      ...photo,
-      id: 'gal-' + Date.now(),
-      createdAt: new Date().toISOString(),
-    };
-    setGallery((prev) => {
-      const next = [newPhoto, ...prev];
-      localStorage.setItem('pinrra_gallery', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const deleteGalleryPhoto = (id: string) => {
-    setGallery((prev) => {
-      const next = prev.filter((g) => g.id !== id);
-      localStorage.setItem('pinrra_gallery', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const toggleFeaturePhoto = (id: string) => {
-    setGallery((prev) => {
-      const next = prev.map((g) => (g.id === id ? { ...g, featured: !g.featured } : g));
-      localStorage.setItem('pinrra_gallery', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // History
-  const [historyMilestones, setHistoryMilestones] = useState<HistoryMilestone[]>(() => {
-    const saved = localStorage.getItem('pinrra_history');
-    return saved ? JSON.parse(saved) : INITIAL_HISTORY_MILESTONES;
-  });
-
-  const addHistoryMilestone = (item: Omit<HistoryMilestone, 'id'>) => {
-    const newItem: HistoryMilestone = { ...item, id: 'hist-' + Date.now() };
-    setHistoryMilestones((prev) => {
-      const next = [...prev, newItem];
-      localStorage.setItem('pinrra_history', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const updateHistoryMilestone = (id: string, updated: Partial<HistoryMilestone>) => {
-    setHistoryMilestones((prev) => {
-      const next = prev.map((h) => (h.id === id ? { ...h, ...updated } : h));
-      localStorage.setItem('pinrra_history', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const deleteHistoryMilestone = (id: string) => {
-    setHistoryMilestones((prev) => {
-      const next = prev.filter((h) => h.id !== id);
-      localStorage.setItem('pinrra_history', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Cultural Programs
-  const [culturalPrograms, setCulturalPrograms] = useState<CulturalProgramItem[]>(() => {
-    const saved = localStorage.getItem('pinrra_cultural');
-    return saved ? JSON.parse(saved) : INITIAL_CULTURAL_PROGRAMS;
-  });
-
-  const addCulturalProgram = (item: Omit<CulturalProgramItem, 'id'>) => {
-    const newItem: CulturalProgramItem = { ...item, id: 'cult-' + Date.now() };
-    setCulturalPrograms((prev) => {
-      const next = [newItem, ...prev];
-      localStorage.setItem('pinrra_cultural', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const updateCulturalProgram = (id: string, updated: Partial<CulturalProgramItem>) => {
-    setCulturalPrograms((prev) => {
-      const next = prev.map((c) => (c.id === id ? { ...c, ...updated } : c));
-      localStorage.setItem('pinrra_cultural', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const deleteCulturalProgram = (id: string) => {
-    setCulturalPrograms((prev) => {
-      const next = prev.filter((c) => c.id !== id);
-      localStorage.setItem('pinrra_cultural', JSON.stringify(next));
-      return next;
-    });
-  };
-
-  // Export / Import
-  const exportDataJSON = () => {
-    const fullBackup = {
-      version: '1.0',
-      exportedAt: new Date().toISOString(),
-      settings,
-      pujaYears,
-      events,
-      announcements,
-      gallery,
-      historyMilestones,
-      culturalPrograms,
-      users: users.map((u) => ({ id: u.id, name: u.name, email: u.email, role: u.role, createdAt: u.createdAt })),
-    };
-    return JSON.stringify(fullBackup, null, 2);
-  };
-
-  const importDataJSON = (jsonString: string): boolean => {
-    try {
-      const data = JSON.parse(jsonString);
-      if (data.settings) setSettings(data.settings);
-      if (data.pujaYears) setPujaYears(data.pujaYears);
-      if (data.events) setEvents(data.events);
-      if (data.announcements) setAnnouncements(data.announcements);
-      if (data.gallery) setGallery(data.gallery);
-      if (data.historyMilestones) setHistoryMilestones(data.historyMilestones);
-      if (data.culturalPrograms) setCulturalPrograms(data.culturalPrograms);
-      if (data.users) setUsers(data.users);
-
-      localStorage.setItem('pinrra_settings', JSON.stringify(data.settings || settings));
-      localStorage.setItem('pinrra_puja_years', JSON.stringify(data.pujaYears || pujaYears));
-      localStorage.setItem('pinrra_events', JSON.stringify(data.events || events));
-      localStorage.setItem('pinrra_announcements', JSON.stringify(data.announcements || announcements));
-      localStorage.setItem('pinrra_gallery', JSON.stringify(data.gallery || gallery));
-      localStorage.setItem('pinrra_history', JSON.stringify(data.historyMilestones || historyMilestones));
-      localStorage.setItem('pinrra_cultural', JSON.stringify(data.culturalPrograms || culturalPrograms));
-      localStorage.setItem('pinrra_users', JSON.stringify(data.users || users));
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const resetToDefault = () => {
-    setSettings(INITIAL_SETTINGS);
-    setPujaYears(INITIAL_PUJA_YEARS);
-    setEvents(INITIAL_EVENTS);
-    setAnnouncements(INITIAL_ANNOUNCEMENTS);
-    setGallery(INITIAL_GALLERY);
-    setHistoryMilestones(INITIAL_HISTORY_MILESTONES);
-    setCulturalPrograms(INITIAL_CULTURAL_PROGRAMS);
-    setUsers(INITIAL_USERS);
-
-    localStorage.removeItem('pinrra_settings');
-    localStorage.removeItem('pinrra_puja_years');
-    localStorage.removeItem('pinrra_events');
-    localStorage.removeItem('pinrra_announcements');
-    localStorage.removeItem('pinrra_gallery');
-    localStorage.removeItem('pinrra_history');
-    localStorage.removeItem('pinrra_cultural');
-    localStorage.removeItem('pinrra_users');
-  };
-
-  // UI state with Hash routing & Deep link support
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [settings, setSettings] = useState<SiteSettings>(INITIAL_SETTINGS);
+  const [pujaYears, setPujaYears] = useState<PujaYear[]>(INITIAL_PUJA_YEARS);
+  const [events, setEvents] = useState<EventItem[]>(INITIAL_EVENTS.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
+  const [announcements, setAnnouncements] = useState<Announcement[]>(INITIAL_ANNOUNCEMENTS);
+  const [gallery, setGallery] = useState<GalleryPhoto[]>(INITIAL_GALLERY.map((item) => ({ ...item, imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: resolveAssetUrl(item.thumbnailUrl) })));
+  const [historyMilestones, setHistoryMilestones] = useState<HistoryMilestone[]>(INITIAL_HISTORY_MILESTONES.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
+  const [culturalPrograms, setCulturalPrograms] = useState<CulturalProgramItem[]>(INITIAL_CULTURAL_PROGRAMS);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [activeView, setActiveViewState] = useState<string>(() => {
-    const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
-    if (rawHash === 'admin' || rawHash === 'profile') return rawHash;
-    return 'home';
+    const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    return route === 'admin' || route === 'profile' ? route : 'home';
   });
-
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [activePolicyModal, setActivePolicyModal] = useState<string | null>(() => {
-    const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
-    if (['privacy', 'terms', 'disclaimer', 'upload-policy'].includes(rawHash)) {
-      return rawHash;
-    }
-    return null;
+    const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    return ['privacy', 'terms', 'disclaimer'].includes(route) ? route : null;
   });
 
-  const setActiveView = (view: string) => {
-    setActiveViewState(view);
-    if (view === 'admin' || view === 'profile') {
-      window.location.hash = `/${view}`;
-    } else if (view === 'home') {
-      if (window.location.hash.startsWith('#/admin') || window.location.hash.startsWith('#/profile')) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
-    }
+  const applySnapshot = (data: ServerSnapshot) => {
+    setSettings(data.settings);
+    setPujaYears(data.pujaYears);
+    setEvents(data.events.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
+    setAnnouncements(data.announcements);
+    setGallery(data.gallery.map((item) => ({ ...item, imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: resolveAssetUrl(item.thumbnailUrl) })));
+    setHistoryMilestones(data.historyMilestones.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
+    setCulturalPrograms(data.culturalPrograms);
+    setCurrentUser(data.currentUser);
+  };
+
+  const refreshData = async (): Promise<ServerSnapshot> => {
+    const response = await fetch('/api/data', { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+    const data = await parseResponse<ServerSnapshot>(response);
+    applySnapshot(data);
+    return data;
   };
 
   useEffect(() => {
+    void refreshData().catch((error: unknown) => {
+      setApiError(error instanceof Error ? error.message : 'Shared site data is temporarily unavailable.');
+    });
+  }, []);
+
+  const mutate = async (action: string, payload: Record<string, unknown> = {}) => {
+    setApiError(null);
+    try {
+      const response = await fetch('/api/admin', {
+        method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ action, payload }),
+      });
+      const result = await parseResponse<{ data: ServerSnapshot }>(response);
+      applySnapshot(result.data);
+    } catch (error) {
+      setApiError(error instanceof Error ? error.message : 'The requested change could not be saved.');
+    }
+  };
+
+  const setLanguage = (value: Language) => {
+    setLanguageState(value); savePreference('pinrra_lang', value); document.documentElement.lang = value;
+  };
+  const setHasChosenLanguage = (value: boolean) => {
+    setHasChosenLanguageState(value); savePreference('pinrra_lang_chosen', value ? 'true' : 'false');
+  };
+  const applyThemeToDOM = (value: 'light' | 'dark') => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', value === 'dark');
+    root.classList.toggle('light', value === 'light');
+    root.setAttribute('data-theme', value);
+    root.style.colorScheme = value;
+    document.body.classList.toggle('dark', value === 'dark');
+    document.body.classList.toggle('light', value === 'light');
+  };
+  const setTheme = (value: 'light' | 'dark') => {
+    setThemeState(value); savePreference('pinrra_theme', value); applyThemeToDOM(value);
+  };
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  useEffect(() => applyThemeToDOM(theme), [theme]);
+
+  const toggleAudio = () => setIsAudioPlaying(devotionalAudio.toggle());
+
+  const authRequest = async (action: string, values: Record<string, unknown>) => {
+    const response = await fetch('/api/auth', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ action, ...values }),
+    });
+    return parseResponse<{ user: User }>(response);
+  };
+  const login = async (email: string, password: string) => {
+    const result = await authRequest('login', { email, password });
+    await refreshData(); return result.user;
+  };
+  const logout = async () => {
+    try {
+      await fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) });
+    } finally {
+      setCurrentUser(null); setActiveView('home');
+      void refreshData().catch(() => undefined);
+    }
+  };
+
+  const currentPujaYear = pujaYears.find((year) => year.year === settings.currentYear) || pujaYears[0] || INITIAL_PUJA_YEARS[0];
+  const updateSettings = (value: Partial<SiteSettings>) => void mutate('settings-update', value as Record<string, unknown>);
+  const setRealMaaDurgaPhoto = async (file: File) => {
+    setApiError(null);
+    try {
+      const form = new FormData(); form.set('image', file);
+      const response = await fetch('/api/deity-image', { method: 'POST', credentials: 'same-origin', body: form });
+      const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data);
+    } catch (error) {
+      setApiError(error instanceof Error ? error.message : 'The temple photo could not be saved.');
+      throw error;
+    }
+  };
+  const updatePujaYear = (data: PujaYear) => void mutate('puja-update', { item: data });
+  const addPujaYear = (data: PujaYear) => void mutate('puja-add', { item: data });
+  const addEvent = (item: Omit<EventItem, 'id'>) => void mutate('event-add', { item: { ...item, id: crypto.randomUUID() } });
+  const updateEvent = (id: string, item: Partial<EventItem>) => void mutate('event-update', { item: { ...item, id } });
+  const deleteEvent = (id: string) => void mutate('event-delete', { id });
+  const addAnnouncement = (item: Omit<Announcement, 'id'>) => void mutate('announcement-add', { item: { ...item, id: crypto.randomUUID() } });
+  const updateAnnouncement = (id: string, item: Partial<Announcement>) => void mutate('announcement-update', { item: { ...item, id } });
+  const deleteAnnouncement = (id: string) => void mutate('announcement-delete', { id });
+  const addGalleryPhoto = async (photo: Omit<GalleryPhoto, 'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' | 'uploaderName' | 'uploaderEmail' | 'uploaderId'>, file: File) => {
+    setApiError(null);
+    const form = new FormData();
+    form.set('image', file); form.set('title', photo.title_en); form.set('description', photo.description_en);
+    form.set('category', photo.category); form.set('pujaYear', String(photo.pujaYear));
+    const response = await fetch('/api/gallery', { method: 'POST', credentials: 'same-origin', body: form });
+    const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data);
+  };
+  const deleteGalleryPhoto = (id: string) => {
+    void mutate('gallery-delete', { id });
+  };
+  const toggleFeaturePhoto = (id: string) => {
+    const photo = gallery.find((item) => item.id === id);
+    if (photo) void mutate('gallery-feature', { id, featured: !photo.featured });
+  };
+  const addHistoryMilestone = (item: Omit<HistoryMilestone, 'id'>) => void mutate('history-add', { item: { ...item, id: crypto.randomUUID() } });
+  const updateHistoryMilestone = (id: string, item: Partial<HistoryMilestone>) => void mutate('history-update', { item: { ...item, id } });
+  const deleteHistoryMilestone = (id: string) => void mutate('history-delete', { id });
+  const addCulturalProgram = (item: Omit<CulturalProgramItem, 'id'>) => void mutate('cultural-add', { item: { ...item, id: crypto.randomUUID() } });
+  const updateCulturalProgram = (id: string, item: Partial<CulturalProgramItem>) => void mutate('cultural-update', { item: { ...item, id } });
+  const deleteCulturalProgram = (id: string) => void mutate('cultural-delete', { id });
+  const exportDataJSON = () => JSON.stringify({ version: '2.0', exportedAt: new Date().toISOString(), settings, pujaYears, events: events.map((item) => ({ ...item, image: canonicalAssetUrl(item.image) })), announcements, gallery: gallery.map((item) => ({ ...item, imageUrl: canonicalAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: canonicalAssetUrl(item.thumbnailUrl) })), historyMilestones: historyMilestones.map((item) => ({ ...item, image: canonicalAssetUrl(item.image) })), culturalPrograms }, null, 2);
+  const importDataJSON = async (jsonString: string) => {
+    try {
+      const backup: unknown = JSON.parse(jsonString);
+      if (typeof backup !== 'object' || backup === null || Array.isArray(backup)) return false;
+      const response = await fetch('/api/admin', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'import-content', payload: { data: backup } }) });
+      const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data); setApiError(null); return true;
+    } catch (error) { setApiError(error instanceof Error ? error.message : 'Backup restore failed.'); return false; }
+  };
+  const resetToDefault = () => void mutate('reset-content');
+
+  const setActiveView = (view: string) => {
+    setActiveViewState(view);
+    if (view === 'admin' || view === 'profile') window.location.hash = `/${view}`;
+    else if (view === 'home' && (window.location.hash.startsWith('#/admin') || window.location.hash.startsWith('#/profile'))) window.history.pushState(null, '', window.location.pathname);
+  };
+  useEffect(() => {
     const handleHashChange = () => {
-      const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
-      if (rawHash === 'admin' || rawHash === 'profile') {
-        setActiveViewState(rawHash);
-      } else if (['privacy', 'terms', 'disclaimer', 'upload-policy'].includes(rawHash)) {
-        setActivePolicyModal(rawHash);
-      } else {
+      const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+      if (route === 'admin' || route === 'profile') setActiveViewState(route);
+      else if (['privacy', 'terms', 'disclaimer'].includes(route)) setActivePolicyModal(route);
+      else {
         setActiveViewState('home');
-        if (rawHash && rawHash !== '') {
-          setTimeout(() => {
-            const el = document.getElementById(rawHash);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 80);
-        }
+        if (route) setTimeout(() => document.getElementById(route)?.scrollIntoView({ behavior: 'smooth' }), 80);
       }
     };
-
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   return (
-    <AppContext.Provider
-      value={{
-        language,
-        setLanguage,
-        hasChosenLanguage,
-        setHasChosenLanguage,
-        theme,
-        setTheme,
-        toggleTheme,
-        isAudioPlaying,
-        toggleAudio,
-        currentUser,
-        login,
-        logout,
-        register,
-        settings,
-        updateSettings,
-        setRealMaaDurgaPhoto,
-        pujaYears,
-        currentPujaYear,
-        updatePujaYear,
-        addPujaYear,
-        events,
-        addEvent,
-        updateEvent,
-        deleteEvent,
-        announcements,
-        addAnnouncement,
-        updateAnnouncement,
-        deleteAnnouncement,
-        gallery,
-        addGalleryPhoto,
-        deleteGalleryPhoto,
-        toggleFeaturePhoto,
-        historyMilestones,
-        addHistoryMilestone,
-        updateHistoryMilestone,
-        deleteHistoryMilestone,
-        culturalPrograms,
-        addCulturalProgram,
-        updateCulturalProgram,
-        deleteCulturalProgram,
-        users,
-        updateUserRole,
-        exportDataJSON,
-        importDataJSON,
-        resetToDefault,
-        activeView,
-        setActiveView,
-        authModalOpen,
-        setAuthModalOpen,
-        uploadModalOpen,
-        setUploadModalOpen,
-        downloadModalOpen,
-        setDownloadModalOpen,
-        searchModalOpen,
-        setSearchModalOpen,
-        activePolicyModal,
-        setActivePolicyModal,
-      }}
-    >
+    <AppContext.Provider value={{
+      language, setLanguage, hasChosenLanguage, setHasChosenLanguage, theme, setTheme, toggleTheme,
+      isAudioPlaying, toggleAudio, currentUser, login, logout,
+      settings, updateSettings, setRealMaaDurgaPhoto, pujaYears, currentPujaYear, updatePujaYear, addPujaYear,
+      events, addEvent, updateEvent, deleteEvent, announcements, addAnnouncement, updateAnnouncement, deleteAnnouncement,
+      gallery, addGalleryPhoto, deleteGalleryPhoto, toggleFeaturePhoto,
+      historyMilestones, addHistoryMilestone, updateHistoryMilestone, deleteHistoryMilestone,
+      culturalPrograms, addCulturalProgram, updateCulturalProgram, deleteCulturalProgram,
+      exportDataJSON, importDataJSON, resetToDefault, activeView, setActiveView,
+      downloadModalOpen, setDownloadModalOpen,
+      searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError: () => setApiError(null),
+    }}>
       {children}
     </AppContext.Provider>
   );
@@ -669,8 +285,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
 export const useApp = () => {
   const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
+  if (!context) throw new Error('useApp must be used within an AppProvider');
   return context;
 };
