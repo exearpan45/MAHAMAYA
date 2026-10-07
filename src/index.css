@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+@layer base {
+  :root {
+    --font-serif-bn: 'Noto Serif Bengali', serif;
+    --font-display: 'Cinzel', serif;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    color-scheme: light;
+  }
+
+  :root.dark, [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .font-bengali {
+    font-family: var(--font-serif-bn);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(184, 134, 11, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 134, 11, 0.65);
+}
+
+/* Subtle Diya Glow animation */
+@keyframes diyaFlicker {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(234, 88, 12, 0.6));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.85));
+  }
+}
+
+.animate-diya {
+  animation: diyaFlicker 3s ease-in-out infinite;
+}
+
+/* Print styles for downloadable Puja calendar */
+@media print {
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    font-size: 12pt;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-break-inside-avoid {
+    break-inside: avoid;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Pinrra Durga Mandir",
+  "description": "Official website of Pinrra Durga Mandir and MAHAMAYA Durga Puja Committee. Celebrating 118 Years of historic community Durga Puja in 2026.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
