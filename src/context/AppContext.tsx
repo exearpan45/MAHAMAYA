@@ -404,13 +404,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const addVideo = (item: Omit<VideoItem, 'id' | 'createdAt'>) => {
     if (videos.length >= MAX_VIDEOS) throw new Error('Video gallery limit reached. You can keep up to 50 videos.');
     let parsed: URL;
-    try {
-      parsed = new URL(item.videoUrl);
-    } catch {
-      throw new Error('Please enter a valid video URL.');
-    }
-    if (parsed.protocol !== 'https:') {
-      throw new Error('Video links must use HTTPS for safety and compatibility.');
+    if (!item.videoUrl.startsWith('data:video/')) {
+      try {
+        parsed = new URL(item.videoUrl);
+      } catch {
+        throw new Error('Please enter a valid video URL or upload a video file.');
+      }
+      if (parsed.protocol !== 'https:') {
+        throw new Error('Video links must use HTTPS for safety and compatibility.');
+      }
     }
     setVideos((previous) => [...previous, { ...item, id: crypto.randomUUID(), createdAt: new Date().toISOString() }]);
     setApiError(null);
@@ -524,6 +526,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     if (typeof clone.settings.heroDeityImage === 'string' && clone.settings.heroDeityImage.startsWith('data:')) {
       clone.settings.heroDeityImage = await uploadDataUrl(clone.settings.heroDeityImage, 'deity');
+    }
+
+    for (const item of clone.videos) {
+      if (typeof item.videoUrl === 'string' && item.videoUrl.startsWith('data:video/')) {
+        item.videoUrl = await uploadDataUrl(item.videoUrl, 'video');
+      }
+      if (typeof item.thumbnailUrl === 'string' && item.thumbnailUrl.startsWith('data:')) {
+        item.thumbnailUrl = await uploadDataUrl(item.thumbnailUrl, 'video-thumb');
+      }
     }
 
     for (const item of clone.gallery) {
