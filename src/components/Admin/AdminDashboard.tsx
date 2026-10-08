@@ -94,6 +94,7 @@ export const AdminDashboard: React.FC = () => {
     addGalleryPhoto,
     videos,
     addVideo,
+    updateVideo,
     deleteVideo,
     toggleFeatureVideo,
   } = useApp();
@@ -152,6 +153,7 @@ export const AdminDashboard: React.FC = () => {
   const [videoCategory, setVideoCategory] = useState<VideoCategory>('Durga Puja');
   const [videoFeatured, setVideoFeatured] = useState(false);
   const [videoUploadNotice, setVideoUploadNotice] = useState('');
+  const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
 
   const [fullJson, setFullJson] = useState('');
 
@@ -1232,7 +1234,7 @@ export const AdminDashboard: React.FC = () => {
 
               <button
                 type="button"
-                disabled={videoCount >= MAX_VIDEOS || !videoTitleEn.trim() || !videoTitleBn.trim() || !videoUrl.trim()}
+                disabled={(!editingVideoId && videoCount >= MAX_VIDEOS) || !videoTitleEn.trim() || !videoTitleBn.trim() || !videoUrl.trim()}
                 onClick={() => {
                   try {
                     const url = new URL(videoUrl.trim());
@@ -1241,7 +1243,7 @@ export const AdminDashboard: React.FC = () => {
                       const thumbnail = new URL(videoThumbnailUrl.trim());
                       if (thumbnail.protocol !== 'https:') throw new Error('Thumbnail URL must use HTTPS.');
                     }
-                    addVideo({
+                    const videoPayload = {
                       title_en: videoTitleEn.trim(),
                       title_bn: videoTitleBn.trim(),
                       description_en: videoDescriptionEn.trim() || videoTitleEn.trim(),
@@ -1251,7 +1253,12 @@ export const AdminDashboard: React.FC = () => {
                       category: videoCategory,
                       pujaYear: settings.currentYear,
                       featured: videoFeatured,
-                    });
+                    };
+                    if (editingVideoId) {
+                      updateVideo(editingVideoId, videoPayload);
+                    } else {
+                      addVideo(videoPayload);
+                    }
                     setVideoTitleEn('');
                     setVideoTitleBn('');
                     setVideoDescriptionEn('');
@@ -1259,6 +1266,7 @@ export const AdminDashboard: React.FC = () => {
                     setVideoUrl('');
                     setVideoThumbnailUrl('');
                     setVideoFeatured(false);
+                    setEditingVideoId(null);
                     setVideoUploadNotice(isBn ? 'ভিডিও যোগ হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Video added. Click Publish Changes to make it live.');
                   } catch (error) {
                     setVideoUploadNotice(error instanceof Error ? error.message : 'Could not add video.');
@@ -1266,9 +1274,23 @@ export const AdminDashboard: React.FC = () => {
                 }}
                 className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isBn ? 'ভিডিও যোগ করুন' : 'Add Video'}
+                {editingVideoId ? (isBn ? 'ভিডিও আপডেট করুন' : 'Update Video') : (isBn ? 'ভিডিও যোগ করুন' : 'Add Video')}
               </button>
 
+              {editingVideoId && (
+                <button type="button" onClick={() => {
+                  setEditingVideoId(null);
+                  setVideoTitleEn('');
+                  setVideoTitleBn('');
+                  setVideoDescriptionEn('');
+                  setVideoDescriptionBn('');
+                  setVideoUrl('');
+                  setVideoThumbnailUrl('');
+                  setVideoFeatured(false);
+                }} className="text-xs font-semibold text-neutral-500 hover:text-[#9E1B32]">
+                  {isBn ? 'সম্পাদনা বাতিল করে নতুন ভিডিও যোগ করুন' : 'Cancel edit and add a new video'}
+                </button>
+              )}
               {videoUploadNotice && <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-[11px] text-emerald-700 dark:text-emerald-300">{videoUploadNotice}</div>}
               <p className="text-[11px] text-neutral-500">
                 {isBn
@@ -1288,9 +1310,25 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF] line-clamp-2">{video.title_en}</p>
                     <p className="text-[10px] text-neutral-400 line-clamp-1">{video.videoUrl}</p>
                     <div className="flex items-center justify-between pt-2 border-t border-neutral-100 dark:border-neutral-800">
-                      <button onClick={() => toggleFeatureVideo(video.id)} className={`text-[10px] font-semibold px-2 py-1 rounded ${video.featured ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'}`}>
-                        {video.featured ? 'Featured' : 'Make Featured'}
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => {
+                          setEditingVideoId(video.id);
+                          setVideoTitleEn(video.title_en);
+                          setVideoTitleBn(video.title_bn);
+                          setVideoDescriptionEn(video.description_en);
+                          setVideoDescriptionBn(video.description_bn);
+                          setVideoUrl(video.videoUrl);
+                          setVideoThumbnailUrl(video.thumbnailUrl || '');
+                          setVideoCategory(video.category);
+                          setVideoFeatured(Boolean(video.featured));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }} className="inline-flex items-center gap-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 px-2 py-1 text-[10px] font-semibold text-neutral-600 dark:text-neutral-300">
+                          <Edit2 className="w-3 h-3" /> {isBn ? 'সম্পাদনা' : 'Edit'}
+                        </button>
+                        <button onClick={() => toggleFeatureVideo(video.id)} className={`text-[10px] font-semibold px-2 py-1 rounded ${video.featured ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'}`}>
+                          {video.featured ? 'Featured' : 'Make Featured'}
+                        </button>
+                      </div>
                       <button onClick={() => deleteVideo(video.id)} className="p-1 text-rose-500 hover:text-rose-700" title={isBn ? 'ভিডিও সরান' : 'Remove video'}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
