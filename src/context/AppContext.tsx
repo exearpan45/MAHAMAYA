@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import {
-  Language, User, UserRole, PujaYear, EventItem, Announcement, GalleryPhoto,
+  Language, User, UserRole, PujaYear, EventItem, Announcement, GalleryPhoto, VideoItem,
   HistoryMilestone, CulturalProgramItem, SiteSettings,
 } from '../types';
 import {
   INITIAL_SETTINGS, INITIAL_PUJA_YEARS, INITIAL_EVENTS, INITIAL_ANNOUNCEMENTS,
-  INITIAL_GALLERY, INITIAL_HISTORY_MILESTONES, INITIAL_CULTURAL_PROGRAMS,
+  INITIAL_GALLERY, INITIAL_VIDEOS, INITIAL_HISTORY_MILESTONES, INITIAL_CULTURAL_PROGRAMS,
 } from '../data/initialData';
 import { devotionalAudio } from '../utils/audio';
 import mandirHeritageImage from '../assets/images/mandir_heritage_1791376373749.jpg';
@@ -31,6 +31,7 @@ interface ServerSnapshot {
   gallery: GalleryPhoto[];
   historyMilestones: HistoryMilestone[];
   culturalPrograms: CulturalProgramItem[];
+  videos: VideoItem[];
   currentUser: User | null;
 }
 
@@ -53,6 +54,8 @@ interface AppContextType {
   gallery: GalleryPhoto[];
   addGalleryPhoto: (photo: Omit<GalleryPhoto, 'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' | 'uploaderName' | 'uploaderEmail' | 'uploaderId'>, file: File) => Promise<void>;
   deleteGalleryPhoto: (id: string) => void; toggleFeaturePhoto: (id: string) => void;
+  videos: VideoItem[]; addVideo: (item: Omit<VideoItem, 'id' | 'createdAt'>) => void;
+  deleteVideo: (id: string) => void; toggleFeatureVideo: (id: string) => void;
   historyMilestones: HistoryMilestone[]; addHistoryMilestone: (item: Omit<HistoryMilestone, 'id'>) => void;
   updateHistoryMilestone: (id: string, item: Partial<HistoryMilestone>) => void; deleteHistoryMilestone: (id: string) => void;
   culturalPrograms: CulturalProgramItem[]; addCulturalProgram: (item: Omit<CulturalProgramItem, 'id'>) => void;
@@ -90,6 +93,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [gallery, setGallery] = useState<GalleryPhoto[]>(INITIAL_GALLERY.map((item) => ({ ...item, imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: resolveAssetUrl(item.thumbnailUrl) })));
   const [historyMilestones, setHistoryMilestones] = useState<HistoryMilestone[]>(INITIAL_HISTORY_MILESTONES.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
   const [culturalPrograms, setCulturalPrograms] = useState<CulturalProgramItem[]>(INITIAL_CULTURAL_PROGRAMS);
+  const [videos, setVideos] = useState<VideoItem[]>(INITIAL_VIDEOS);
   const [apiError, setApiError] = useState<string | null>(null);
   const [activeView, setActiveViewState] = useState<string>(() => {
     const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
@@ -110,6 +114,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setGallery(data.gallery.map((item) => ({ ...item, imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: resolveAssetUrl(item.thumbnailUrl) })));
     setHistoryMilestones(data.historyMilestones.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
     setCulturalPrograms(data.culturalPrograms);
+    setVideos(data.videos || []);
     setCurrentUser(data.currentUser);
   };
 
@@ -393,6 +398,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
+  const MAX_VIDEOS = 50;
+
+  const addVideo = (item: Omit<VideoItem, 'id' | 'createdAt'>) => {
+    if (videos.length >= MAX_VIDEOS) throw new Error('Video gallery limit reached. You can keep up to 50 videos.');
+    let parsed: URL;
+    try {
+      parsed = new URL(item.videoUrl);
+    } catch {
+      throw new Error('Please enter a valid video URL.');
+    }
+    if (parsed.protocol !== 'https:') {
+      throw new Error('Video links must use HTTPS for safety and compatibility.');
+    }
+    setVideos((previous) => [...previous, { ...item, id: crypto.randomUUID(), createdAt: new Date().toISOString() }]);
+    setApiError(null);
+  };
+
+  const deleteVideo = (id: string) => {
+    setVideos((previous) => previous.filter((video) => video.id !== id));
+    setApiError(null);
+  };
+
+  const toggleFeatureVideo = (id: string) => {
+    setVideos((previous) => previous.map((video) => video.id === id ? { ...video, featured: !video.featured } : video));
+    setApiError(null);
+  };
+
   const addHistoryMilestone = (item: Omit<HistoryMilestone, 'id'>) => {
     setHistoryMilestones((previous) => [
       ...previous,
@@ -452,6 +484,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       gallery,
       historyMilestones,
       culturalPrograms,
+      videos,
       currentUser: null,
     };
 
@@ -532,7 +565,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       ...item,
       image: canonicalAssetUrl(item.image)
     })),
-    culturalPrograms
+    culturalPrograms,
+    videos
   }, null, 2);
 
   const importDataJSON = async (jsonString: string) => {
@@ -582,6 +616,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (Array.isArray(data.culturalPrograms)) {
         setCulturalPrograms(data.culturalPrograms);
       }
+      if (Array.isArray(data.videos)) {
+        setVideos(data.videos);
+      }
 
       setApiError(null);
       return true;
@@ -617,6 +654,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }))
     );
     setCulturalPrograms(INITIAL_CULTURAL_PROGRAMS);
+    setVideos(INITIAL_VIDEOS);
     setCurrentUser(null);
     setApiError(null);
   };
@@ -649,6 +687,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       gallery, addGalleryPhoto, deleteGalleryPhoto, toggleFeaturePhoto,
       historyMilestones, addHistoryMilestone, updateHistoryMilestone, deleteHistoryMilestone,
       culturalPrograms, addCulturalProgram, updateCulturalProgram, deleteCulturalProgram,
+      videos, addVideo, deleteVideo, toggleFeatureVideo,
       exportDataJSON, importDataJSON, resetToDefault, publishContent, activeView, setActiveView,
       downloadModalOpen, setDownloadModalOpen,
       searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError,
