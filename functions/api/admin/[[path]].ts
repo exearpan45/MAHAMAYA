@@ -132,7 +132,7 @@ const toBase64 = (value: string) => {
 };
 
 const cleanAssetPath = (value: string) => {
-  const path = String(value || '').replace(/^\\/+/, '');
+  const path = String(value || '').replace(/^\/+/, '');
   if (!path.startsWith('public/') || path.includes('..') || path.includes('\\')) return null;
   return path;
 };
@@ -156,7 +156,7 @@ const publish = async (request: Request, env: Env) => {
     return response({ error: 'No website content was supplied.' }, 400);
   }
 
-  const contentJson = JSON.stringify(content, null, 2) + '\\n';
+  const contentJson = JSON.stringify(content, null, 2) + '\n';
   if (contentJson.length > 2_000_000) {
     return response({ error: 'Website content is too large to publish.' }, 413);
   }
@@ -235,7 +235,7 @@ export const onRequest = async (context: any) => {
   const request = context.request as Request;
   const env = context.env as Env;
   const method = request.method.toUpperCase();
-  const path = new URL(request.url).pathname.replace(/^\\/api\\/admin\\/?/, '').replace(/\\/$/, '');
+  const path = new URL(request.url).pathname.replace(/^\/api\/admin\/?/, '').replace(/\/$/, '');
 
   if (path === 'login' && method === 'GET') {
     const email = await getSessionEmail(request, env.SESSION_SECRET || '');
