@@ -135,7 +135,12 @@ export const AdminDashboard: React.FC = () => {
   const [galleryDescription, setGalleryDescription] = useState('');
   const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>('Durga Puja');
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
+  const [galleryUploadNotice, setGalleryUploadNotice] = useState('');
   const [fullJson, setFullJson] = useState('');
+
+  const MAX_GALLERY_PHOTOS = 200;
+  const galleryCount = gallery.length;
+  const galleryRemaining = Math.max(0, MAX_GALLERY_PHOTOS - galleryCount);
 
   // This client guard is for presentation only; every admin operation is checked by the API.
   const [loginEmail, setLoginEmail] = useState('');
@@ -964,41 +969,131 @@ export const AdminDashboard: React.FC = () => {
         {/* ================= TAB 7: GALLERY MODERATION ================= */}
         {activeTab === 'gallery' && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            <div>
-              <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
-                {isBn ? 'চিত্রশালা নিয়ন্ত্রণ ও মডারেশন' : 'Gallery Moderation & Review'}
-              </h3>
-              <p className="text-xs text-neutral-500">
-                {isBn
-                  ? 'ভক্তদের আপলোডকৃত ছবি পর্যালোচনা করুন, অনুপযুক্ত ছবি মুছুন বা হোমপেজে প্রদর্শনের জন্য Featured করুন।'
-                  : 'Manage gallery photos, feature selected photos on the homepage, or remove photos.'}
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {isBn ? 'চিত্রশালা নিয়ন্ত্রণ ও মডারেশন' : 'Gallery Moderation & Review'}
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  {isBn
+                    ? 'ছবি যোগ করুন, Featured ছবি বেছে নিন এবং প্রয়োজন হলে ছবি সরিয়ে দিন।'
+                    : 'Add photos, choose Featured photos, and remove photos when needed.'}
+                </p>
+              </div>
+              <div className="shrink-0 rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF9] dark:bg-[#1A0C11] px-4 py-3 min-w-[180px]">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[11px] font-semibold text-neutral-500">
+                    {isBn ? 'গ্যালারি ব্যবহার' : 'Gallery usage'}
+                  </span>
+                  <span className="text-sm font-extrabold text-[#9E1B32] dark:text-[#E5C158]">
+                    {galleryCount} / {MAX_GALLERY_PHOTOS}
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
+                  <div
+                    className="h-full rounded-full bg-[#9E1B32] transition-all duration-300"
+                    style={{ width: `${Math.min(100, (galleryCount / MAX_GALLERY_PHOTOS) * 100)}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-[10px] text-neutral-400">
+                  {galleryRemaining > 0
+                    ? (isBn ? `${galleryRemaining}টি ছবি যোগ করা যাবে` : `${galleryRemaining} photo slots remaining`)
+                    : (isBn ? 'গ্যালারির ২০০টি ছবির সীমা পূর্ণ হয়েছে' : 'Gallery limit of 200 photos reached')}
+                </p>
+              </div>
             </div>
 
             <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h4 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">Add Gallery Photo</h4>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <input value={galleryTitle} onChange={(e)=>setGalleryTitle(e.target.value)} placeholder="Photo title" className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent" />
-                <select value={galleryCategory} onChange={(e)=>setGalleryCategory(e.target.value as GalleryCategory)} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11]">
-                  {['Maa Durga','Temple','Durga Puja','Bhog','Cultural Programs','Visarjan','Historical Photos','Community'].map((item)=><option key={item}>{item}</option>)}
-                </select>
-                <input type="file" accept="image/*" onChange={(e)=>setGalleryFile(e.target.files?.[0] || null)} className="text-xs" />
-                <button type="button" onClick={async()=>{
-                  if(!galleryFile || !galleryTitle.trim()) return;
-                  try {
-                    await addGalleryPhoto({
-                      title_en: galleryTitle, title_bn: galleryTitle,
-                      description_en: galleryDescription || galleryTitle,
-                      description_bn: galleryDescription || galleryTitle,
-                      category: galleryCategory, pujaYear: settings.currentYear,
-                      featured: false,
-                    }, galleryFile);
-                    setGalleryTitle(''); setGalleryDescription(''); setGalleryFile(null);
-                  } catch (error) { setImportNotice(error instanceof Error ? error.message : 'Could not add photo.'); }
-                }} className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer">Add Photo</button>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+                    {isBn ? 'নতুন ছবি যোগ করুন' : 'Add Gallery Photo'}
+                  </h4>
+                  <p className="mt-1 text-[10px] text-neutral-400">
+                    {isBn ? 'সর্বোচ্চ ২০০টি ছবি। বড় ছবি স্বয়ংক্রিয়ভাবে WebP/JPEG-এ অপ্টিমাইজ হবে।' : 'Up to 200 photos. Large photos are automatically optimized to WebP/JPEG.'}
+                  </p>
+                </div>
+                <span className="rounded-lg bg-[#9E1B32]/10 px-2.5 py-1 text-[10px] font-bold text-[#9E1B32] dark:text-[#E5C158]">
+                  {galleryCount} / {MAX_GALLERY_PHOTOS}
+                </span>
               </div>
-              <textarea value={galleryDescription} onChange={(e)=>setGalleryDescription(e.target.value)} placeholder="Photo description" rows={2} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent" />
-              <p className="text-[11px] text-neutral-500">Images are stored in GitHub when you publish. Keep each image under 6 MB.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input
+                  value={galleryTitle}
+                  onChange={(e) => setGalleryTitle(e.target.value)}
+                  placeholder={isBn ? 'ছবির শিরোনাম' : 'Photo title'}
+                  disabled={galleryCount >= MAX_GALLERY_PHOTOS}
+                  className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50"
+                />
+                <select
+                  value={galleryCategory}
+                  onChange={(e) => setGalleryCategory(e.target.value as GalleryCategory)}
+                  disabled={galleryCount >= MAX_GALLERY_PHOTOS}
+                  className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50"
+                >
+                  {['Maa Durga','Temple','Durga Puja','Bhog','Cultural Programs','Visarjan','Historical Photos','Community'].map((item) => <option key={item}>{item}</option>)}
+                </select>
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={galleryCount >= MAX_GALLERY_PHOTOS}
+                  onChange={(e) => {
+                    setGalleryUploadNotice('');
+                    setGalleryFile(e.target.files?.[0] || null);
+                  }}
+                  className="text-xs disabled:opacity-50"
+                />
+                <button
+                  type="button"
+                  disabled={galleryCount >= MAX_GALLERY_PHOTOS || !galleryFile || !galleryTitle.trim()}
+                  onClick={async () => {
+                    if (!galleryFile || !galleryTitle.trim() || galleryCount >= MAX_GALLERY_PHOTOS) return;
+                    setGalleryUploadNotice('');
+                    try {
+                      await addGalleryPhoto({
+                        title_en: galleryTitle,
+                        title_bn: galleryTitle,
+                        description_en: galleryDescription || galleryTitle,
+                        description_bn: galleryDescription || galleryTitle,
+                        category: galleryCategory,
+                        pujaYear: settings.currentYear,
+                        featured: false,
+                      }, galleryFile);
+                      setGalleryTitle('');
+                      setGalleryDescription('');
+                      setGalleryFile(null);
+                      setGalleryUploadNotice(isBn ? 'ছবি যোগ হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Photo added. Click Publish Changes to make it live.');
+                    } catch (error) {
+                      setGalleryUploadNotice(error instanceof Error ? error.message : 'Could not add photo.');
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isBn ? 'ছবি যোগ করুন' : 'Add Photo'}
+                </button>
+              </div>
+
+              <textarea
+                value={galleryDescription}
+                onChange={(e) => setGalleryDescription(e.target.value)}
+                placeholder={isBn ? 'ছবির বিবরণ' : 'Photo description'}
+                rows={2}
+                disabled={galleryCount >= MAX_GALLERY_PHOTOS}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50"
+              />
+
+              {galleryUploadNotice && (
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-[11px] text-emerald-700 dark:text-emerald-300">
+                  {galleryUploadNotice}
+                </div>
+              )}
+
+              <p className="text-[11px] text-neutral-500">
+                {isBn
+                  ? 'মূল ছবি সর্বোচ্চ ১৫ MB হতে পারে। সাইট নিজে থেকে ছবিকে সর্বোচ্চ ১৮০০px এবং প্রায় ৯০০ KB-এর মধ্যে অপ্টিমাইজ করবে।'
+                  : 'Source photo can be up to 15 MB. The site automatically optimizes it to at most 1800px and about 900 KB for a faster gallery.'}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
