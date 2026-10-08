@@ -69,16 +69,17 @@ const makeSession = async (email: string, secret: string) => {
 };
 
 const getSessionEmail = async (request: Request, secret: string) => {
-  const cookie = request.headers.get('cookie') || '';
-  const match = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(SESSION_COOKIE + '='));
-  if (!match) return null;
-
-  const token = decodeURIComponent(match.slice(SESSION_COOKIE.length + 1));
-  const [payload, signature] = token.split('.');
-  if (!payload || !signature) return null;
-  if (!safeEqual(await sign(payload, secret), signature)) return null;
-
   try {
+    if (!secret) return null;
+    const cookie = request.headers.get('cookie') || '';
+    const match = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(SESSION_COOKIE + '='));
+    if (!match) return null;
+
+    const token = decodeURIComponent(match.slice(SESSION_COOKIE.length + 1));
+    const [payload, signature] = token.split('.');
+    if (!payload || !signature) return null;
+    if (!safeEqual(await sign(payload, secret), signature)) return null;
+
     const data = JSON.parse(new TextDecoder().decode(base64UrlDecode(payload)));
     if (!data?.email || Number(data.exp) < Math.floor(Date.now() / 1000)) return null;
     return String(data.email);
@@ -239,12 +240,13 @@ const publish = async (request: Request, env: Env) => {
 };
 
 export const onRequest = async (context: any) => {
-  const request = context.request as Request;
-  const env = context.env as Env;
-  const method = request.method.toUpperCase();
-  const path = new URL(request.url).pathname.replace(/^\/api\/admin\/?/, '').replace(/\/$/, '');
+  try {
+    const request = context.request as Request;
+    const env = context.env as Env;
+    const method = request.method.toUpperCase();
+    const path = new URL(request.url).pathname.replace(/^\/api\/admin\/?/, '').replace(/\/$/, '');
 
-  if (path === 'login' && method === 'GET') {
+    if (path === 'login' && method === 'GET') {
     const email = await getSessionEmail(request, env.SESSION_SECRET || '');
     if (!email || !env.ADMIN_EMAIL || email.toLowerCase() !== env.ADMIN_EMAIL.toLowerCase()) {
       return response({ user: null }, 401);
@@ -286,5 +288,10 @@ export const onRequest = async (context: any) => {
     return publish(request, env);
   }
 
-  return response({ error: 'Not found.' }, 404);
+    return response({ error: 'Not found.' }, 404);
+  } catch (error) {
+    return response({
+      error: (error instanceof Error ? error.message : 'Cloudflare Worker exception.') + ' (Stage: request handler)',
+    }, 500);
+  }
 };
