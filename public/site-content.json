@@ -50,8 +50,8 @@
           "id": "2026-d1",
           "date": "2026-10-16",
           "bengaliDate": "২৯ আশ্বিন ১৪৩৩",
-          "dayName_en": "Maha Shashthi (Day 1)",
-          "dayName_bn": "মহা ষষ্ঠী (প্রথম পর্যায়)",
+          "dayName_en": "Maha Shashthi",
+          "dayName_bn": "মহা ষষ্ঠী",
           "rituals_en": [
             "Bilva Nimantran (Inviting the sacred Bel tree)"
           ],
@@ -68,8 +68,8 @@
           "id": "2026-d2",
           "date": "2026-10-17",
           "bengaliDate": "৩০ আশ্বিন ১৪৩৩",
-          "dayName_en": "Maha Shashthi (Day 2)",
-          "dayName_bn": "মহা ষষ্ঠী (দ্বিতীয় পর্যায়)",
+          "dayName_en": "Maha Saptami (Day 1)",
+          "dayName_bn": "মহা সপ্তমী (প্রথম পর্যায়)",
           "rituals_en": [
             "Kalparambha",
             "Akal Bodhon",
@@ -89,8 +89,8 @@
           "id": "2026-d3",
           "date": "2026-10-18",
           "bengaliDate": "৩১ আশ্বিন ১৪৩৩",
-          "dayName_en": "Maha Saptami",
-          "dayName_bn": "মহা সপ্তমী",
+          "dayName_en": "Maha Saptami (Day 2)",
+          "dayName_bn": "মহা সপ্তমী (দ্বিতীয় পর্যায়)",
           "rituals_en": [
             "Durga Saptami Puja",
             "Kolabou Snan (Nabapatrika Pravesh)",
