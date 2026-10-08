@@ -18,6 +18,7 @@ import { EventsSection } from './components/EventsSection';
 import { CulturalPrograms } from './components/CulturalPrograms';
 import { Announcements } from './components/Announcements';
 import { GallerySection } from './components/GallerySection';
+import { VideoGallery } from './components/VideoGallery';
 import { HistorySection } from './components/HistorySection';
 import { VisitSection } from './components/VisitSection';
 import { Footer } from './components/Footer';
@@ -184,6 +185,7 @@ const MainLayout: React.FC = () => {
           <CulturalPrograms />
           <Announcements />
           <GallerySection />
+          <VideoGallery />
           <HistorySection />
           <VisitSection />
         </main>
