@@ -18,13 +18,11 @@ export const VisitSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] tracking-tight">
-            {isBn ? 'পিন্দ্রা দুর্গা মন্দিরে পদার্পণ' : 'Visit Pinrra Durga Mandir'}
+            {isBn ? settings.visitHeading_bn : settings.visitHeading_en}
           </h2>
 
           <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-300 font-sans">
-            {isBn
-              ? 'পূজার দিনগুলিতে মায়ের পুণ্য দর্শনে আপনি সপরিবারে আমন্ত্রিত।'
-              : 'You and your family are cordially invited to seek Mother Durga’s blessings during the festival.'}
+            {isBn ? settings.visitIntro_bn : settings.visitIntro_en}
           </p>
         </div>
 
