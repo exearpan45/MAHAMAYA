@@ -31,11 +31,11 @@ const response = (body: unknown, status = 200, extraHeaders: Record<string, stri
 const base64UrlEncode = (bytes: Uint8Array) => {
   let binary = '';
   for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/g, '');
+  return btoa(binary).split('+').join('-').split('/').join('_').replace(/=+$/g, '');
 };
 
 const base64UrlDecode = (value: string) => {
-  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (value.length % 4)) % 4);
+  const padded = value.split('-').join('+').split('_').join('/') + '='.repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 };
