@@ -71,6 +71,7 @@ export const AdminDashboard: React.FC = () => {
     resetToDefault,
     logout,
     publishContent,
+    addGalleryPhoto,
   } = useApp();
 
   const isBn = language === 'bn';
@@ -112,6 +113,11 @@ export const AdminDashboard: React.FC = () => {
 
   // JSON Import notification
   const [importNotice, setImportNotice] = useState('');
+  const [galleryTitle, setGalleryTitle] = useState('');
+  const [galleryDescription, setGalleryDescription] = useState('');
+  const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>('Durga Puja');
+  const [galleryFile, setGalleryFile] = useState<File | null>(null);
+  const [fullJson, setFullJson] = useState('');
 
   // This client guard is for presentation only; every admin operation is checked by the API.
   const [loginEmail, setLoginEmail] = useState('');
@@ -945,6 +951,32 @@ export const AdminDashboard: React.FC = () => {
               </p>
             </div>
 
+            <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
+              <h4 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">Add Gallery Photo</h4>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input value={galleryTitle} onChange={(e)=>setGalleryTitle(e.target.value)} placeholder="Photo title" className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent" />
+                <select value={galleryCategory} onChange={(e)=>setGalleryCategory(e.target.value as GalleryCategory)} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11]">
+                  {['Maa Durga','Temple','Durga Puja','Bhog','Cultural Programs','Visarjan','Historical Photos','Community'].map((item)=><option key={item}>{item}</option>)}
+                </select>
+                <input type="file" accept="image/*" onChange={(e)=>setGalleryFile(e.target.files?.[0] || null)} className="text-xs" />
+                <button type="button" onClick={async()=>{
+                  if(!galleryFile || !galleryTitle.trim()) return;
+                  try {
+                    await addGalleryPhoto({
+                      title_en: galleryTitle, title_bn: galleryTitle,
+                      description_en: galleryDescription || galleryTitle,
+                      description_bn: galleryDescription || galleryTitle,
+                      category: galleryCategory, pujaYear: settings.currentYear,
+                      featured: false,
+                    }, galleryFile);
+                    setGalleryTitle(''); setGalleryDescription(''); setGalleryFile(null);
+                  } catch (error) { setImportNotice(error instanceof Error ? error.message : 'Could not add photo.'); }
+                }} className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer">Add Photo</button>
+              </div>
+              <textarea value={galleryDescription} onChange={(e)=>setGalleryDescription(e.target.value)} placeholder="Photo description" rows={2} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent" />
+              <p className="text-[11px] text-neutral-500">Images are stored in GitHub when you publish. Keep each image under 6 MB.</p>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {gallery.map((photo) => (
                 <div
@@ -1178,6 +1210,73 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
               </div>}
+            </div>
+
+            {/* Editable Website Copy */}
+            <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-5">
+              <div>
+                <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">Website Content Editor</h3>
+                <p className="mt-1 text-xs text-neutral-500">Edit the important yearly-independent copy shown across About, Heritage, Bhog and Visit. Publish after editing.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {([
+                  ['aboutHeading_en','About heading (English)'],['aboutHeading_bn','About heading (বাংলা)'],
+                  ['aboutIntro_en','About introduction (English)'],['aboutIntro_bn','About introduction (বাংলা)'],
+                  ['aboutFamilyHeading_en','About family heading (English)'],['aboutFamilyHeading_bn','About family heading (বাংলা)'],
+                  ['aboutFamilyText_en','About family text (English)'],['aboutFamilyText_bn','About family text (বাংলা)'],
+                  ['aboutCommunityHeading_en','About community heading (English)'],['aboutCommunityHeading_bn','About community heading (বাংলা)'],
+                  ['aboutCommunityText_en','About community text (English)'],['aboutCommunityText_bn','About community text (বাংলা)'],
+                  ['heritageHeading_en','Heritage heading (English)'],['heritageHeading_bn','Heritage heading (বাংলা)'],
+                  ['heritageIntro_en','Heritage introduction (English)'],['heritageIntro_bn','Heritage introduction (বাংলা)'],
+                  ['bhogHeading_en','Bhog section heading (English)'],['bhogHeading_bn','Bhog section heading (বাংলা)'],
+                  ['bhogIntro_en','Bhog section introduction (English)'],['bhogIntro_bn','Bhog section introduction (বাংলা)'],
+                  ['visitHeading_en','Visit heading (English)'],['visitHeading_bn','Visit heading (বাংলা)'],
+                  ['visitIntro_en','Visit introduction (English)'],['visitIntro_bn','Visit introduction (বাংলা)'],
+                ] as Array<[keyof typeof settings, string]>).map(([key, label]) => (
+                  <label key={String(key)} className="block">
+                    <span className="text-[11px] font-semibold text-neutral-500">{label}</span>
+                    <textarea
+                      rows={String(key).includes('Heading') ? 2 : 3}
+                      value={String(settings[key] ?? '')}
+                      onChange={(e) => updateSettings({ [key]: e.target.value } as Partial<typeof settings>)}
+                      className="w-full mt-1 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Advanced full-data editor */}
+            <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
+              <div>
+                <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">Advanced Full Content Editor</h3>
+                <p className="mt-1 text-xs text-neutral-500">This gives the committee direct control over every editable data field, including yearly Puja dates, events, Bhog schedules, notices, gallery metadata, history and cultural programs.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFullJson(exportDataJSON())}
+                className="px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-700 text-xs font-semibold cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                Load Current Content JSON
+              </button>
+              <textarea
+                value={fullJson}
+                onChange={(e) => setFullJson(e.target.value)}
+                placeholder="Click 'Load Current Content JSON' to edit the complete content model..."
+                className="w-full min-h-[320px] px-3 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent font-mono text-[11px] leading-relaxed"
+                spellCheck={false}
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  const ok = await importDataJSON(fullJson);
+                  setImportNotice(ok ? 'Full content loaded into the editor. Click Publish Changes to make it live.' : 'Invalid content JSON.');
+                }}
+                disabled={!fullJson.trim()}
+                className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold disabled:opacity-50 cursor-pointer"
+              >
+                Apply JSON to Editor
+              </button>
             </div>
 
             {/* Backup, Restore & Reset */}
