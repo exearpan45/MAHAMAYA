@@ -419,7 +419,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const updateVideo = (id: string, item: Partial<VideoItem>) => {
-    if (item.videoUrl !== undefined) {
+    if (item.videoUrl !== undefined && !item.videoUrl.startsWith('data:video/')) {
       try {
         const parsed = new URL(item.videoUrl);
         if (parsed.protocol !== 'https:') throw new Error('invalid');
