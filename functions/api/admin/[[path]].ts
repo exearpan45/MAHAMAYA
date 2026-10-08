@@ -157,6 +157,9 @@ const publish = async (request: Request, env: Env) => {
   if (Array.isArray(content.gallery) && content.gallery.length > 200) {
     return response({ error: 'Gallery limit reached. The website supports up to 200 photos.' }, 400);
   }
+  if (Array.isArray(content.videos) && content.videos.length > 50) {
+    return response({ error: 'Video gallery limit reached. The website supports up to 50 videos.' }, 400);
+  }
 
   const contentJson = JSON.stringify(content, null, 2) + '\n';
   if (contentJson.length > 2_000_000) {
