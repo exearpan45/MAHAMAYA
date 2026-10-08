@@ -153,6 +153,7 @@ export const AdminDashboard: React.FC = () => {
   const [videoCategory, setVideoCategory] = useState<VideoCategory>('Durga Puja');
   const [videoFeatured, setVideoFeatured] = useState(false);
   const [videoUploadNotice, setVideoUploadNotice] = useState('');
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
 
   const [fullJson, setFullJson] = useState('');
@@ -1220,7 +1221,55 @@ export const AdminDashboard: React.FC = () => {
                 <select value={videoCategory} onChange={(e) => setVideoCategory(e.target.value as VideoCategory)} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50">
                   {(['Durga Puja','Temple','Ritual','Community','Cultural','Other'] as VideoCategory[]).map((item) => <option key={item}>{item}</option>)}
                 </select>
-                <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="md:col-span-2 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoUrl} onChange={(e) => { setVideoUrl(e.target.value); setVideoFile(null); }} placeholder="https://www.youtube.com/watch?v=..." disabled={(videoCount >= MAX_VIDEOS && !editingVideoId) || Boolean(videoFile)} className="md:col-span-2 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <div className="md:col-span-2 rounded-xl border border-dashed border-[#D4AF37]/45 bg-[#FFFDF9] dark:bg-[#1A0C11] p-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm,video/ogg,.mp4,.webm,.ogg"
+                      disabled={(videoCount >= MAX_VIDEOS && !editingVideoId) || Boolean(videoUrl)}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (!file) return;
+                        const MAX_VIDEO_FILE_BYTES = 20 * 1024 * 1024;
+                        if (file.size > MAX_VIDEO_FILE_BYTES) {
+                          setVideoFile(null);
+                          setVideoUploadNotice(isBn
+                            ? 'ভিডিও আপলোড হয়নি। সর্বোচ্চ ভিডিও সাইজ 20 MB।'
+                            : 'Video not added. Maximum video size is 20 MB.');
+                          event.currentTarget.value = '';
+                          return;
+                        }
+                        if (!file.type.startsWith('video/')) {
+                          setVideoFile(null);
+                          setVideoUploadNotice(isBn ? 'শুধু MP4, WebM বা OGG ভিডিও দিন।' : 'Please select an MP4, WebM, or OGG video.');
+                          event.currentTarget.value = '';
+                          return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const result = String(reader.result || '');
+                          setVideoUrl(result);
+                          setVideoFile(file);
+                          setVideoUploadNotice(isBn
+                            ? `ভিডিও প্রস্তুত: ${file.name} • ${(file.size / 1024 / 1024).toFixed(1)} MB`
+                            : `Video ready: ${file.name} • ${(file.size / 1024 / 1024).toFixed(1)} MB`);
+                        };
+                        reader.onerror = () => setVideoUploadNotice(isBn ? 'ভিডিও পড়া যায়নি। আবার চেষ্টা করুন।' : 'Could not read the video file. Please try again.');
+                        reader.readAsDataURL(file);
+                      }}
+                      className="block w-full text-xs"
+                    />
+                    {videoFile && (
+                      <button type="button" onClick={() => { setVideoFile(null); setVideoUrl(''); }} className="shrink-0 rounded-lg bg-neutral-100 dark:bg-neutral-800 px-3 py-2 text-[10px] font-semibold text-neutral-600 dark:text-neutral-300">
+                        {isBn ? 'ফাইল সরান' : 'Remove file'}
+                      </button>
+                    )}
+                  </div>
+                  <p className="mt-2 text-[10px] text-neutral-500">
+                    {isBn ? 'সর্বোচ্চ 20 MB • MP4 / WebM / OGG • বড় ভিডিও হলে বাহ্যিক HTTPS লিঙ্ক ব্যবহার করুন।' : 'Maximum 20 MB • MP4 / WebM / OGG • For larger videos, use an external HTTPS video link.'}
+                  </p>
+                </div>
                 <input value={videoThumbnailUrl} onChange={(e) => setVideoThumbnailUrl(e.target.value)} placeholder={isBn ? 'ঐচ্ছিক thumbnail URL (HTTPS)' : 'Optional thumbnail URL (HTTPS)'} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
                 <label className="flex items-center gap-2 rounded-xl border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-xs">
                   <input type="checkbox" checked={videoFeatured} onChange={(e) => setVideoFeatured(e.target.checked)} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="w-4 h-4" />
@@ -1237,8 +1286,10 @@ export const AdminDashboard: React.FC = () => {
                 disabled={(!editingVideoId && videoCount >= MAX_VIDEOS) || !videoTitleEn.trim() || !videoTitleBn.trim() || !videoUrl.trim()}
                 onClick={() => {
                   try {
-                    const url = new URL(videoUrl.trim());
-                    if (url.protocol !== 'https:') throw new Error('Please use an HTTPS video URL.');
+                    if (!videoUrl.startsWith('data:video/')) {
+                      const url = new URL(videoUrl.trim());
+                      if (url.protocol !== 'https:') throw new Error('Please use an HTTPS video URL.');
+                    }
                     if (videoThumbnailUrl.trim()) {
                       const thumbnail = new URL(videoThumbnailUrl.trim());
                       if (thumbnail.protocol !== 'https:') throw new Error('Thumbnail URL must use HTTPS.');
@@ -1264,6 +1315,7 @@ export const AdminDashboard: React.FC = () => {
                     setVideoDescriptionEn('');
                     setVideoDescriptionBn('');
                     setVideoUrl('');
+                    setVideoFile(null);
                     setVideoThumbnailUrl('');
                     setVideoFeatured(false);
                     setEditingVideoId(null);
