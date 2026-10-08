@@ -38,7 +38,7 @@ const base64UrlEncode = (bytes: Uint8Array) => {
 };
 
 const base64UrlDecode = (value: string) => {
-  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((value.length + 3) % 4);
+  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 };
@@ -133,7 +133,7 @@ const toBase64 = (value: string) => {
 
 const cleanAssetPath = (value: string) => {
   const path = String(value || '').replace(/^\\/+/, '');
-  if (!path.startsWith('public/') || path.includes('..') || path.includes('\\\\')) return null;
+  if (!path.startsWith('public/') || path.includes('..') || path.includes('\\')) return null;
   return path;
 };
 
