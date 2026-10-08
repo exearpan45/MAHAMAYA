@@ -184,7 +184,7 @@ const publish = async (request: Request, env: Env) => {
   for (const asset of assets) {
     const path = cleanAssetPath(asset?.path);
     const base64 = String(asset?.base64 || '');
-    if (!path || !base64 || base64.length > 8_500_000) {
+    if (!path || !base64 || base64.length > 28_500_000) {
       return response({ error: 'One of the uploaded files is invalid or too large.' }, 400);
     }
     assetEntries.push({ path, base64 });
