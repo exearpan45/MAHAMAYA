@@ -218,6 +218,70 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
+  const MAX_GALLERY_PHOTOS = 200;
+  const MAX_GALLERY_SOURCE_BYTES = 15 * 1024 * 1024;
+  const MAX_GALLERY_OUTPUT_BYTES = 900 * 1024;
+  const MAX_GALLERY_DIMENSION = 1800;
+
+  const optimizeGalleryImage = async (file: File): Promise<string> => {
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Please choose a valid image file.');
+    }
+    if (file.size > MAX_GALLERY_SOURCE_BYTES) {
+      throw new Error('Gallery photos must be 15 MB or smaller. The site will automatically optimize them after upload.');
+    }
+
+    const sourceUrl = await fileToDataUrl(file);
+    const image = new Image();
+
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('This image could not be read. Please choose another photo.'));
+      image.src = sourceUrl;
+    });
+
+    const scale = Math.min(1, MAX_GALLERY_DIMENSION / Math.max(image.naturalWidth || image.width, image.naturalHeight || image.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round((image.naturalWidth || image.width) * scale));
+    canvas.height = Math.max(1, Math.round((image.naturalHeight || image.height) * scale));
+
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Your browser could not prepare this image.');
+
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const supportsWebP = canvas.toDataURL('image/webp', 0.8).startsWith('data:image/webp');
+    const mime = supportsWebP ? 'image/webp' : 'image/jpeg';
+    const qualities = [0.82, 0.72, 0.62, 0.54, 0.46, 0.38];
+
+    let best = '';
+    for (const quality of qualities) {
+      const candidate = canvas.toDataURL(mime, quality);
+      best = candidate;
+      const base64Length = candidate.length - candidate.indexOf(',') - 1;
+      const estimatedBytes = Math.floor(base64Length * 0.75);
+      if (estimatedBytes <= MAX_GALLERY_OUTPUT_BYTES) return candidate;
+    }
+
+    // Very detailed photos can still be large after quality reduction. Reduce dimensions
+    // once more so the gallery stays lightweight even with large camera images.
+    const smallerScale = Math.min(1, 1400 / Math.max(canvas.width, canvas.height));
+    if (smallerScale < 1) {
+      canvas.width = Math.max(1, Math.round(canvas.width * smallerScale));
+      canvas.height = Math.max(1, Math.round(canvas.height * smallerScale));
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      for (const quality of [0.62, 0.52, 0.42, 0.34]) {
+        const candidate = canvas.toDataURL(mime, quality);
+        best = candidate;
+        const base64Length = candidate.length - candidate.indexOf(',') - 1;
+        const estimatedBytes = Math.floor(base64Length * 0.75);
+        if (estimatedBytes <= MAX_GALLERY_OUTPUT_BYTES) return candidate;
+      }
+    }
+
+    return best;
+  };
+
   const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
@@ -296,8 +360,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     >,
     file: File
   ) => {
-    if (file.size > 6 * 1024 * 1024) throw new Error('Please choose an image smaller than 6 MB.');
-    const imageUrl = await fileToDataUrl(file);
+    if (gallery.length >= MAX_GALLERY_PHOTOS) {
+      throw new Error('Gallery limit reached. You can keep up to 200 photos.');
+    }
+
+    const imageUrl = await optimizeGalleryImage(file);
     const newPhoto: GalleryPhoto = {
       ...photo,
       id: crypto.randomUUID(),
@@ -405,8 +472,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     for (const item of clone.gallery) {
-      if (typeof item.imageUrl === 'string' && item.imageUrl.startsWith('data:')) item.imageUrl = await uploadDataUrl(item.imageUrl, 'gallery');
-      if (typeof item.thumbnailUrl === 'string' && item.thumbnailUrl.startsWith('data:')) item.thumbnailUrl = await uploadDataUrl(item.thumbnailUrl, 'gallery-thumb');
+      const originalImageUrl = item.imageUrl;
+      if (typeof item.imageUrl === 'string' && item.imageUrl.startsWith('data:')) {
+        item.imageUrl = await uploadDataUrl(item.imageUrl, 'gallery');
+      }
+      if (typeof item.thumbnailUrl === 'string' && item.thumbnailUrl.startsWith('data:')) {
+        item.thumbnailUrl = item.thumbnailUrl === originalImageUrl
+          ? item.imageUrl
+          : await uploadDataUrl(item.thumbnailUrl, 'gallery-thumb');
+      }
     }
     for (const item of clone.events) {
       if (typeof item.image === 'string' && item.image.startsWith('data:')) item.image = await uploadDataUrl(item.image, 'event');
