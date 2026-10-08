@@ -18,13 +18,11 @@ export const FourDayExperience: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] tracking-tight">
-            {isBn ? 'পূজা, মহাপ্রসাদ ও সর্বজনীন মিলন' : 'Puja, Sacred Bhog & Community Joy'}
+            {isBn ? settings.bhogHeading_bn : settings.bhogHeading_en}
           </h2>
 
           <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-300 font-sans">
-            {isBn
-              ? 'সপ্তমী, অষ্টমী, নবমী ও বিজয়া দশমী — পূজার প্রধান চার দিনেই মন্দির প্রাঙ্গণে অনুষ্ঠিত হয় ভক্তিপূর্ণ আচার, ভোগ বিতরণ ও সাংস্কৃতিক উৎসব।'
-              : 'Throughout Saptami, Ashtami, Navami, and Dashami, the temple comes alive with rituals, sacred Bhog, cultural evenings, and community bonding.'}
+            {isBn ? settings.bhogIntro_bn : settings.bhogIntro_en}
           </p>
         </div>
 
