@@ -22,6 +22,7 @@ import {
   ArrowLeft,
   Sparkles,
   LogOut,
+  Film,
 } from 'lucide-react';
 import {
   EventCategory,
@@ -34,6 +35,7 @@ import {
   Announcement,
   HistoryMilestone,
   CulturalProgramItem,
+  VideoCategory,
 } from '../../types';
 
 const deriveEnglishPujaDayName = (bengaliName: string, fallback: string) => {
@@ -90,6 +92,10 @@ export const AdminDashboard: React.FC = () => {
     logout,
     publishContent,
     addGalleryPhoto,
+    videos,
+    addVideo,
+    deleteVideo,
+    toggleFeatureVideo,
   } = useApp();
 
   const isBn = language === 'bn';
@@ -102,6 +108,7 @@ export const AdminDashboard: React.FC = () => {
     | 'cultural'
     | 'announcements'
     | 'gallery'
+    | 'videos'
     | 'history'
     | 'settings'
   >('overview');
@@ -136,11 +143,22 @@ export const AdminDashboard: React.FC = () => {
   const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>('Durga Puja');
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
   const [galleryUploadNotice, setGalleryUploadNotice] = useState('');
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoDescription, setVideoDescription] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoThumbnailUrl, setVideoThumbnailUrl] = useState('');
+  const [videoCategory, setVideoCategory] = useState<VideoCategory>('Durga Puja');
+  const [videoFeatured, setVideoFeatured] = useState(false);
+  const [videoUploadNotice, setVideoUploadNotice] = useState('');
+
   const [fullJson, setFullJson] = useState('');
 
   const MAX_GALLERY_PHOTOS = 200;
   const galleryCount = gallery.length;
   const galleryRemaining = Math.max(0, MAX_GALLERY_PHOTOS - galleryCount);
+  const MAX_VIDEOS = 50;
+  const videoCount = videos.length;
+  const videoRemaining = Math.max(0, MAX_VIDEOS - videoCount);
 
   // This client guard is for presentation only; every admin operation is checked by the API.
   const [loginEmail, setLoginEmail] = useState('');
@@ -388,6 +406,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'cultural', label_bn: 'সাংস্কৃতিক সন্ধ্যা', label_en: 'Cultural Programs', icon: Music },
             { id: 'announcements', label_bn: 'বিজ্ঞপ্তি ফলক', label_en: 'Notices', icon: Bell },
             { id: 'gallery', label_bn: 'চিত্রশালা নিয়ন্ত্রণ', label_en: 'Gallery', icon: ImageIcon },
+            { id: 'videos', label_bn: 'ভিডিও আর্কাইভ', label_en: 'Video Gallery', icon: Film },
             { id: 'history', label_bn: 'ইতিহাস ও মাইলফলক', label_en: 'History', icon: History },
             { id: 'settings', label_bn: 'ওয়েবসাইট সেটিংস', label_en: 'Site Settings', icon: Settings },
           ].map((tab) => {
@@ -1155,7 +1174,128 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* ================= TAB 8: HISTORY ================= */}
+        {/* ================= TAB 8: VIDEO GALLERY ================= */}
+        {activeTab === 'videos' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {isBn ? 'ভিডিও আর্কাইভ নিয়ন্ত্রণ' : 'Video Gallery Management'}
+                </h3>
+                <p className="text-xs text-neutral-500 mt-1 max-w-2xl">
+                  {isBn
+                    ? 'YouTube, Vimeo বা HTTPS MP4/WebM লিঙ্ক যোগ করুন। ভিডিও ফাইল সরাসরি সাইটে আপলোড করা হয় না, তাই GitHub ও Cloudflare Pages দ্রুত ও হালকা থাকে।'
+                    : 'Add YouTube, Vimeo, or HTTPS MP4/WebM links. Video binaries are not uploaded into the site, keeping GitHub and Cloudflare Pages fast and lightweight.'}
+                </p>
+              </div>
+              <div className="shrink-0 rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF9] dark:bg-[#1A0C11] px-4 py-3 min-w-[180px]">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[11px] font-semibold text-neutral-500">{isBn ? 'ভিডিও ব্যবহার' : 'Video usage'}</span>
+                  <span className="text-sm font-extrabold text-[#9E1B32] dark:text-[#E5C158]">{videoCount} / {MAX_VIDEOS}</span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
+                  <div className="h-full rounded-full bg-[#9E1B32] transition-all duration-300" style={{ width: `${Math.min(100, (videoCount / MAX_VIDEOS) * 100)}%` }} />
+                </div>
+                <p className="mt-1.5 text-[10px] text-neutral-400">
+                  {videoRemaining > 0 ? (isBn ? `${videoRemaining}টি ভিডিও যোগ করা যাবে` : `${videoRemaining} video slots remaining`) : (isBn ? '৫০টি ভিডিওর সীমা পূর্ণ হয়েছে' : 'Video limit of 50 reached')}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
+              <div>
+                <h4 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">{isBn ? 'নতুন ভিডিও যোগ করুন' : 'Add Video'}</h4>
+                <p className="mt-1 text-[10px] text-neutral-400">
+                  {isBn ? 'HTTPS লিঙ্ক ব্যবহার করুন। YouTube/Vimeo স্বয়ংক্রিয়ভাবে এম্বেড হবে।' : 'Use an HTTPS link. YouTube and Vimeo links are embedded automatically.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} placeholder={isBn ? 'ভিডিও শিরোনাম' : 'Video title'} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <select value={videoCategory} onChange={(e) => setVideoCategory(e.target.value as VideoCategory)} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50">
+                  {(['Durga Puja','Temple','Ritual','Community','Cultural','Other'] as VideoCategory[]).map((item) => <option key={item}>{item}</option>)}
+                </select>
+                <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." disabled={videoCount >= MAX_VIDEOS} className="md:col-span-2 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoThumbnailUrl} onChange={(e) => setVideoThumbnailUrl(e.target.value)} placeholder={isBn ? 'ঐচ্ছিক thumbnail URL (HTTPS)' : 'Optional thumbnail URL (HTTPS)'} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <label className="flex items-center gap-2 rounded-xl border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-xs">
+                  <input type="checkbox" checked={videoFeatured} onChange={(e) => setVideoFeatured(e.target.checked)} disabled={videoCount >= MAX_VIDEOS} className="w-4 h-4" />
+                  <span>{isBn ? 'Featured ভিডিও হিসেবে দেখান' : 'Mark as Featured video'}</span>
+                </label>
+              </div>
+
+              <textarea value={videoDescription} onChange={(e) => setVideoDescription(e.target.value)} placeholder={isBn ? 'ভিডিওর সংক্ষিপ্ত বিবরণ' : 'Short video description'} rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+
+              <button
+                type="button"
+                disabled={videoCount >= MAX_VIDEOS || !videoTitle.trim() || !videoUrl.trim()}
+                onClick={() => {
+                  try {
+                    const url = new URL(videoUrl.trim());
+                    if (url.protocol !== 'https:') throw new Error('Please use an HTTPS video URL.');
+                    if (videoThumbnailUrl.trim()) {
+                      const thumbnail = new URL(videoThumbnailUrl.trim());
+                      if (thumbnail.protocol !== 'https:') throw new Error('Thumbnail URL must use HTTPS.');
+                    }
+                    addVideo({
+                      title_en: videoTitle.trim(),
+                      title_bn: videoTitle.trim(),
+                      description_en: videoDescription.trim() || videoTitle.trim(),
+                      description_bn: videoDescription.trim() || videoTitle.trim(),
+                      videoUrl: videoUrl.trim(),
+                      thumbnailUrl: videoThumbnailUrl.trim() || undefined,
+                      category: videoCategory,
+                      pujaYear: settings.currentYear,
+                      featured: videoFeatured,
+                    });
+                    setVideoTitle('');
+                    setVideoDescription('');
+                    setVideoUrl('');
+                    setVideoThumbnailUrl('');
+                    setVideoFeatured(false);
+                    setVideoUploadNotice(isBn ? 'ভিডিও যোগ হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Video added. Click Publish Changes to make it live.');
+                  } catch (error) {
+                    setVideoUploadNotice(error instanceof Error ? error.message : 'Could not add video.');
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isBn ? 'ভিডিও যোগ করুন' : 'Add Video'}
+              </button>
+
+              {videoUploadNotice && <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-[11px] text-emerald-700 dark:text-emerald-300">{videoUploadNotice}</div>}
+              <p className="text-[11px] text-neutral-500">
+                {isBn
+                  ? 'প্রস্তাবিত: YouTube ভিডিও লিঙ্ক। সরাসরি বড় MP4 GitHub-এ আপলোড না করাই ভালো।'
+                  : 'Recommended: YouTube video links. Avoid uploading large MP4 binaries into GitHub.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {videos.map((video) => (
+                <div key={video.id} className="overflow-hidden rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/30">
+                  <div className="aspect-video bg-neutral-950 relative">
+                    {video.thumbnailUrl ? <img src={video.thumbnailUrl} alt={video.title_en} className="w-full h-full object-cover" loading="lazy" decoding="async" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center"><Film className="w-10 h-10 text-[#E5C158]/70" /></div>}
+                    <span className="absolute top-2 left-2 rounded-lg bg-black/70 px-2 py-1 text-[10px] text-[#FFD700]">{video.category}</span>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF] line-clamp-2">{video.title_en}</p>
+                    <p className="text-[10px] text-neutral-400 line-clamp-1">{video.videoUrl}</p>
+                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                      <button onClick={() => toggleFeatureVideo(video.id)} className={`text-[10px] font-semibold px-2 py-1 rounded ${video.featured ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'}`}>
+                        {video.featured ? 'Featured' : 'Make Featured'}
+                      </button>
+                      <button onClick={() => deleteVideo(video.id)} className="p-1 text-rose-500 hover:text-rose-700" title={isBn ? 'ভিডিও সরান' : 'Remove video'}>
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 9: HISTORY ================= */}
         {activeTab === 'history' && (
           <div className="space-y-8 animate-in fade-in duration-200">
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
