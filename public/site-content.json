@@ -1,5 +1,5 @@
 {
-  "INITIAL_SETTINGS": {
+  "settings": {
     "templeName_en": "Pinrra Durga Mandir",
     "templeName_bn": "পিন্দ্রা দুর্গা মন্দির",
     "committeeName_en": "MAHAMAYA Durga Puja Committee",
@@ -38,7 +38,7 @@
     "visitIntro_en": "You and your family are cordially invited to seek Mother Durga’s blessings during the festival.",
     "visitIntro_bn": "পূজার দিনগুলিতে মায়ের পুণ্য দর্শনে আপনি সপরিবারে আমন্ত্রিত।"
   },
-  "INITIAL_PUJA_YEARS": [
+  "pujaYears": [
     {
       "year": 2026,
       "shasthiDate": "2026-10-16",
@@ -205,7 +205,7 @@
       ]
     }
   ],
-  "INITIAL_EVENTS": [
+  "events": [
     {
       "id": "evt-1",
       "year": 2026,
@@ -281,7 +281,7 @@
       "image": "/src/assets/images/sindoor_khela_1791376410172.jpg"
     }
   ],
-  "INITIAL_ANNOUNCEMENTS": [
+  "announcements": [
     {
       "id": "ann-1",
       "title_en": "Pinrra Durga Mandir Celebrates 118 Glorious Years in 2026",
@@ -314,7 +314,7 @@
       "active": true
     }
   ],
-  "INITIAL_GALLERY": [
+  "gallery": [
     {
       "id": "gal-1",
       "imageUrl": "/real_maa_durga.jpg",
@@ -381,7 +381,7 @@
       "featured": true
     }
   ],
-  "INITIAL_HISTORY_MILESTONES": [
+  "historyMilestones": [
     {
       "id": "hist-1",
       "year": "1908 (আনুমানিক প্রারম্ভ)",
@@ -409,5 +409,5 @@
       "image": "/real_maa_durga.jpg"
     }
   ],
-  "INITIAL_CULTURAL_PROGRAMS": []
+  "culturalPrograms": []
 }
