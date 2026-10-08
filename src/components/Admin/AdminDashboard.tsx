@@ -1215,22 +1215,22 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input value={videoTitleEn} onChange={(e) => setVideoTitleEn(e.target.value)} placeholder="Video title (English)" disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
-                <input value={videoTitleBn} onChange={(e) => setVideoTitleBn(e.target.value)} placeholder="ভিডিও শিরোনাম (বাংলা)" disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
-                <select value={videoCategory} onChange={(e) => setVideoCategory(e.target.value as VideoCategory)} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50">
+                <input value={videoTitleEn} onChange={(e) => setVideoTitleEn(e.target.value)} placeholder="Video title (English)" disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoTitleBn} onChange={(e) => setVideoTitleBn(e.target.value)} placeholder="ভিডিও শিরোনাম (বাংলা)" disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <select value={videoCategory} onChange={(e) => setVideoCategory(e.target.value as VideoCategory)} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50">
                   {(['Durga Puja','Temple','Ritual','Community','Cultural','Other'] as VideoCategory[]).map((item) => <option key={item}>{item}</option>)}
                 </select>
-                <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." disabled={videoCount >= MAX_VIDEOS} className="md:col-span-2 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
-                <input value={videoThumbnailUrl} onChange={(e) => setVideoThumbnailUrl(e.target.value)} placeholder={isBn ? 'ঐচ্ছিক thumbnail URL (HTTPS)' : 'Optional thumbnail URL (HTTPS)'} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="md:col-span-2 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoThumbnailUrl} onChange={(e) => setVideoThumbnailUrl(e.target.value)} placeholder={isBn ? 'ঐচ্ছিক thumbnail URL (HTTPS)' : 'Optional thumbnail URL (HTTPS)'} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
                 <label className="flex items-center gap-2 rounded-xl border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-xs">
-                  <input type="checkbox" checked={videoFeatured} onChange={(e) => setVideoFeatured(e.target.checked)} disabled={videoCount >= MAX_VIDEOS} className="w-4 h-4" />
+                  <input type="checkbox" checked={videoFeatured} onChange={(e) => setVideoFeatured(e.target.checked)} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="w-4 h-4" />
                   <span>{isBn ? 'Featured ভিডিও হিসেবে দেখান' : 'Mark as Featured video'}</span>
                 </label>
               </div>
 
-              <textarea value={videoDescriptionEn} onChange={(e) => setVideoDescriptionEn(e.target.value)} placeholder="Short description (English)" rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+              <textarea value={videoDescriptionEn} onChange={(e) => setVideoDescriptionEn(e.target.value)} placeholder="Short description (English)" rows={2} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
 
-              <textarea value={videoDescriptionBn} onChange={(e) => setVideoDescriptionBn(e.target.value)} placeholder="ভিডিওর সংক্ষিপ্ত বিবরণ (বাংলা)" rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+              <textarea value={videoDescriptionBn} onChange={(e) => setVideoDescriptionBn(e.target.value)} placeholder="ভিডিওর সংক্ষিপ্ত বিবরণ (বাংলা)" rows={2} disabled={videoCount >= MAX_VIDEOS && !editingVideoId} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
 
               <button
                 type="button"
@@ -1267,7 +1267,7 @@ export const AdminDashboard: React.FC = () => {
                     setVideoThumbnailUrl('');
                     setVideoFeatured(false);
                     setEditingVideoId(null);
-                    setVideoUploadNotice(isBn ? 'ভিডিও যোগ হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Video added. Click Publish Changes to make it live.');
+                    setVideoUploadNotice(editingVideoId ? (isBn ? 'ভিডিও আপডেট হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Video updated. Click Publish Changes to make it live.') : (isBn ? 'ভিডিও যোগ হয়েছে। Publish Changes চাপলে এটি লাইভ হবে।' : 'Video added. Click Publish Changes to make it live.'));
                   } catch (error) {
                     setVideoUploadNotice(error instanceof Error ? error.message : 'Could not add video.');
                   }
