@@ -7,7 +7,9 @@
     --font-serif-bn: 'Noto Serif Bengali', 'Noto Serif Bengali', 'Nirmala UI', 'Vrinda', 'Noto Sans Bengali', sans-serif;
     --font-display: 'Cinzel', serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
-    color-scheme: light;
+    color-scheme: dark;
+    background: #12080B;
+    color: #F5E9D0;
   }
 
   :root.dark, [data-theme="dark"] {
@@ -16,6 +18,8 @@
 
   body {
     font-family: var(--font-sans);
+    background: #12080B;
+    color: #F5E9D0;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
