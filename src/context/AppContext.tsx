@@ -75,15 +75,6 @@ function savePreference(key: string, value: string): void {
   try { window.localStorage.setItem(key, value); } catch { /* Preference storage is optional. */ }
 }
 
-async function parseResponse<T>(response: Response): Promise<T> {
-  const result: unknown = await response.json().catch(() => null);
-  if (!response.ok) {
-    const message = typeof result === 'object' && result !== null && 'error' in result && typeof result.error === 'string'
-      ? result.error : 'The request could not be completed.';
-    throw new Error(message);
-  }
-  return result as T;
-}
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => preference('pinrra_lang') === 'en' ? 'en' : 'bn');
@@ -121,40 +112,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCurrentUser(data.currentUser);
   };
 
-  const refreshData = async (): Promise<ServerSnapshot> => {
-    const response = await fetch('/api/data', { credentials: 'same-origin', headers: { Accept: 'application/json' } });
-    const data = await parseResponse<ServerSnapshot>(response);
-    applySnapshot(data);
-    return data;
-  };
-
-  useEffect(() => {
-    void refreshData().catch((error: unknown) => {
-      setApiError(error instanceof Error ? error.message : 'Shared site data is temporarily unavailable.');
-    });
-  }, []);
-
-  const mutate = async (action: string, payload: Record<string, unknown> = {}) => {
-    setApiError(null);
-    try {
-      const response = await fetch('/api/admin', {
-        method: 'POST', credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ action, payload }),
-      });
-      const result = await parseResponse<{ data: ServerSnapshot }>(response);
-      applySnapshot(result.data);
-    } catch (error) {
-      setApiError(error instanceof Error ? error.message : 'The requested change could not be saved.');
-    }
-  };
+  const clearApiError = () => setApiError(null);
 
   const setLanguage = (value: Language) => {
-    setLanguageState(value); savePreference('pinrra_lang', value); document.documentElement.lang = value;
+    setLanguageState(value);
+    savePreference('pinrra_lang', value);
+    document.documentElement.lang = value;
   };
+
   const setHasChosenLanguage = (value: boolean) => {
-    setHasChosenLanguageState(value); savePreference('pinrra_lang_chosen', value ? 'true' : 'false');
+    setHasChosenLanguageState(value);
+    savePreference('pinrra_lang_chosen', value ? 'true' : 'false');
   };
+
   const applyThemeToDOM = (value: 'light' | 'dark') => {
     const root = document.documentElement;
     root.classList.toggle('dark', value === 'dark');
@@ -164,87 +134,299 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     document.body.classList.toggle('dark', value === 'dark');
     document.body.classList.toggle('light', value === 'light');
   };
+
   const setTheme = (value: 'light' | 'dark') => {
-    setThemeState(value); savePreference('pinrra_theme', value); applyThemeToDOM(value);
+    setThemeState(value);
+    savePreference('pinrra_theme', value);
+    applyThemeToDOM(value);
   };
+
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
   useEffect(() => applyThemeToDOM(theme), [theme]);
 
   const toggleAudio = () => setIsAudioPlaying(devotionalAudio.toggle());
 
-  const authRequest = async (action: string, values: Record<string, unknown>) => {
-    const response = await fetch('/api/auth', {
-      method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ action, ...values }),
-    });
-    return parseResponse<{ user: User }>(response);
-  };
-  const login = async (email: string, password: string) => {
-    const result = await authRequest('login', { email, password });
-    await refreshData(); return result.user;
-  };
-  const logout = async () => {
-    try {
-      await fetch('/api/auth', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) });
-    } finally {
-      setCurrentUser(null); setActiveView('home');
-      void refreshData().catch(() => undefined);
-    }
+  /*
+   * Static/no-database mode:
+   * Public content is loaded from initialData.ts.
+   * Admin edits are kept locally in the current browser session.
+   * No API, D1, R2 or paid service is required.
+   */
+
+  const login = async (_email: string, _password: string): Promise<User> => {
+    throw new Error('Admin login requires the secure production admin system.');
   };
 
-  const currentPujaYear = pujaYears.find((year) => year.year === settings.currentYear) || pujaYears[0] || INITIAL_PUJA_YEARS[0];
-  const updateSettings = (value: Partial<SiteSettings>) => void mutate('settings-update', value as Record<string, unknown>);
+  const logout = async () => {
+    setCurrentUser(null);
+    setActiveViewState('home');
+  };
+
+  const currentPujaYear =
+    pujaYears.find((year) => year.year === settings.currentYear) ||
+    pujaYears[0] ||
+    INITIAL_PUJA_YEARS[0];
+
+  const updateSettings = (value: Partial<SiteSettings>) => {
+    setSettings((previous) => ({ ...previous, ...value }));
+    setApiError(null);
+  };
+
   const setRealMaaDurgaPhoto = async (file: File) => {
+    const imageUrl = URL.createObjectURL(file);
+    setSettings((previous) => ({
+      ...previous,
+      realMaaDurgaPhotoUrl: imageUrl,
+    }));
     setApiError(null);
-    try {
-      const form = new FormData(); form.set('image', file);
-      const response = await fetch('/api/deity-image', { method: 'POST', credentials: 'same-origin', body: form });
-      const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data);
-    } catch (error) {
-      setApiError(error instanceof Error ? error.message : 'The temple photo could not be saved.');
-      throw error;
-    }
   };
-  const updatePujaYear = (data: PujaYear) => void mutate('puja-update', { item: data });
-  const addPujaYear = (data: PujaYear) => void mutate('puja-add', { item: data });
-  const addEvent = (item: Omit<EventItem, 'id'>) => void mutate('event-add', { item: { ...item, id: crypto.randomUUID() } });
-  const updateEvent = (id: string, item: Partial<EventItem>) => void mutate('event-update', { item: { ...item, id } });
-  const deleteEvent = (id: string) => void mutate('event-delete', { id });
-  const addAnnouncement = (item: Omit<Announcement, 'id'>) => void mutate('announcement-add', { item: { ...item, id: crypto.randomUUID() } });
-  const updateAnnouncement = (id: string, item: Partial<Announcement>) => void mutate('announcement-update', { item: { ...item, id } });
-  const deleteAnnouncement = (id: string) => void mutate('announcement-delete', { id });
-  const addGalleryPhoto = async (photo: Omit<GalleryPhoto, 'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' | 'uploaderName' | 'uploaderEmail' | 'uploaderId'>, file: File) => {
+
+  const updatePujaYear = (data: PujaYear) => {
+    setPujaYears((previous) =>
+      previous.map((item) => item.year === data.year ? data : item)
+    );
     setApiError(null);
-    const form = new FormData();
-    form.set('image', file); form.set('title', photo.title_en); form.set('description', photo.description_en);
-    form.set('category', photo.category); form.set('pujaYear', String(photo.pujaYear));
-    const response = await fetch('/api/gallery', { method: 'POST', credentials: 'same-origin', body: form });
-    const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data);
   };
+
+  const addPujaYear = (data: PujaYear) => {
+    setPujaYears((previous) => [...previous, data]);
+    setApiError(null);
+  };
+
+  const addEvent = (item: Omit<EventItem, 'id'>) => {
+    setEvents((previous) => [...previous, { ...item, id: crypto.randomUUID() }]);
+    setApiError(null);
+  };
+
+  const updateEvent = (id: string, item: Partial<EventItem>) => {
+    setEvents((previous) =>
+      previous.map((event) => event.id === id ? { ...event, ...item, id } : event)
+    );
+    setApiError(null);
+  };
+
+  const deleteEvent = (id: string) => {
+    setEvents((previous) => previous.filter((event) => event.id !== id));
+    setApiError(null);
+  };
+
+  const addAnnouncement = (item: Omit<Announcement, 'id'>) => {
+    setAnnouncements((previous) => [
+      ...previous,
+      { ...item, id: crypto.randomUUID() }
+    ]);
+    setApiError(null);
+  };
+
+  const updateAnnouncement = (id: string, item: Partial<Announcement>) => {
+    setAnnouncements((previous) =>
+      previous.map((announcement) =>
+        announcement.id === id ? { ...announcement, ...item, id } : announcement
+      )
+    );
+    setApiError(null);
+  };
+
+  const deleteAnnouncement = (id: string) => {
+    setAnnouncements((previous) =>
+      previous.filter((announcement) => announcement.id !== id)
+    );
+    setApiError(null);
+  };
+
+  const addGalleryPhoto = async (
+    photo: Omit<
+      GalleryPhoto,
+      'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' |
+      'uploaderName' | 'uploaderEmail' | 'uploaderId'
+    >,
+    file: File
+  ) => {
+    const imageUrl = URL.createObjectURL(file);
+    const newPhoto: GalleryPhoto = {
+      ...photo,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      imageUrl,
+      thumbnailUrl: imageUrl,
+      uploaderName: 'Admin',
+      uploaderEmail: '',
+      uploaderId: 'local-admin',
+    };
+    setGallery((previous) => [...previous, newPhoto]);
+    setApiError(null);
+  };
+
   const deleteGalleryPhoto = (id: string) => {
-    void mutate('gallery-delete', { id });
+    setGallery((previous) => previous.filter((photo) => photo.id !== id));
+    setApiError(null);
   };
+
   const toggleFeaturePhoto = (id: string) => {
-    const photo = gallery.find((item) => item.id === id);
-    if (photo) void mutate('gallery-feature', { id, featured: !photo.featured });
+    setGallery((previous) =>
+      previous.map((photo) =>
+        photo.id === id ? { ...photo, featured: !photo.featured } : photo
+      )
+    );
+    setApiError(null);
   };
-  const addHistoryMilestone = (item: Omit<HistoryMilestone, 'id'>) => void mutate('history-add', { item: { ...item, id: crypto.randomUUID() } });
-  const updateHistoryMilestone = (id: string, item: Partial<HistoryMilestone>) => void mutate('history-update', { item: { ...item, id } });
-  const deleteHistoryMilestone = (id: string) => void mutate('history-delete', { id });
-  const addCulturalProgram = (item: Omit<CulturalProgramItem, 'id'>) => void mutate('cultural-add', { item: { ...item, id: crypto.randomUUID() } });
-  const updateCulturalProgram = (id: string, item: Partial<CulturalProgramItem>) => void mutate('cultural-update', { item: { ...item, id } });
-  const deleteCulturalProgram = (id: string) => void mutate('cultural-delete', { id });
-  const exportDataJSON = () => JSON.stringify({ version: '2.0', exportedAt: new Date().toISOString(), settings, pujaYears, events: events.map((item) => ({ ...item, image: canonicalAssetUrl(item.image) })), announcements, gallery: gallery.map((item) => ({ ...item, imageUrl: canonicalAssetUrl(item.imageUrl) || item.imageUrl, thumbnailUrl: canonicalAssetUrl(item.thumbnailUrl) })), historyMilestones: historyMilestones.map((item) => ({ ...item, image: canonicalAssetUrl(item.image) })), culturalPrograms }, null, 2);
+
+  const addHistoryMilestone = (item: Omit<HistoryMilestone, 'id'>) => {
+    setHistoryMilestones((previous) => [
+      ...previous,
+      { ...item, id: crypto.randomUUID() }
+    ]);
+    setApiError(null);
+  };
+
+  const updateHistoryMilestone = (id: string, item: Partial<HistoryMilestone>) => {
+    setHistoryMilestones((previous) =>
+      previous.map((milestone) =>
+        milestone.id === id ? { ...milestone, ...item, id } : milestone
+      )
+    );
+    setApiError(null);
+  };
+
+  const deleteHistoryMilestone = (id: string) => {
+    setHistoryMilestones((previous) =>
+      previous.filter((milestone) => milestone.id !== id)
+    );
+    setApiError(null);
+  };
+
+  const addCulturalProgram = (item: Omit<CulturalProgramItem, 'id'>) => {
+    setCulturalPrograms((previous) => [
+      ...previous,
+      { ...item, id: crypto.randomUUID() }
+    ]);
+    setApiError(null);
+  };
+
+  const updateCulturalProgram = (id: string, item: Partial<CulturalProgramItem>) => {
+    setCulturalPrograms((previous) =>
+      previous.map((program) =>
+        program.id === id ? { ...program, ...item, id } : program
+      )
+    );
+    setApiError(null);
+  };
+
+  const deleteCulturalProgram = (id: string) => {
+    setCulturalPrograms((previous) =>
+      previous.filter((program) => program.id !== id)
+    );
+    setApiError(null);
+  };
+
+  const exportDataJSON = () => JSON.stringify({
+    version: '2.0',
+    exportedAt: new Date().toISOString(),
+    settings,
+    pujaYears,
+    events: events.map((item) => ({
+      ...item,
+      image: canonicalAssetUrl(item.image)
+    })),
+    announcements,
+    gallery: gallery.map((item) => ({
+      ...item,
+      imageUrl: canonicalAssetUrl(item.imageUrl) || item.imageUrl,
+      thumbnailUrl: canonicalAssetUrl(item.thumbnailUrl)
+    })),
+    historyMilestones: historyMilestones.map((item) => ({
+      ...item,
+      image: canonicalAssetUrl(item.image)
+    })),
+    culturalPrograms
+  }, null, 2);
+
   const importDataJSON = async (jsonString: string) => {
     try {
       const backup: unknown = JSON.parse(jsonString);
-      if (typeof backup !== 'object' || backup === null || Array.isArray(backup)) return false;
-      const response = await fetch('/api/admin', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'import-content', payload: { data: backup } }) });
-      const result = await parseResponse<{ data: ServerSnapshot }>(response); applySnapshot(result.data); setApiError(null); return true;
-    } catch (error) { setApiError(error instanceof Error ? error.message : 'Backup restore failed.'); return false; }
+
+      if (
+        typeof backup !== 'object' ||
+        backup === null ||
+        Array.isArray(backup)
+      ) {
+        return false;
+      }
+
+      const data = backup as Partial<ServerSnapshot>;
+
+      if (data.settings) setSettings(data.settings);
+      if (Array.isArray(data.pujaYears)) setPujaYears(data.pujaYears);
+      if (Array.isArray(data.events)) {
+        setEvents(
+          data.events.map((item) => ({
+            ...item,
+            image: resolveAssetUrl(item.image)
+          }))
+        );
+      }
+      if (Array.isArray(data.announcements)) {
+        setAnnouncements(data.announcements);
+      }
+      if (Array.isArray(data.gallery)) {
+        setGallery(
+          data.gallery.map((item) => ({
+            ...item,
+            imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl,
+            thumbnailUrl: resolveAssetUrl(item.thumbnailUrl)
+          }))
+        );
+      }
+      if (Array.isArray(data.historyMilestones)) {
+        setHistoryMilestones(
+          data.historyMilestones.map((item) => ({
+            ...item,
+            image: resolveAssetUrl(item.image)
+          }))
+        );
+      }
+      if (Array.isArray(data.culturalPrograms)) {
+        setCulturalPrograms(data.culturalPrograms);
+      }
+
+      setApiError(null);
+      return true;
+    } catch (error) {
+      setApiError(
+        error instanceof Error ? error.message : 'Backup restore failed.'
+      );
+      return false;
+    }
   };
-  const resetToDefault = () => void mutate('reset-content');
+
+  const resetToDefault = () => {
+    setSettings(INITIAL_SETTINGS);
+    setPujaYears(INITIAL_PUJA_YEARS);
+    setEvents(
+      INITIAL_EVENTS.map((item) => ({
+        ...item,
+        image: resolveAssetUrl(item.image)
+      }))
+    );
+    setAnnouncements(INITIAL_ANNOUNCEMENTS);
+    setGallery(
+      INITIAL_GALLERY.map((item) => ({
+        ...item,
+        imageUrl: resolveAssetUrl(item.imageUrl) || item.imageUrl,
+        thumbnailUrl: resolveAssetUrl(item.thumbnailUrl)
+      }))
+    );
+    setHistoryMilestones(
+      INITIAL_HISTORY_MILESTONES.map((item) => ({
+        ...item,
+        image: resolveAssetUrl(item.image)
+      }))
+    );
+    setCulturalPrograms(INITIAL_CULTURAL_PROGRAMS);
+    setCurrentUser(null);
+    setApiError(null);
+  };
 
   const setActiveView = (view: string) => {
     setActiveViewState(view);
@@ -276,7 +458,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       culturalPrograms, addCulturalProgram, updateCulturalProgram, deleteCulturalProgram,
       exportDataJSON, importDataJSON, resetToDefault, activeView, setActiveView,
       downloadModalOpen, setDownloadModalOpen,
-      searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError: () => setApiError(null),
+      searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError,
     }}>
       {children}
     </AppContext.Provider>

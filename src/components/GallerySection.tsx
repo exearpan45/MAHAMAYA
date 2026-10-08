@@ -170,6 +170,8 @@ export const GallerySection: React.FC = () => {
                   alt={isBn ? activePhoto.title_bn : activePhoto.title_en}
                   referrerPolicy="no-referrer"
                   className="max-h-[72vh] max-w-full object-contain"
+                loading="lazy"
+                decoding="async"
                 />
               </div>
 
@@ -185,7 +187,7 @@ export const GallerySection: React.FC = () => {
                   {isBn ? activePhoto.description_bn : activePhoto.description_en}
                 </p>
                 <p className="text-[11px] text-neutral-400">
-                  {isBn ? 'সংগ্রাহক:' : 'Submitted by:'} {activePhoto.uploaderName}
+                  {isBn ? 'সংগ্রহ:' : 'Gallery'}
                 </p>
               </div>
             </div>

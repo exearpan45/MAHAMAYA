@@ -4,7 +4,7 @@
  * MAHAMAYA Durga Puja Committee • Brahman Para
  */
 
-import React from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { LanguageGate } from './components/LanguageGate';
 import { Header } from './components/Header';
@@ -26,7 +26,7 @@ import { Footer } from './components/Footer';
 import { SearchModal } from './components/SearchModal';
 import { DownloadCalendarModal } from './components/DownloadCalendarModal';
 import { PolicyModals } from './components/PolicyModals';
-import { AdminDashboard } from './components/Admin/AdminDashboard';
+const AdminDashboard = lazy(() => import('./components/Admin/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
 
 /**
  * Authentic Maa Durga Website Background
@@ -55,8 +55,71 @@ const MaaDurgaWebsiteBackground: React.FC = () => {
   );
 };
 
+
+const ReturnToTop: React.FC = () => {
+  const [visible, setVisible] = useState(false);
+  const { language } = useApp();
+  const isBn = language === 'bn';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 500);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label={isBn ? 'উপরে ফিরে যান' : 'Return to top'}
+      title={isBn ? 'উপরে ফিরে যান' : 'Return to top'}
+      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full border border-[#D4AF37]/40 bg-[#380B13]/95 px-3.5 py-2.5 text-xs font-semibold text-[#E5C158] shadow-xl backdrop-blur-md transition-all duration-200 hover:-translate-y-1 hover:bg-[#4A0E17] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/60 sm:bottom-6 sm:right-6"
+    >
+      <span aria-hidden="true">↑</span>
+      <span>{isBn ? 'উপরে' : 'Top'}</span>
+    </button>
+  );
+};
+
+const startOpeningAnimation = () => {
+  const loader = document.getElementById('site-opening');
+  if (!loader) return;
+
+  const finish = () => {
+    window.setTimeout(() => {
+      loader.classList.add('opening-exit');
+
+      window.setTimeout(() => {
+        loader.remove();
+      }, 450);
+    }, 500);
+  };
+
+  if (document.readyState === 'complete') {
+    finish();
+  } else {
+    window.addEventListener('load', finish, { once: true });
+  }
+};
+
+startOpeningAnimation();
+
 const MainLayout: React.FC = () => {
-  const { hasChosenLanguage, activeView, apiError } = useApp();
+  const { hasChosenLanguage, activeView, apiError, language } = useApp();
+
+  useEffect(() => {
+    const lang = language === 'bn' ? 'bn' : 'en';
+    document.documentElement.lang = lang;
+    document.documentElement.setAttribute('translate', 'no');
+    document.documentElement.classList.add('notranslate');
+  }, [language]);
 
   // 1. First-time Language Gate Screen
   if (!hasChosenLanguage) {
@@ -71,7 +134,17 @@ const MainLayout: React.FC = () => {
         <div className="relative z-10">
           {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
           <Header />
-          <AdminDashboard />
+          <Suspense
+            fallback={
+              <div className="flex min-h-[60vh] items-center justify-center px-4">
+                <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#12080B]/80 px-5 py-4 text-sm text-[#E5C158] shadow-xl backdrop-blur-md">
+                  Loading admin panel...
+                </div>
+              </div>
+            }
+          >
+            <AdminDashboard />
+          </Suspense>
           <Footer />
           <PolicyModals />
         </div>
@@ -115,6 +188,7 @@ const MainLayout: React.FC = () => {
           <VisitSection />
         </main>
         <Footer />
+        <ReturnToTop />
 
         {/* Global Modals */}
         <SearchModal />

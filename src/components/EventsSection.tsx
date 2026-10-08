@@ -96,6 +96,8 @@ export const EventsSection: React.FC = () => {
                         alt={isBn ? evt.title_bn : evt.title_en}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                loading="lazy"
+                decoding="async"
                       />
                       <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-[10px] font-semibold tracking-wider uppercase bg-[#180A0E]/80 backdrop-blur-md text-[#FFD700] border border-[#D4AF37]/30">
                         {evt.status}

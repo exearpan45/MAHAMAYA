@@ -1,7 +1,9 @@
 <!doctype html>
-<html lang="bn" class="scroll-smooth">
+<html lang="bn" class="scroll-smooth notranslate" translate="no">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pinrra Durga Mandir | পিন্দ্রা দুর্গা মন্দির — MAHAMAYA Durga Puja Committee</title>
     <meta name="description" content="Official website of Pinrra Durga Mandir and MAHAMAYA Durga Puja Committee. Celebrating 118 Years of historic community Durga Puja in 2026. Puja schedule, history, events, gallery, and temple location." />
@@ -25,26 +27,6 @@
     <meta name="twitter:description" content="Celebrating 118 Years of Durga Puja. Official portal of MAHAMAYA Durga Puja Committee." />
     <meta name="twitter:image" content="/WhatsApp Image 2026-10-07 at 5.18.03 PM.jpeg" />
 
-    <!-- Theme Initializer -->
-    <script>
-      (function() {
-        try {
-          var t = localStorage.getItem('pinrra_theme') || 'light';
-          var root = document.documentElement;
-          if (t === 'dark') {
-            root.classList.add('dark');
-            root.classList.remove('light');
-            root.setAttribute('data-theme', 'dark');
-            root.style.colorScheme = 'dark';
-          } else {
-            root.classList.remove('dark');
-            root.classList.add('light');
-            root.setAttribute('data-theme', 'light');
-            root.style.colorScheme = 'light';
-          }
-        } catch (e) {}
-      })();
-    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Noto+Serif+Bengali:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -92,7 +74,214 @@
     }
     </script>
   </head>
-  <body class="antialiased selection:bg-amber-600 selection:text-white">
+  <body style="margin:0;background:#12080B;color:#F5E9D0;" class="antialiased selection:bg-amber-600 selection:text-white">
+    <div id="site-opening" aria-hidden="true">
+      <div class="opening-content">
+        <div class="opening-symbol">ॐ</div>
+
+        <div class="opening-title">
+          <span>পিন্দ্রা দুর্গা মন্দির</span>
+          <small>PINRRA DURGA MANDIR</small>
+        </div>
+
+        <div class="opening-divider">
+          <span></span>
+          <i></i>
+          <span></span>
+        </div>
+
+        <div class="opening-year">118 YEARS • 2026</div>
+      </div>
+    </div>
+
+    <style>
+      /*
+       * LOW-END FIRST-PAINT PROTECTION
+       *
+       * The background never animates.
+       * Only small composited elements move.
+       */
+
+      html,
+      body {
+        background: #12080B !important;
+        color-scheme: dark !important;
+      }
+
+      body {
+        margin: 0;
+        color: #F5E9D0;
+      }
+
+      #site-opening {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: #12080B;
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateZ(0);
+      }
+
+      .opening-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 24px;
+
+        opacity: 0;
+        transform: translate3d(0, 12px, 0);
+
+        animation:
+          openingEnter 650ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+
+        will-change: opacity, transform;
+      }
+
+      .opening-symbol {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+
+        border: 1px solid rgba(229, 193, 88, 0.38);
+        border-radius: 50%;
+
+        color: #E5C158;
+        font-family: "Noto Serif Bengali", serif;
+        font-size: 36px;
+        line-height: 1;
+
+        box-shadow:
+          0 0 0 7px rgba(229, 193, 88, 0.025),
+          0 0 28px rgba(229, 193, 88, 0.08);
+
+        animation: openingSymbol 1.8s ease-in-out infinite;
+        will-change: transform;
+      }
+
+      .opening-title {
+        margin-top: 20px;
+        color: #F5E9D0;
+        font-family: "Noto Serif Bengali", serif;
+        font-size: clamp(20px, 5vw, 30px);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .opening-title small {
+        display: block;
+        margin-top: 7px;
+        color: rgba(229, 193, 88, 0.72);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+      }
+
+      .opening-divider {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        width: 145px;
+        margin-top: 18px;
+      }
+
+      .opening-divider span {
+        flex: 1;
+        height: 1px;
+        background: rgba(229, 193, 88, 0.5);
+      }
+
+      .opening-divider i {
+        width: 5px;
+        height: 5px;
+        flex: 0 0 5px;
+        border-radius: 50%;
+        background: #E5C158;
+      }
+
+      .opening-year {
+        margin-top: 14px;
+        color: rgba(245, 233, 208, 0.48);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+      }
+
+      /*
+       * EXIT:
+       * No blur.
+       * No gradient animation.
+       * No fullscreen transform.
+       * Only opacity.
+       */
+      #site-opening.opening-exit {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      #site-opening.opening-exit .opening-content {
+        animation: openingExit 260ms cubic-bezier(0.4, 0, 1, 1) forwards;
+      }
+
+      @keyframes openingEnter {
+        0% {
+          opacity: 0;
+          transform: translate3d(0, 12px, 0);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      @keyframes openingExit {
+        0% {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translate3d(0, -3px, 0);
+        }
+      }
+
+      @keyframes openingSymbol {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+          transform: translate3d(0, -2px, 0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .opening-content,
+        .opening-symbol {
+          animation: none !important;
+          opacity: 1;
+          transform: none;
+        }
+
+        #site-opening.opening-exit {
+          transition: opacity 200ms linear;
+        }
+      }
+    </style>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

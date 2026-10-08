@@ -66,6 +66,8 @@ export const HistorySection: React.FC = () => {
                       alt={isBn ? m.title_bn : m.title_en}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                     />
                   </div>
                 )}

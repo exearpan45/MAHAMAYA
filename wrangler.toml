@@ -1,14 +1,3 @@
 name = "mahamaya"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-10-07"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "mahamaya"
-# Replace with the database ID created in your Cloudflare account.
-database_id = "00000000-0000-0000-0000-000000000001"
-migrations_dir = "migrations"
-
-[[r2_buckets]]
-binding = "GALLERY_BUCKET"
-bucket_name = "mahamaya-gallery"

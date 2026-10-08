@@ -99,7 +99,7 @@ export const PolicyModals: React.FC = () => {
           </div>
         )}
 
-        {/* Modal: Community Upload Policy */}
+        {/* Modal: Gallery Policy */}
 
 
         {/* Footer Close */}

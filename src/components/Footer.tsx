@@ -170,7 +170,7 @@ export const Footer: React.FC = () => {
                 <button
                   className="hover:text-[#FFD700] transition cursor-pointer"
                 >
-                  {isBn ? 'কমিউনিটি আপলোড নীতি' : 'Community Upload Policy'}
+                  {isBn ? 'গ্যালারি নীতি' : 'Gallery Policy'}
                 </button>
               </li>
             </ul>

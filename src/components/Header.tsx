@@ -3,8 +3,6 @@ import { useApp } from '../context/AppContext';
 import {
   Volume2,
   VolumeX,
-  Sun,
-  Moon,
   Search,
   Menu,
   X,
@@ -21,8 +19,6 @@ export const Header: React.FC = () => {
   const {
     language,
     setLanguage,
-    theme,
-    toggleTheme,
     isAudioPlaying,
     toggleAudio,
     setSearchModalOpen,
@@ -88,7 +84,7 @@ export const Header: React.FC = () => {
           {/* Logo / Temple Brand */}
           <button
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-3 group text-left cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 group text-left cursor-pointer min-w-0 flex-1"
           >
             <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-[#D4AF37] via-[#9E1B32] to-[#E56717] shadow-md group-hover:scale-105 transition-transform duration-200 shrink-0">
               <div className="w-full h-full rounded-full bg-[#380B13] flex items-center justify-center border border-[#D4AF37]/50">
@@ -96,7 +92,7 @@ export const Header: React.FC = () => {
               </div>
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-lg sm:text-xl font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] leading-tight">
                   {isBn ? 'পিন্দ্রা দুর্গা মন্দির' : 'Pinrra Durga Mandir'}
@@ -132,12 +128,12 @@ export const Header: React.FC = () => {
           </nav>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-0.5 sm:gap-2 shrink-0">
             {/* Search Button */}
             <button
               onClick={() => setSearchModalOpen(true)}
               aria-label="Search website"
-              className="p-2 rounded-lg text-neutral-600 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158] hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+              className="hidden sm:inline-flex p-2 rounded-lg text-neutral-600 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158] hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               title={isBn ? 'অনুসন্ধান করুন' : 'Search Website'}
             >
               <Search className="w-4 h-4" />
@@ -147,7 +143,7 @@ export const Header: React.FC = () => {
             <button
               onClick={toggleAudio}
               aria-label={isAudioPlaying ? 'Turn music off' : 'Turn devotional music on'}
-              className={`p-2 rounded-lg transition-colors cursor-pointer relative ${
+              className={`hidden sm:inline-flex p-2 rounded-lg transition-colors cursor-pointer relative ${
                 isAudioPlaying
                   ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/15 dark:bg-[#E5C158]/15'
                   : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
@@ -170,16 +166,6 @@ export const Header: React.FC = () => {
               ) : (
                 <VolumeX className="w-4 h-4 opacity-70" />
               )}
-            </button>
-
-            {/* Light / Dark Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="p-2 rounded-lg text-neutral-600 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158] hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-              title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-[#E5C158]" /> : <Moon className="w-4 h-4 text-neutral-700" />}
             </button>
 
             {/* Language Switcher */}
@@ -221,6 +207,37 @@ export const Header: React.FC = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-[#FDFBF7] dark:bg-[#1A0C11] border-b border-[#D4AF37]/30 px-4 py-4 space-y-2 shadow-xl animate-in slide-in-from-top-2 duration-200">
+            <div className="grid grid-cols-2 gap-2 pb-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setSearchModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-2 p-2.5 rounded-lg text-xs font-semibold text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
+              >
+                <Search className="w-3.5 h-3.5" />
+                {isBn ? 'অনুসন্ধান' : 'Search'}
+              </button>
+
+              <button
+                onClick={toggleAudio}
+                className={`flex items-center justify-center gap-2 p-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  isAudioPlaying
+                    ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/15 dark:bg-[#E5C158]/15'
+                    : 'text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                }`}
+              >
+                {isAudioPlaying ? (
+                  <Volume2 className="w-3.5 h-3.5" />
+                ) : (
+                  <VolumeX className="w-3.5 h-3.5" />
+                )}
+                {isAudioPlaying
+                  ? (isBn ? 'সঙ্গীত বন্ধ' : 'Music Off')
+                  : (isBn ? 'সঙ্গীত চালু' : 'Music On')}
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-2 pb-2">
               {navItems.map((item) => {
                 const Icon = item.icon;

@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --font-serif-bn: 'Noto Serif Bengali', serif;
+    --font-serif-bn: 'Noto Serif Bengali', 'Noto Serif Bengali', 'Nirmala UI', 'Vrinda', 'Noto Sans Bengali', sans-serif;
     --font-display: 'Cinzel', serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
     color-scheme: light;
@@ -81,4 +81,13 @@
   .print-break-inside-avoid {
     break-inside: avoid;
   }
+}
+
+
+/* Bengali typography */
+:lang(bn),
+[lang="bn"],
+.bengali-text {
+  font-family: var(--font-serif-bn) !important;
+  font-feature-settings: "kern", "liga";
 }

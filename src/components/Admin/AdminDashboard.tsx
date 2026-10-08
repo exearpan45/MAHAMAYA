@@ -910,7 +910,7 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-xs text-neutral-500">
                 {isBn
                   ? 'ভক্তদের আপলোডকৃত ছবি পর্যালোচনা করুন, অনুপযুক্ত ছবি মুছুন বা হোমপেজে প্রদর্শনের জন্য Featured করুন।'
-                  : 'Review uploaded photos, feature them on the homepage, or delete inappropriate submissions.'}
+                  : 'Manage gallery photos, feature selected photos on the homepage, or remove photos.'}
               </p>
             </div>
 
@@ -926,6 +926,8 @@ export const AdminDashboard: React.FC = () => {
                       alt={photo.title_en}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                     />
                     <div className="absolute top-2 left-2 text-[10px] bg-black/70 text-white px-2 py-0.5 rounded">
                       {photo.category}
@@ -1123,6 +1125,8 @@ export const AdminDashboard: React.FC = () => {
                       alt="Real Idol"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                     />
                   </div>
                   <div className="space-y-1.5">
