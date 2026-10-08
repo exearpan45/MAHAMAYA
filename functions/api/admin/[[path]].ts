@@ -172,14 +172,20 @@ const publish = async (request: Request, env: Env) => {
   const repo = 'MAHAMAYA';
   const branch = 'main';
 
+  let stage = 'starting';
   try {
+    stage = 'checking GitHub repository access';
+    await githubRequest(env, '/repos/' + owner + '/' + repo);
+    stage = 'reading main branch';
     const ref = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/ref/heads/' + encodeURIComponent(branch));
     const baseCommitSha = ref.object.sha;
+    stage = 'reading current commit';
     const baseCommit = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/commits/' + baseCommitSha);
     const baseTreeSha = baseCommit.tree.sha;
 
     const blobs: Array<{ path: string; sha: string }> = [];
 
+    stage = 'uploading site content';
     const contentBlob = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/blobs', {
       method: 'POST',
       body: JSON.stringify({ content: toBase64(contentJson), encoding: 'base64' }),
@@ -187,6 +193,7 @@ const publish = async (request: Request, env: Env) => {
     blobs.push({ path: 'public/site-content.json', sha: contentBlob.sha });
 
     for (const asset of assetEntries) {
+      stage = 'uploading website assets';
       const blob = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/blobs', {
         method: 'POST',
         body: JSON.stringify({ content: asset.base64, encoding: 'base64' }),
@@ -194,6 +201,7 @@ const publish = async (request: Request, env: Env) => {
       blobs.push({ path: asset.path, sha: blob.sha });
     }
 
+    stage = 'creating Git tree';
     const tree = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/trees', {
       method: 'POST',
       body: JSON.stringify({
@@ -202,6 +210,7 @@ const publish = async (request: Request, env: Env) => {
       }),
     });
 
+    stage = 'creating Git commit';
     const commit = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/commits', {
       method: 'POST',
       body: JSON.stringify({
@@ -211,6 +220,7 @@ const publish = async (request: Request, env: Env) => {
       }),
     });
 
+    stage = 'updating main branch';
     await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/refs/heads/' + encodeURIComponent(branch), {
       method: 'PATCH',
       body: JSON.stringify({ sha: commit.sha, force: false }),
@@ -223,7 +233,7 @@ const publish = async (request: Request, env: Env) => {
     });
   } catch (error) {
     return response({
-      error: error instanceof Error ? error.message : 'Publishing failed.',
+      error: (error instanceof Error ? error.message : 'Publishing failed.') + ' (Stage: ' + stage + ')',
     }, 500);
   }
 };
