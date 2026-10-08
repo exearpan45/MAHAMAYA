@@ -70,6 +70,7 @@ export const AdminDashboard: React.FC = () => {
     importDataJSON,
     resetToDefault,
     logout,
+    publishContent,
   } = useApp();
 
   const isBn = language === 'bn';
@@ -117,6 +118,8 @@ export const AdminDashboard: React.FC = () => {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishNotice, setPublishNotice] = useState('');
 
   const handleAdminLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -133,6 +136,20 @@ export const AdminDashboard: React.FC = () => {
       );
     } finally {
       setIsLoggingIn(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    setPublishNotice('');
+    setIsPublishing(true);
+    try {
+      await publishContent();
+      setPublishNotice(isBn ? 'পরিবর্তনগুলি প্রকাশিত হয়েছে। Cloudflare এখন সাইটটি পুনর্নির্মাণ করবে।' : 'Changes published. Cloudflare Pages will rebuild the website automatically.');
+      window.setTimeout(() => setPublishNotice(''), 7000);
+    } catch (error) {
+      setPublishNotice(error instanceof Error ? error.message : 'Publishing failed.');
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -295,7 +312,21 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {publishNotice && (
+              <div className="max-w-xs rounded-xl border border-[#D4AF37]/30 bg-[#FFF8E8] dark:bg-[#2A160A] px-3 py-2 text-[11px] font-semibold text-[#7A4A00] dark:text-[#F6D98B]">
+                {publishNotice}
+              </div>
+            )}
+            <button
+              onClick={() => void handlePublish()}
+              disabled={isPublishing}
+              className="px-3.5 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-bold flex items-center gap-1.5 shadow-lg hover:bg-[#7F1528] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              title={isBn ? 'সকল পরিবর্তন প্রকাশ করুন' : 'Publish all changes'}
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>{isPublishing ? (isBn ? 'প্রকাশ হচ্ছে...' : 'Publishing...') : (isBn ? 'পরিবর্তন প্রকাশ' : 'Publish Changes')}</span>
+            </button>
             <button
               onClick={handleExport}
               className="px-3 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
