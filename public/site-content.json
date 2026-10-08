@@ -61,7 +61,8 @@
           "startTime": "06:30 AM",
           "endTime": "11:00 AM",
           "specialNotes_en": "Beginning of auspicious Durga Puja observances.",
-          "specialNotes_bn": "পবিত্র দুর্গাপূজার প্রারম্ভিক আচার অনুষ্ঠান।"
+          "specialNotes_bn": "পবিত্র দুর্গাপূজার প্রারম্ভিক আচার অনুষ্ঠান।",
+          "bhogTimings": "01:30-03:30 PM"
         },
         {
           "id": "2026-d2",
