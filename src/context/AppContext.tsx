@@ -55,6 +55,7 @@ interface AppContextType {
   addGalleryPhoto: (photo: Omit<GalleryPhoto, 'id' | 'createdAt' | 'imageUrl' | 'thumbnailUrl' | 'uploaderName' | 'uploaderEmail' | 'uploaderId'>, file: File) => Promise<void>;
   deleteGalleryPhoto: (id: string) => void; toggleFeaturePhoto: (id: string) => void;
   videos: VideoItem[]; addVideo: (item: Omit<VideoItem, 'id' | 'createdAt'>) => void;
+  updateVideo: (id: string, item: Partial<VideoItem>) => void;
   deleteVideo: (id: string) => void; toggleFeatureVideo: (id: string) => void;
   historyMilestones: HistoryMilestone[]; addHistoryMilestone: (item: Omit<HistoryMilestone, 'id'>) => void;
   updateHistoryMilestone: (id: string, item: Partial<HistoryMilestone>) => void; deleteHistoryMilestone: (id: string) => void;
@@ -415,6 +416,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
+  const updateVideo = (id: string, item: Partial<VideoItem>) => {
+    if (item.videoUrl !== undefined) {
+      try {
+        const parsed = new URL(item.videoUrl);
+        if (parsed.protocol !== 'https:') throw new Error('invalid');
+      } catch {
+        throw new Error('Please use a valid HTTPS video URL.');
+      }
+    }
+    if (item.thumbnailUrl) {
+      try {
+        const thumbnail = new URL(item.thumbnailUrl);
+        if (thumbnail.protocol !== 'https:') throw new Error('invalid');
+      } catch {
+        throw new Error('Thumbnail URL must use HTTPS.');
+      }
+    }
+    setVideos((previous) => previous.map((video) => video.id === id ? { ...video, ...item, id } : video));
+    setApiError(null);
+  };
+
   const deleteVideo = (id: string) => {
     setVideos((previous) => previous.filter((video) => video.id !== id));
     setApiError(null);
@@ -687,7 +709,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       gallery, addGalleryPhoto, deleteGalleryPhoto, toggleFeaturePhoto,
       historyMilestones, addHistoryMilestone, updateHistoryMilestone, deleteHistoryMilestone,
       culturalPrograms, addCulturalProgram, updateCulturalProgram, deleteCulturalProgram,
-      videos, addVideo, deleteVideo, toggleFeatureVideo,
+      videos, addVideo, updateVideo, deleteVideo, toggleFeatureVideo,
       exportDataJSON, importDataJSON, resetToDefault, publishContent, activeView, setActiveView,
       downloadModalOpen, setDownloadModalOpen,
       searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError,
