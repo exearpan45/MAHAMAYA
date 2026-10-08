@@ -63,6 +63,7 @@ interface AppContextType {
   searchModalOpen: boolean; setSearchModalOpen: (open: boolean) => void;
   activePolicyModal: string | null; setActivePolicyModal: (policy: string | null) => void;
   apiError: string | null; clearApiError: () => void;
+  publishContent: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -90,6 +91,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [historyMilestones, setHistoryMilestones] = useState<HistoryMilestone[]>(INITIAL_HISTORY_MILESTONES.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
   const [culturalPrograms, setCulturalPrograms] = useState<CulturalProgramItem[]>(INITIAL_CULTURAL_PROGRAMS);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [contentLoaded, setContentLoaded] = useState(false);
   const [activeView, setActiveViewState] = useState<string>(() => {
     const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
     return route === 'admin' || route === 'profile' ? route : 'home';
@@ -147,20 +149,65 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const toggleAudio = () => setIsAudioPlaying(devotionalAudio.toggle());
 
-  /*
-   * Static/no-database mode:
-   * Public content is loaded from initialData.ts.
-   * Admin edits are kept locally in the current browser session.
-   * No API, D1, R2 or paid service is required.
-   */
+  // Load the latest published content from GitHub-backed static storage.
+  // The initialData imports remain as a safe fallback if the network is unavailable.
+  useEffect(() => {
+    let cancelled = false;
+    const loadPublishedContent = async () => {
+      try {
+        const response = await fetch('/site-content.json?ts=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error('Published content could not be loaded.');
+        const data = await response.json();
+        if (!cancelled) applySnapshot({ ...data, currentUser: null });
+      } catch {
+        // Keep the bundled defaults when the content file cannot be reached.
+      } finally {
+        if (!cancelled) setContentLoaded(true);
+      }
+    };
+    void loadPublishedContent();
+    return () => { cancelled = true; };
+  }, []);
 
-  const login = async (_email: string, _password: string): Promise<User> => {
-    throw new Error('Admin login requires the secure production admin system.');
+  useEffect(() => {
+    let cancelled = false;
+    const restoreAdminSession = async () => {
+      try {
+        const response = await fetch('/api/admin/login', { credentials: 'include' });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!cancelled && data?.user) setCurrentUser(data.user);
+      } catch {
+        // Public visitors do not need an admin session.
+      }
+    };
+    void restoreAdminSession();
+    return () => { cancelled = true; };
+  }, []);
+
+  const login = async (email: string, password: string): Promise<User> => {
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data?.user) {
+      throw new Error(data?.error || 'Unable to sign in.');
+    }
+    setCurrentUser(data.user);
+    setApiError(null);
+    return data.user;
   };
 
   const logout = async () => {
-    setCurrentUser(null);
-    setActiveViewState('home');
+    try {
+      await fetch('/api/admin/login', { method: 'DELETE', credentials: 'include' });
+    } finally {
+      setCurrentUser(null);
+      setActiveViewState('home');
+    }
   };
 
   const currentPujaYear =
@@ -173,11 +220,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
+  const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error || new Error('Unable to read image.'));
+    reader.readAsDataURL(file);
+  });
+
   const setRealMaaDurgaPhoto = async (file: File) => {
-    const imageUrl = URL.createObjectURL(file);
+    if (file.size > 6 * 1024 * 1024) throw new Error('Please choose an image smaller than 6 MB.');
+    const imageUrl = await fileToDataUrl(file);
     setSettings((previous) => ({
       ...previous,
-      realMaaDurgaPhotoUrl: imageUrl,
+      heroDeityImage: imageUrl,
     }));
     setApiError(null);
   };
@@ -243,7 +298,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     >,
     file: File
   ) => {
-    const imageUrl = URL.createObjectURL(file);
+    if (file.size > 6 * 1024 * 1024) throw new Error('Please choose an image smaller than 6 MB.');
+    const imageUrl = await fileToDataUrl(file);
     const newPhoto: GalleryPhoto = {
       ...photo,
       id: crypto.randomUUID(),
@@ -317,6 +373,61 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCulturalPrograms((previous) =>
       previous.filter((program) => program.id !== id)
     );
+    setApiError(null);
+  };
+
+  const publishContent = async () => {
+    if (!currentUser) throw new Error('Please sign in as an administrator first.');
+
+    const snapshot: ServerSnapshot = {
+      settings,
+      pujaYears,
+      events,
+      announcements,
+      gallery,
+      historyMilestones,
+      culturalPrograms,
+      currentUser: null,
+    };
+
+    const assets: Array<{ path: string; base64: string }> = [];
+    const clone: any = JSON.parse(JSON.stringify(snapshot));
+
+    const uploadDataUrl = async (dataUrl: string, prefix: string) => {
+      const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+      if (!match) return dataUrl;
+      const extension = (match[1].split('/')[1] || 'jpg').replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'jpg';
+      const path = `/uploads/${prefix}-${crypto.randomUUID()}.${extension}`;
+      assets.push({ path: `public${path}`, base64: match[2] });
+      return path;
+    };
+
+    if (typeof clone.settings.heroDeityImage === 'string' && clone.settings.heroDeityImage.startsWith('data:')) {
+      clone.settings.heroDeityImage = await uploadDataUrl(clone.settings.heroDeityImage, 'deity');
+    }
+
+    for (const item of clone.gallery) {
+      if (typeof item.imageUrl === 'string' && item.imageUrl.startsWith('data:')) item.imageUrl = await uploadDataUrl(item.imageUrl, 'gallery');
+      if (typeof item.thumbnailUrl === 'string' && item.thumbnailUrl.startsWith('data:')) item.thumbnailUrl = await uploadDataUrl(item.thumbnailUrl, 'gallery-thumb');
+    }
+    for (const item of clone.events) {
+      if (typeof item.image === 'string' && item.image.startsWith('data:')) item.image = await uploadDataUrl(item.image, 'event');
+    }
+    for (const item of clone.historyMilestones) {
+      if (typeof item.image === 'string' && item.image.startsWith('data:')) item.image = await uploadDataUrl(item.image, 'history');
+    }
+
+    const response = await fetch('/api/admin/publish', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ content: clone, assets }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data?.error || 'Publishing failed.');
+
+    // Keep the browser state aligned with the URLs that were just committed.
+    applySnapshot({ ...clone, currentUser });
     setApiError(null);
   };
 
@@ -456,7 +567,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       gallery, addGalleryPhoto, deleteGalleryPhoto, toggleFeaturePhoto,
       historyMilestones, addHistoryMilestone, updateHistoryMilestone, deleteHistoryMilestone,
       culturalPrograms, addCulturalProgram, updateCulturalProgram, deleteCulturalProgram,
-      exportDataJSON, importDataJSON, resetToDefault, activeView, setActiveView,
+      exportDataJSON, importDataJSON, resetToDefault, publishContent, activeView, setActiveView,
       downloadModalOpen, setDownloadModalOpen,
       searchModalOpen, setSearchModalOpen, activePolicyModal, setActivePolicyModal, apiError, clearApiError,
     }}>
