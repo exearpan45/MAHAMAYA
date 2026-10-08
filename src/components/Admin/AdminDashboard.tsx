@@ -143,8 +143,10 @@ export const AdminDashboard: React.FC = () => {
   const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>('Durga Puja');
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
   const [galleryUploadNotice, setGalleryUploadNotice] = useState('');
-  const [videoTitle, setVideoTitle] = useState('');
-  const [videoDescription, setVideoDescription] = useState('');
+  const [videoTitleEn, setVideoTitleEn] = useState('');
+  const [videoTitleBn, setVideoTitleBn] = useState('');
+  const [videoDescriptionEn, setVideoDescriptionEn] = useState('');
+  const [videoDescriptionBn, setVideoDescriptionBn] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [videoThumbnailUrl, setVideoThumbnailUrl] = useState('');
   const [videoCategory, setVideoCategory] = useState<VideoCategory>('Durga Puja');
@@ -1211,7 +1213,8 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} placeholder={isBn ? 'ভিডিও শিরোনাম' : 'Video title'} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoTitleEn} onChange={(e) => setVideoTitleEn(e.target.value)} placeholder="Video title (English)" disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+                <input value={videoTitleBn} onChange={(e) => setVideoTitleBn(e.target.value)} placeholder="ভিডিও শিরোনাম (বাংলা)" disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
                 <select value={videoCategory} onChange={(e) => setVideoCategory(e.target.value as VideoCategory)} disabled={videoCount >= MAX_VIDEOS} className="px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-[#FFFDF9] dark:bg-[#1A0C11] disabled:opacity-50">
                   {(['Durga Puja','Temple','Ritual','Community','Cultural','Other'] as VideoCategory[]).map((item) => <option key={item}>{item}</option>)}
                 </select>
@@ -1223,11 +1226,13 @@ export const AdminDashboard: React.FC = () => {
                 </label>
               </div>
 
-              <textarea value={videoDescription} onChange={(e) => setVideoDescription(e.target.value)} placeholder={isBn ? 'ভিডিওর সংক্ষিপ্ত বিবরণ' : 'Short video description'} rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+              <textarea value={videoDescriptionEn} onChange={(e) => setVideoDescriptionEn(e.target.value)} placeholder="Short description (English)" rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
+
+              <textarea value={videoDescriptionBn} onChange={(e) => setVideoDescriptionBn(e.target.value)} placeholder="ভিডিওর সংক্ষিপ্ত বিবরণ (বাংলা)" rows={2} disabled={videoCount >= MAX_VIDEOS} className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent disabled:opacity-50" />
 
               <button
                 type="button"
-                disabled={videoCount >= MAX_VIDEOS || !videoTitle.trim() || !videoUrl.trim()}
+                disabled={videoCount >= MAX_VIDEOS || !videoTitleEn.trim() || !videoTitleBn.trim() || !videoUrl.trim()}
                 onClick={() => {
                   try {
                     const url = new URL(videoUrl.trim());
@@ -1237,18 +1242,20 @@ export const AdminDashboard: React.FC = () => {
                       if (thumbnail.protocol !== 'https:') throw new Error('Thumbnail URL must use HTTPS.');
                     }
                     addVideo({
-                      title_en: videoTitle.trim(),
-                      title_bn: videoTitle.trim(),
-                      description_en: videoDescription.trim() || videoTitle.trim(),
-                      description_bn: videoDescription.trim() || videoTitle.trim(),
+                      title_en: videoTitleEn.trim(),
+                      title_bn: videoTitleBn.trim(),
+                      description_en: videoDescriptionEn.trim() || videoTitleEn.trim(),
+                      description_bn: videoDescriptionBn.trim() || videoTitleBn.trim(),
                       videoUrl: videoUrl.trim(),
                       thumbnailUrl: videoThumbnailUrl.trim() || undefined,
                       category: videoCategory,
                       pujaYear: settings.currentYear,
                       featured: videoFeatured,
                     });
-                    setVideoTitle('');
-                    setVideoDescription('');
+                    setVideoTitleEn('');
+                    setVideoTitleBn('');
+                    setVideoDescriptionEn('');
+                    setVideoDescriptionBn('');
                     setVideoUrl('');
                     setVideoThumbnailUrl('');
                     setVideoFeatured(false);
