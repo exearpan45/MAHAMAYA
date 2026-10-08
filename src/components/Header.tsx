@@ -13,6 +13,7 @@ import {
   History,
   Bell,
   Info,
+  Film,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -37,6 +38,7 @@ export const Header: React.FC = () => {
     { id: 'puja', label: isBn ? 'পূজা পঞ্জিকা' : 'Puja', icon: Calendar },
     { id: 'events', label: isBn ? 'অনুষ্ঠান ও ভোগ' : 'Events', icon: Calendar },
     { id: 'gallery', label: isBn ? 'চিত্রশালা' : 'Gallery', icon: ImageIcon },
+    { id: 'videos', label: isBn ? 'ভিডিও' : 'Videos', icon: Film },
     { id: 'history', label: isBn ? '১১৮ বছরের ইতিহাস' : 'History', icon: History },
     { id: 'announcements', label: isBn ? 'বিজ্ঞপ্তি' : 'Notices', icon: Bell },
     { id: 'visit', label: isBn ? 'মানচিত্র ও দর্শন' : 'Visit', icon: MapPin },
