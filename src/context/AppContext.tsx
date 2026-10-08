@@ -421,8 +421,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ content: clone, assets }),
     });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data?.error || 'Publishing failed.');
+    const rawResponse = await response.text();
+    let data: any = null;
+    try {
+      data = rawResponse ? JSON.parse(rawResponse) : null;
+    } catch {
+      data = null;
+    }
+    if (!response.ok) {
+      throw new Error(
+        data?.error || rawResponse || `Publishing failed. (HTTP ${response.status})`,
+      );
+    }
 
     // Keep the browser state aligned with the URLs that were just committed.
     applySnapshot({ ...clone, currentUser });
