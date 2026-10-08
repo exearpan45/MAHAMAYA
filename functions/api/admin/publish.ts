@@ -86,7 +86,7 @@ export const onRequestPost = async ({ request, env }: any) => {
     const parentCommit = await github(env, `${apiBase}/git/commits/${parentSha}`);
     const baseTree = parentCommit.tree.sha;
 
-    const contentText = JSON.stringify(content, null, 2) + '\\n';
+    const contentText = JSON.stringify(content, null, 2) + '\n';
     const entries: any[] = [
       {
         path: 'public/site-content.json',
@@ -99,7 +99,7 @@ export const onRequestPost = async ({ request, env }: any) => {
     for (const asset of assets) {
       const path = String(asset?.path || '');
       const base64 = String(asset?.base64 || '');
-      if (!/^public\\/uploads\\/[a-zA-Z0-9._-]+$/.test(path)) {
+      if (!/^public\/uploads\/[a-zA-Z0-9._-]+$/.test(path)) {
         return json({ error: `Invalid asset path: ${path}` }, 400);
       }
       if (!base64 || base64.length > 20_000_000) {
