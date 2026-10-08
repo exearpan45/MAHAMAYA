@@ -133,4 +133,28 @@ export interface SiteSettings {
   topBannerEnabled: boolean;
   topBannerText_bn: string;
   topBannerText_en: string;
+  aboutHeading_en: string;
+  aboutHeading_bn: string;
+  aboutIntro_en: string;
+  aboutIntro_bn: string;
+  aboutFamilyHeading_en: string;
+  aboutFamilyHeading_bn: string;
+  aboutFamilyText_en: string;
+  aboutFamilyText_bn: string;
+  aboutCommunityHeading_en: string;
+  aboutCommunityHeading_bn: string;
+  aboutCommunityText_en: string;
+  aboutCommunityText_bn: string;
+  heritageHeading_en: string;
+  heritageHeading_bn: string;
+  heritageIntro_en: string;
+  heritageIntro_bn: string;
+  bhogHeading_en: string;
+  bhogHeading_bn: string;
+  bhogIntro_en: string;
+  bhogIntro_bn: string;
+  visitHeading_en: string;
+  visitHeading_bn: string;
+  visitIntro_en: string;
+  visitIntro_bn: string;
 }
