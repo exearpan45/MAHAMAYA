@@ -36,6 +36,24 @@ import {
   CulturalProgramItem,
 } from '../../types';
 
+const deriveEnglishPujaDayName = (bengaliName: string, fallback: string) => {
+  const normalized = bengaliName.trim().replace(/\s+/g, ' ');
+  const knownNames: Record<string, string> = {
+    'মহালয়া': 'Mahalaya',
+    'ষষ্ঠী': 'Shashthi',
+    'মহাষষ্ঠী': 'Maha Shashthi',
+    'সপ্তমী': 'Saptami',
+    'মহাসপ্তমী': 'Maha Saptami',
+    'অষ্টমী': 'Ashtami',
+    'মহাষ্টমী': 'Maha Ashtami',
+    'নবমী': 'Navami',
+    'মহানবমী': 'Maha Navami',
+    'দশমী': 'Dashami',
+    'বিজয়া দশমী': 'Vijaya Dashami',
+  };
+  return knownNames[normalized] || fallback || normalized;
+};
+
 export const AdminDashboard: React.FC = () => {
   const {
     language,
@@ -448,7 +466,7 @@ export const AdminDashboard: React.FC = () => {
                     <div>
                       <label className="text-[11px] font-semibold text-neutral-500 block">তারিখ (YYYY-MM-DD)</label>
                       <input
-                        type="text"
+                        type="date"
                         value={day.date}
                         onChange={(e) => {
                           const updatedDays = [...currentPujaYear.days];
@@ -469,22 +487,28 @@ export const AdminDashboard: React.FC = () => {
                           updatedDays[dIdx] = { ...day, bengaliDate: e.target.value };
                           updatePujaYear({ ...currentPujaYear, days: updatedDays });
                         }}
-                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent"
+                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">তিথির নাম (বাংলা)</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">তিথির নাম (বাংলা) • English automatically generated</label>
                       <input
                         type="text"
                         value={day.dayName_bn}
                         onChange={(e) => {
+                          const dayName_bn = e.target.value;
                           const updatedDays = [...currentPujaYear.days];
-                          updatedDays[dIdx] = { ...day, dayName_bn: e.target.value };
+                          updatedDays[dIdx] = {
+                            ...day,
+                            dayName_bn,
+                            dayName_en: deriveEnglishPujaDayName(dayName_bn, day.dayName_en),
+                          };
                           updatePujaYear({ ...currentPujaYear, days: updatedDays });
                         }}
                         className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
                       />
+                      <p className="mt-1 text-[10px] text-neutral-400">বাংলা নাম পরিবর্তন করলে English নামও স্বয়ংক্রিয়ভাবে আপডেট হবে।</p>
                     </div>
                   </div>
 
