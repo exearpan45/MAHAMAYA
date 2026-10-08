@@ -9,10 +9,7 @@ const GITHUB_API = 'https://api.github.com';
 
 type Env = {
   GITHUB_TOKEN?: string;
-  GITHUB_OWNER?: string;
-  GITHUB_REPO?: string;
-  GITHUB_BRANCH?: string;
-  ADMIN_EMAIL?: string;
+    ADMIN_EMAIL?: string;
   ADMIN_PASSWORD?: string;
   SESSION_SECRET?: string;
 };
@@ -99,7 +96,7 @@ const adminUser = (env: Env): AdminUser => ({
 });
 
 const githubRequest = async (env: Env, path: string, init: RequestInit = {}) => {
-  if (!env.GITHUB_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
+  if (!env.GITHUB_TOKEN) {
     throw new Error('GitHub publishing is not configured yet. Add the required Cloudflare secrets.');
   }
 
@@ -171,9 +168,9 @@ const publish = async (request: Request, env: Env) => {
     assetEntries.push({ path, base64 });
   }
 
-  const owner = env.GITHUB_OWNER!;
-  const repo = env.GITHUB_REPO!;
-  const branch = env.GITHUB_BRANCH || 'main';
+  const owner = 'exearpan45';
+  const repo = 'MAHAMAYA';
+  const branch = 'main';
 
   try {
     const ref = await githubRequest(env, '/repos/' + owner + '/' + repo + '/git/ref/heads/' + encodeURIComponent(branch));
