@@ -160,6 +160,20 @@ const publish = async (request: Request, env: Env) => {
   if (Array.isArray(content.videos) && content.videos.length > 50) {
     return response({ error: 'Video gallery limit reached. The website supports up to 50 videos.' }, 400);
   }
+  if (Array.isArray(content.videos)) {
+    for (const video of content.videos) {
+      try {
+        const url = new URL(String(video?.videoUrl || ''));
+        if (url.protocol !== 'https:') throw new Error('invalid');
+        if (video?.thumbnailUrl) {
+          const thumbnail = new URL(String(video.thumbnailUrl));
+          if (thumbnail.protocol !== 'https:') throw new Error('invalid');
+        }
+      } catch {
+        return response({ error: 'Every video and thumbnail link must be a valid HTTPS URL.' }, 400);
+      }
+    }
+  }
 
   const contentJson = JSON.stringify(content, null, 2) + '\n';
   if (contentJson.length > 2_000_000) {
