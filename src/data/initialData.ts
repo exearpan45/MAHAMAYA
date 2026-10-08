@@ -2,7 +2,7 @@ import {
   PujaYear,
   EventItem,
   Announcement,
-  GalleryPhoto,
+  GalleryPhoto, VideoItem,
   HistoryMilestone,
   CulturalProgramItem,
   SiteSettings,
@@ -339,6 +339,8 @@ export const INITIAL_GALLERY: GalleryPhoto[] = [
     featured: true,
   },
 ];
+
+export const INITIAL_VIDEOS: VideoItem[] = [];
 
 export const INITIAL_HISTORY_MILESTONES: HistoryMilestone[] = [
   {
