@@ -154,6 +154,10 @@ const publish = async (request: Request, env: Env) => {
     return response({ error: 'No website content was supplied.' }, 400);
   }
 
+  if (Array.isArray(content.gallery) && content.gallery.length > 200) {
+    return response({ error: 'Gallery limit reached. The website supports up to 200 photos.' }, 400);
+  }
+
   const contentJson = JSON.stringify(content, null, 2) + '\n';
   if (contentJson.length > 2_000_000) {
     return response({ error: 'Website content is too large to publish.' }, 413);
