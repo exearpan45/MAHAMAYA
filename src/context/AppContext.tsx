@@ -91,7 +91,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [historyMilestones, setHistoryMilestones] = useState<HistoryMilestone[]>(INITIAL_HISTORY_MILESTONES.map((item) => ({ ...item, image: resolveAssetUrl(item.image) })));
   const [culturalPrograms, setCulturalPrograms] = useState<CulturalProgramItem[]>(INITIAL_CULTURAL_PROGRAMS);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [contentLoaded, setContentLoaded] = useState(false);
   const [activeView, setActiveViewState] = useState<string>(() => {
     const route = window.location.hash.replace(/^#\/?/, '').toLowerCase();
     return route === 'admin' || route === 'profile' ? route : 'home';
@@ -162,7 +161,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch {
         // Keep the bundled defaults when the content file cannot be reached.
       } finally {
-        if (!cancelled) setContentLoaded(true);
       }
     };
     void loadPublishedContent();
