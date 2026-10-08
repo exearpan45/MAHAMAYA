@@ -79,7 +79,7 @@ function savePreference(key: string, value: string): void {
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => preference('pinrra_lang') === 'en' ? 'en' : 'bn');
   const [hasChosenLanguage, setHasChosenLanguageState] = useState(() => preference('pinrra_lang_chosen') === 'true');
-  const [theme, setThemeState] = useState<'light' | 'dark'>(() => preference('pinrra_theme') === 'dark' ? 'dark' : 'light');
+  const [theme, setThemeState] = useState<'light' | 'dark'>('dark');
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [settings, setSettings] = useState<SiteSettings>(INITIAL_SETTINGS);
@@ -135,13 +135,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     document.body.classList.toggle('light', value === 'light');
   };
 
-  const setTheme = (value: 'light' | 'dark') => {
-    setThemeState(value);
-    savePreference('pinrra_theme', value);
-    applyThemeToDOM(value);
+  const setTheme = (_value: 'light' | 'dark') => {
+    setThemeState('dark');
+    savePreference('pinrra_theme', 'dark');
+    applyThemeToDOM('dark');
   };
 
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  const toggleTheme = () => setTheme('dark');
 
   useEffect(() => applyThemeToDOM(theme), [theme]);
 
