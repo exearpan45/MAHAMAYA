@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Utensils, Music, Users, Sparkles, Heart } from 'lucide-react';
 
 export const FourDayExperience: React.FC = () => {
-  const { language } = useApp();
+  const { language, settings } = useApp();
   const isBn = language === 'bn';
 
   return (
