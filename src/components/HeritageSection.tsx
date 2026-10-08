@@ -18,13 +18,11 @@ export const HeritageSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] tracking-tight">
-            {isBn ? '১১৮ বছরের শ্রদ্ধা ও ঐতিহ্য' : '118 Years of Devotion'}
+            {isBn ? settings.heritageHeading_bn : settings.heritageHeading_en}
           </h2>
 
           <p className="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base leading-relaxed font-sans">
-            {isBn
-              ? '১৯০৮ সাল থেকে ২০২৬ — ব্রাহ্মণ পাড়ার ব্রাহ্মণ গোস্বামী সম্প্রদায়ের সম্মিলিত ভক্তি ও নিষ্ঠায় পিন্দ্রা দুর্গা মন্দির উদযাপন করছে শারদোৎসবের গৌরবময় ১১৮তম বর্ষ।'
-              : 'Completing 118 years in 2026, the Durga Puja at Pinrra Durga Mandir has been sustained by the devotion of the Brahman Goswami community of Brahman Para.'}
+            {isBn ? settings.heritageIntro_bn : settings.heritageIntro_en}
           </p>
         </div>
 
@@ -37,12 +35,10 @@ export const HeritageSection: React.FC = () => {
               <Flame className="w-6 h-6 text-[#9E1B32] dark:text-[#E5C158]" />
             </div>
             <h3 className="text-xl font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
-              {isBn ? '১১৮তম বর্ষের ধারাবাহিকতা' : '118th Year Milestone'}
+              {isBn ? `${settings.currentEdition}তম বর্ষের ধারাবাহিকতা` : `${settings.currentEdition}th Year Milestone`}
             </h3>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
-              {isBn
-                ? '২০২৬ সালে এই পূজানুষ্ঠানটি ১১৮ বছর পূর্ণ করছে। এক শতকেরও বেশি সময় ধরে দেবীর পূজা নিরবচ্ছিন্ন ও নিষ্ঠা সহকারে পরিচালিত হয়ে আসছে।'
-                : 'The Durga Puja is completing 118 years in 2026. For more than a century, traditions have been preserved with unbroken devotion.'}
+              {isBn ? `${settings.currentYear} সালে এই পূজানুষ্ঠানটি ${settings.currentEdition} বছর পূর্ণ করছে। এক শতকেরও বেশি সময় ধরে দেবীর পূজা নিরবচ্ছিন্ন ও নিষ্ঠা সহকারে পরিচালিত হয়ে আসছে।` : `The Durga Puja is completing ${settings.currentEdition} years in ${settings.currentYear}. For more than a century, traditions have been preserved with unbroken devotion.`}
             </p>
           </div>
 
