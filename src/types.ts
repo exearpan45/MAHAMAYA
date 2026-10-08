@@ -94,6 +94,22 @@ export interface GalleryPhoto {
   featured?: boolean;
 }
 
+export type VideoCategory = 'Durga Puja' | 'Temple' | 'Ritual' | 'Community' | 'Cultural' | 'Other';
+
+export interface VideoItem {
+  id: string;
+  title_en: string;
+  title_bn: string;
+  description_en: string;
+  description_bn: string;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  category: VideoCategory;
+  pujaYear: number;
+  createdAt: string;
+  featured?: boolean;
+}
+
 export interface HistoryMilestone {
   id: string;
   year: string;
