@@ -88,22 +88,28 @@ export const EventsSection: React.FC = () => {
                   key={evt.id}
                   className="flex flex-col justify-between overflow-hidden rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 hover:border-[#9E1B32] dark:hover:border-[#E5C158] shadow-sm hover:shadow-md transition duration-200 group"
                 >
-                  {/* Optional Image */}
-                  {evt.image && (
-                    <div className="h-44 w-full overflow-hidden relative bg-neutral-900">
+                  {/* Stable image area: keeps every event card aligned even without an uploaded photo */}
+                  <div className="h-44 w-full shrink-0 overflow-hidden relative bg-gradient-to-br from-[#3A101B] via-[#1A0C11] to-[#5A2025]">
+                    {evt.image ? (
                       <img
                         src={evt.image}
                         alt={isBn ? evt.title_bn : evt.title_en}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                loading="lazy"
-                decoding="async"
+                        loading="lazy"
+                        decoding="async"
                       />
-                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-[10px] font-semibold tracking-wider uppercase bg-[#180A0E]/80 backdrop-blur-md text-[#FFD700] border border-[#D4AF37]/30">
-                        {evt.status}
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#D4AF37]/80" aria-hidden="true">
+                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 25%, #D4AF37 0, transparent 28%), radial-gradient(circle at 80% 75%, #9E1B32 0, transparent 35%)' }} />
+                        <Calendar className="relative w-10 h-10" strokeWidth={1.2} />
+                        <span className="relative text-[10px] tracking-[0.22em] uppercase">{isBn ? 'পূজার অনুষ্ঠান' : 'Puja Event'}</span>
                       </div>
+                    )}
+                    <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-[10px] font-semibold tracking-wider uppercase bg-[#180A0E]/85 text-[#FFD700] border border-[#D4AF37]/30">
+                      {evt.status}
                     </div>
-                  )}
+                  </div>
 
                   <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                     <div className="space-y-3">
