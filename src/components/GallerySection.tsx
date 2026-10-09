@@ -33,7 +33,7 @@ export const GallerySection: React.FC = () => {
     return matchesCategory && matchesYear;
   });
 
-  const displayedPhotos = showAllPhotos ? filteredPhotos : filteredPhotos.slice(0, 8);
+  const displayedPhotos = (showAllPhotos || isFullGalleryPage) ? filteredPhotos : filteredPhotos.slice(0, 8);
 
   const handleNextPhoto = () => {
     if (!activePhoto) return;
@@ -216,7 +216,7 @@ export const GallerySection: React.FC = () => {
           ))}
         </div>
 
-        {filteredPhotos.length > 8 && (
+        {!isFullGalleryPage && filteredPhotos.length > 8 && (
           <div className="flex justify-center pt-2">
             <button
               type="button"
