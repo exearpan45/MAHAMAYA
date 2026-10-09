@@ -243,7 +243,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
-  const MAX_GALLERY_PHOTOS = 200;
+  const MAX_GALLERY_PHOTOS = 500;
   const MAX_GALLERY_SOURCE_BYTES = 15 * 1024 * 1024;
   const MAX_GALLERY_OUTPUT_BYTES = 900 * 1024;
   const MAX_GALLERY_DIMENSION = 1800;
@@ -386,7 +386,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     file: File
   ) => {
     if (gallery.length >= MAX_GALLERY_PHOTOS) {
-      throw new Error('Gallery limit reached. You can keep up to 200 photos.');
+      throw new Error('Gallery limit reached. You can keep up to 500 photos.');
     }
 
     const imageUrl = await optimizeGalleryImage(file);
@@ -418,10 +418,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setApiError(null);
   };
 
-  const MAX_VIDEOS = 50;
+  const MAX_VIDEOS = 200;
 
   const addVideo = (item: Omit<VideoItem, 'id' | 'createdAt'>) => {
-    if (videos.length >= MAX_VIDEOS) throw new Error('Video gallery limit reached. You can keep up to 50 videos.');
+    if (videos.length >= MAX_VIDEOS) throw new Error('Video gallery limit reached. You can keep up to 200 videos.');
     let parsed: URL;
     if (!item.videoUrl.startsWith('data:video/')) {
       try {
