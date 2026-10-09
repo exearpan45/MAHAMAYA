@@ -57,7 +57,7 @@ export const Hero: React.FC = () => {
       </div>}
 
       {/* Main Hero Container */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8 animate-from-left">
         
         {/* Sacred Sanskrit Invocation / Kicker */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D4AF37]/50 bg-white/90 dark:bg-[#2B0B14]/80 backdrop-blur-sm text-xs sm:text-sm text-[#9E1B32] dark:text-[#E5C158] font-bengali tracking-widest shadow-md">
