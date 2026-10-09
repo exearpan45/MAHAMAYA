@@ -15,6 +15,7 @@ import {
   Info,
   Film,
   AlertTriangle,
+  Flame,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -28,6 +29,8 @@ export const Header: React.FC = () => {
     activeView,
     settings,
     announcements,
+    pujaTheme,
+    togglePujaTheme,
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -191,6 +194,17 @@ export const Header: React.FC = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-0.5 sm:gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={togglePujaTheme}
+              aria-pressed={pujaTheme}
+              aria-label={isBn ? (pujaTheme ? 'পূজা উৎসবের আলো বন্ধ করুন' : 'পূজা উৎসবের আলো চালু করুন') : (pujaTheme ? 'Turn Puja glow off' : 'Turn Puja glow on')}
+              title={isBn ? (pujaTheme ? 'পূজা থিম বন্ধ করুন' : 'পূজা থিম চালু করুন') : (pujaTheme ? 'Turn Puja theme off' : 'Turn Puja theme on')}
+              className={`inline-flex p-2 rounded-lg transition-colors cursor-pointer ${pujaTheme ? 'text-amber-300 bg-amber-500/15' : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+            >
+              <Flame className="w-4 h-4" />
+            </button>
+
             {/* Search Button */}
             <button
               onClick={() => setSearchModalOpen(true)}
@@ -300,6 +314,15 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
+            <button
+              type="button"
+              onClick={togglePujaTheme}
+              aria-pressed={pujaTheme}
+              className={`mb-3 flex w-full items-center justify-center gap-2 rounded-lg p-2.5 text-xs font-semibold transition-colors ${pujaTheme ? 'bg-amber-500/20 text-amber-200' : 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200'}`}
+            >
+              <Flame className="w-3.5 h-3.5" />
+              {isBn ? (pujaTheme ? 'পূজা থিম বন্ধ করুন' : 'পূজা থিম চালু করুন') : (pujaTheme ? 'Turn Puja theme off' : 'Turn Puja theme on')}
+            </button>
             <div className="grid grid-cols-2 gap-2 pb-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
