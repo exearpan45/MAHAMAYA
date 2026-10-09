@@ -328,15 +328,38 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const input = e.currentTarget;
+    const file = input.files?.[0];
     if (!file) return;
+
+    // Keep restores predictable on low-memory devices and avoid accidental overwrites.
+    if (file.size > 10 * 1024 * 1024) {
+      setImportNotice(isBn ? 'ব্যাকআপ ফাইল ১০ MB-এর বেশি। ছোট ফাইল ব্যবহার করুন।' : 'Backup file is larger than 10 MB. Choose a smaller file.');
+      input.value = '';
+      return;
+    }
+
+    const confirmed = window.confirm(
+      isBn
+        ? 'এই ব্যাকআপের ডেটা বর্তমান অ্যাডমিন এডিটরে লোড হবে। পরে প্রকাশ করতে হবে। এগিয়ে যাবেন?'
+        : 'Load this backup into the current admin editor? Review it and click Publish Changes to make it live.'
+    );
+    if (!confirmed) {
+      input.value = '';
+      return;
+    }
+
     void file.text().then(async (content) => {
       const success = await importDataJSON(content);
       setImportNotice(success
-        ? (isBn ? 'সফলভাবে ডেটা রিস্টোর করা হয়েছে!' : 'Data restored successfully!')
+        ? (isBn ? 'ব্যাকআপ এডিটরে লোড হয়েছে। লাইভ করতে Publish Changes চাপুন।' : 'Backup loaded into the editor. Click Publish Changes to make it live.')
         : (isBn ? 'ভুল ফরম্যাট! ব্যাকআপ ফাইলটি সঠিক নয়।' : 'Invalid backup JSON file.'));
-      setTimeout(() => setImportNotice(''), 4000);
-    }).catch(() => setImportNotice(isBn ? 'ব্যাকআপ ফাইল পড়া যায়নি।' : 'Could not read the backup file.'));
+      window.setTimeout(() => setImportNotice(''), 5000);
+    }).catch(() => {
+      setImportNotice(isBn ? 'ব্যাকআপ ফাইল পড়া যায়নি।' : 'Could not read the backup file.');
+    }).finally(() => {
+      input.value = '';
+    });
   };
 
   return (
