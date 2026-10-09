@@ -80,9 +80,9 @@ export const Header: React.FC = () => {
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
-    const onGalleryPage = window.location.pathname === '/gallery';
+    const onGalleryPage = window.location.pathname.replace(/\/+$/, '') === '/gallery';
     if (id === 'gallery') {
-      if (!onGalleryPage) window.location.assign('/gallery');
+      if (!onGalleryPage) window.location.assign('/gallery/');
       else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -191,7 +191,7 @@ export const Header: React.FC = () => {
                 item.id === 'gallery' ? (
                   <a
                     key={item.id}
-                    href="/gallery"
+                    href="/gallery/"
                     className={`px-3 py-1.5 text-xs xl:text-sm font-medium rounded-lg transition-colors ${
                       isActive
                         ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/10 dark:bg-[#E5C158]/10 font-semibold'
@@ -356,7 +356,7 @@ export const Header: React.FC = () => {
                   item.id === 'gallery' ? (
                     <a
                       key={item.id}
-                      href="/gallery"
+                      href="/gallery/"
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-2 p-2.5 rounded-lg text-xs font-medium text-left transition-colors ${
                         isActive
