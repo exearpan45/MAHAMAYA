@@ -116,3 +116,22 @@
     transform: none !important;
   }
 }
+
+
+/* Optional Puja festival glow: decorative only, no layout or readability changes. */
+:root.puja-theme body,
+body.puja-theme {
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(158, 27, 50, 0.16), transparent 55%),
+    radial-gradient(ellipse at 100% 15%, rgba(212, 175, 55, 0.08), transparent 38%);
+  background-attachment: fixed;
+}
+
+.puja-theme .animate-diya {
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puja-theme body {
+    background-attachment: scroll;
+  }
+}
