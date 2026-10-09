@@ -5,6 +5,64 @@ import { Calendar, Clock, Sparkles, Download, CheckCircle2, AlertCircle } from '
 export const PujaCalendar: React.FC = () => {
   const { language, currentPujaYear, setDownloadModalOpen } = useApp();
   const isBn = language === 'bn';
+  const escapeIcsText = (value: string) =>
+    value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+
+  const handleAddToCalendar = () => {
+    const formatDate = (value: string) => value.replace(/-/g, '');
+    const events = currentPujaYear.days.map((day, index) => {
+      const start = formatDate(day.date);
+      const nextDate = new Date(day.date + 'T00:00:00');
+      nextDate.setDate(nextDate.getDate() + 1);
+      const end = [
+        nextDate.getFullYear(),
+        String(nextDate.getMonth() + 1).padStart(2, '0'),
+        String(nextDate.getDate()).padStart(2, '0'),
+      ].join('');
+      const title = isBn ? day.dayName_bn : day.dayName_en;
+      const rituals = (isBn ? day.rituals_bn : day.rituals_en).join(' • ');
+      const description = [
+        settings.templeName_en,
+        settings.templeName_bn,
+        rituals,
+        day.startTime ? (isBn ? 'সময়: ' : 'Time: ') + day.startTime : '',
+        day.bhogTimings ? (isBn ? 'ভোগ: ' : 'Bhog: ') + day.bhogTimings : '',
+        window.location.origin,
+      ].filter(Boolean).join('\\n');
+
+      return [
+        'BEGIN:VEVENT',
+        'UID:mahamaya-' + currentPujaYear.year + '-' + (day.id || index) + '@mahamaya',
+        'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\\.\\d{3}/, ''),
+        'DTSTART;VALUE=DATE:' + start,
+        'DTEND;VALUE=DATE:' + end,
+        'SUMMARY:' + escapeIcsText(settings.templeName_en + ' — ' + title),
+        'DESCRIPTION:' + escapeIcsText(description),
+        'LOCATION:' + escapeIcsText('Pinrra Durga Mandir, Brahman Para'),
+        'END:VEVENT',
+      ].join('\\r\\n');
+    });
+
+    const calendar = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//MAHAMAYA//Pinrra Durga Mandir//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      ...events,
+      'END:VCALENDAR',
+    ].join('\\r\\n');
+
+    const blob = new Blob([calendar], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'pinrra-durga-mandir-' + currentPujaYear.year + '-calendar.ics';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   return (
     <section id="puja" className="py-20 bg-[#FDFBF7]/80 dark:bg-[#150A0E]/85 text-neutral-900 dark:text-neutral-100 transition-colors duration-200 backdrop-blur-[1px]">
@@ -33,10 +91,18 @@ export const PujaCalendar: React.FC = () => {
             </p>
           </div>
 
-          <div className="shrink-0">
+          <div className="shrink-0 flex flex-col sm:flex-row gap-2">
+            <button
+              onClick={handleAddToCalendar}
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
+              title={isBn ? 'ফোন বা কম্পিউটারের ক্যালেন্ডারে যোগ করুন' : 'Import Puja dates into your calendar app'}
+            >
+              <Calendar className="w-4 h-4" />
+              <span>{isBn ? 'ক্যালেন্ডারে যোগ করুন' : 'Add to Calendar'}</span>
+            </button>
             <button
               onClick={() => setDownloadModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#9E1B32] hover:bg-[#B81D39] text-white text-xs sm:text-sm font-semibold shadow-md border border-[#D4AF37]/40 hover:shadow-lg transition cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#9E1B32] hover:bg-[#B81D39] text-white text-xs sm:text-sm font-semibold shadow-md border border-[#D4AF37]/40 hover:shadow-lg transition cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>{isBn ? 'পূজা পঞ্জিকা ডাউনলোড / প্রিন্ট' : 'Download / Print Calendar'}</span>
