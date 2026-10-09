@@ -4,7 +4,7 @@
  * MAHAMAYA Durga Puja Committee • Brahman Para
  */
 
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { LanguageGate } from './components/LanguageGate';
 import { Header } from './components/Header';
@@ -107,6 +107,68 @@ const ReturnToTop: React.FC = () => {
   );
 };
 
+/** Lightweight reading progress indicator. Uses a ref and animation frames
+ * so rapid scrollbar dragging does not trigger React re-renders. */
+const ScrollProgress: React.FC = () => {
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateProgress = () => {
+      frame = 0;
+      const bar = barRef.current;
+      if (!bar) return;
+
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress =
+        scrollableHeight > 0
+          ? Math.min(1, Math.max(0, window.scrollY / scrollableHeight))
+          : 0;
+
+      bar.style.transform = `scaleX(${progress})`;
+    };
+
+    const handleScrollOrResize = () => {
+      if (frame === 0) frame = window.requestAnimationFrame(updateProgress);
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', handleScrollOrResize, { passive: true });
+    window.addEventListener('resize', handleScrollOrResize, { passive: true });
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(handleScrollOrResize)
+        : null;
+    resizeObserver?.observe(document.documentElement);
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollOrResize);
+      window.removeEventListener('resize', handleScrollOrResize);
+      resizeObserver?.disconnect();
+      if (frame !== 0) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return (
+    <div
+      className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px] bg-transparent"
+      role="progressbar"
+      aria-label="Page reading progress"
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div
+        ref={barRef}
+        className="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#9E1B32] via-[#D4AF37] to-[#FFE9A6] shadow-[0_0_8px_rgba(212,175,55,0.35)] motion-reduce:shadow-none"
+        style={{ transform: 'scaleX(0)', willChange: 'transform' }}
+      />
+    </div>
+  );
+};
+
 const startOpeningAnimation = () => {
   const loader = document.getElementById('site-opening');
   if (!loader) return;
@@ -191,6 +253,7 @@ const MainLayout: React.FC = () => {
       <MaaDurgaWebsiteBackground />
       <div className="relative z-10">
         {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
+        <ScrollProgress />
         <Header />
         <main id="main-content">
           <Hero />
