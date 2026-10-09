@@ -1,10 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Calendar, Clock, Sparkles, Download, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Sparkles, Download, CheckCircle2, AlertCircle, Copy, Check } from 'lucide-react';
 
 export const PujaCalendar: React.FC = () => {
   const { language, currentPujaYear, setDownloadModalOpen, settings } = useApp();
   const isBn = language === 'bn';
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+
+  const handleCopyDetails = async () => {
+    const lines = [
+      settings.templeName_en + ' | ' + settings.templeName_bn,
+      isBn ? 'দুর্গাপূজা ' + currentPujaYear.year : 'Durga Puja ' + currentPujaYear.year,
+      '',
+      ...currentPujaYear.days.map((day) => {
+        const date = new Date(day.date + 'T00:00:00').toLocaleDateString(
+          isBn ? 'bn-IN' : 'en-IN',
+          { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }
+        );
+        const name = isBn ? day.dayName_bn : day.dayName_en;
+        const time = day.startTime ? ' | ' + (isBn ? 'সময়: ' : 'Time: ') + day.startTime : '';
+        return date + ' | ' + name + time;
+      }),
+      '',
+      (isBn ? 'স্থান: ' : 'Venue: ') + 'Pinrra Durga Mandir, Brahman Para',
+      window.location.origin,
+    ];
+    const textToCopy = lines.join('\\n');
+
+    try {
+      if (navigator.clipboard?.writeText && window.isSecureContext) {
+        await navigator.clipboard.writeText(textToCopy);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const copied = document.execCommand('copy');
+        textarea.remove();
+        if (!copied) throw new Error('Clipboard unavailable');
+      }
+      setCopyStatus('copied');
+      window.setTimeout(() => setCopyStatus('idle'), 2200);
+    } catch {
+      setCopyStatus('error');
+      window.setTimeout(() => setCopyStatus('idle'), 2800);
+    }
+  };
   const escapeIcsText = (value: string) =>
     value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 
@@ -93,7 +137,22 @@ export const PujaCalendar: React.FC = () => {
 
           <div className="shrink-0 flex flex-col sm:flex-row gap-2">
             <button
-              onClick={handleAddToCalendar}
+              onClick={handleCopyDetails}
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
+              title={isBn ? 'পূজার তারিখ ও স্থান কপি করুন' : 'Copy Puja dates and venue'}
+              aria-live="polite"
+            >
+              {copyStatus === 'copied' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              <span>
+                {copyStatus === 'copied'
+                  ? (isBn ? 'কপি হয়েছে!' : 'Copied!')
+                  : copyStatus === 'error'
+                    ? (isBn ? 'কপি হয়নি' : 'Copy failed')
+                    : (isBn ? 'বিবরণ কপি করুন' : 'Copy Details')}
+              </span>
+            </button>
+            <button
+              onClick={handleAddToCalendar
               className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
               title={isBn ? 'ফোন বা কম্পিউটারের ক্যালেন্ডারে যোগ করুন' : 'Import Puja dates into your calendar app'}
             >
