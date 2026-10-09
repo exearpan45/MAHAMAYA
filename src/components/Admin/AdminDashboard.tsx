@@ -188,10 +188,10 @@ export const AdminDashboard: React.FC = () => {
     ].slice(0, 30));
   };
 
-  const MAX_GALLERY_PHOTOS = 200;
+  const MAX_GALLERY_PHOTOS = 500;
   const galleryCount = gallery.length;
   const galleryRemaining = Math.max(0, MAX_GALLERY_PHOTOS - galleryCount);
-  const MAX_VIDEOS = 50;
+  const MAX_VIDEOS = 200;
   const videoCount = videos.length;
   const videoRemaining = Math.max(0, MAX_VIDEOS - videoCount);
 
@@ -1150,7 +1150,7 @@ export const AdminDashboard: React.FC = () => {
                 <p className="mt-1.5 text-[10px] text-neutral-400">
                   {galleryRemaining > 0
                     ? (isBn ? `${galleryRemaining}টি ছবি যোগ করা যাবে` : `${galleryRemaining} photo slots remaining`)
-                    : (isBn ? 'গ্যালারির ২০০টি ছবির সীমা পূর্ণ হয়েছে' : 'Gallery limit of 200 photos reached')}
+                    : (isBn ? 'গ্যালারির ২০০টি ছবির সীমা পূর্ণ হয়েছে' : 'Gallery limit of 500 photos reached')}
                 </p>
               </div>
             </div>
@@ -1162,7 +1162,7 @@ export const AdminDashboard: React.FC = () => {
                     {isBn ? 'নতুন ছবি যোগ করুন' : 'Add Gallery Photo'}
                   </h4>
                   <p className="mt-1 text-[10px] text-neutral-400">
-                    {isBn ? 'সর্বোচ্চ ২০০টি ছবি। বড় ছবি স্বয়ংক্রিয়ভাবে WebP/JPEG-এ অপ্টিমাইজ হবে।' : 'Up to 200 photos. Large photos are automatically optimized to WebP/JPEG.'}
+                    {isBn ? 'সর্বোচ্চ ৫০০টি ছবি। বড় ছবি স্বয়ংক্রিয়ভাবে WebP/JPEG-এ অপ্টিমাইজ হবে।' : 'Up to 500 photos. Large photos are automatically optimized to WebP/JPEG.'}
                   </p>
                 </div>
                 <span className="rounded-lg bg-[#9E1B32]/10 px-2.5 py-1 text-[10px] font-bold text-[#9E1B32] dark:text-[#E5C158]">
@@ -1330,7 +1330,7 @@ export const AdminDashboard: React.FC = () => {
                   <div className="h-full rounded-full bg-[#9E1B32] transition-all duration-300" style={{ width: `${Math.min(100, (videoCount / MAX_VIDEOS) * 100)}%` }} />
                 </div>
                 <p className="mt-1.5 text-[10px] text-neutral-400">
-                  {videoRemaining > 0 ? (isBn ? `${videoRemaining}টি ভিডিও যোগ করা যাবে` : `${videoRemaining} video slots remaining`) : (isBn ? '৫০টি ভিডিওর সীমা পূর্ণ হয়েছে' : 'Video limit of 50 reached')}
+                  {videoRemaining > 0 ? (isBn ? `${videoRemaining}টি ভিডিও যোগ করা যাবে` : `${videoRemaining} video slots remaining`) : (isBn ? '২০০টি ভিডিওর সীমা পূর্ণ হয়েছে' : 'Video limit of 200 reached')}
                 </p>
               </div>
             </div>
