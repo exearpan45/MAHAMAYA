@@ -125,6 +125,8 @@ export const AdminDashboard: React.FC = () => {
   const [newAnnTitle, setNewAnnTitle] = useState('');
   const [newAnnDesc, setNewAnnDesc] = useState('');
   const [newAnnPriority, setNewAnnPriority] = useState<AnnouncementPriority>('Normal');
+  const [newAnnExpiresAt, setNewAnnExpiresAt] = useState('');
+  const [newAnnShowTopBanner, setNewAnnShowTopBanner] = useState(false);
 
   // State for new Milestone form
   const [newHistYear, setNewHistYear] = useState('');
@@ -924,6 +926,23 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[11px] font-semibold text-neutral-500 block">{isBn ? 'মেয়াদ শেষ (ঐচ্ছিক)' : 'Expires at (optional)'}</label>
+                  <input
+                    type="datetime-local"
+                    value={newAnnExpiresAt}
+                    onChange={(e) => setNewAnnExpiresAt(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent"
+                  />
+                  <p className="mt-1 text-[10px] text-neutral-500">{isBn ? 'নির্বাচিত সময়ের পরে বিজ্ঞপ্তি স্বয়ংক্রিয়ভাবে লুকানো হবে।' : 'The notice will automatically hide after this time.'}</p>
+                </div>
+                <label className="flex items-center gap-2 text-xs font-medium text-neutral-700 dark:text-neutral-200">
+                  <input type="checkbox" checked={newAnnShowTopBanner} onChange={(e) => setNewAnnShowTopBanner(e.target.checked)} className="accent-[#9E1B32]" />
+                  {isBn ? 'ওয়েবসাইটের উপরের ব্যানারে দেখান' : 'Show in top notice banner'}
+                </label>
+              </div>
+
               <button
                 onClick={() => {
                   if (!newAnnTitle.trim()) return;
@@ -935,10 +954,14 @@ export const AdminDashboard: React.FC = () => {
                     date: new Date().toISOString().split('T')[0],
                     priority: newAnnPriority,
                     active: true,
-                    showInTopBanner: false,
+                    showInTopBanner: newAnnShowTopBanner,
+                    ...(newAnnExpiresAt ? { expiresAt: new Date(newAnnExpiresAt).toISOString() } : {}),
                   });
                   setNewAnnTitle('');
                   setNewAnnDesc('');
+                  setNewAnnPriority('Normal');
+                  setNewAnnExpiresAt('');
+                  setNewAnnShowTopBanner(false);
                 }}
                 className="px-4 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-semibold cursor-pointer"
               >
@@ -976,6 +999,13 @@ export const AdminDashboard: React.FC = () => {
                       }`}
                     >
                       {ann.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                    </button>
+                    <button
+                      onClick={() => updateAnnouncement(ann.id, { showInTopBanner: !ann.showInTopBanner })}
+                      title={isBn ? 'উপরের ব্যানার চালু/বন্ধ করুন' : 'Toggle top banner'}
+                      className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer ${ann.showInTopBanner ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'}`}
+                    >
+                      {ann.showInTopBanner ? (isBn ? 'ব্যানারে আছে' : 'In banner') : (isBn ? 'ব্যানারে দিন' : 'Show banner')}
                     </button>
                     <button
                       onClick={() => deleteAnnouncement(ann.id)}
