@@ -14,6 +14,7 @@ import {
   Bell,
   Info,
   Film,
+  AlertTriangle,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -26,11 +27,22 @@ export const Header: React.FC = () => {
     setActiveView,
     activeView,
     settings,
+    announcements,
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dismissedNoticeId, setDismissedNoticeId] = useState<string | null>(null);
 
   const isBn = language === 'bn';
+  const now = Date.now();
+  const topNotice = announcements
+    .filter((notice) => notice.active && notice.showInTopBanner && (!notice.expiresAt || new Date(notice.expiresAt).getTime() > now))
+    .sort((a, b) => {
+      const rank = { Urgent: 0, Important: 1, Normal: 2 };
+      return rank[a.priority] - rank[b.priority] || b.date.localeCompare(a.date);
+    })[0];
+  const noticeId = topNotice?.id || 'site-settings-banner';
+  const showTopNotice = (topNotice || settings.topBannerEnabled) && dismissedNoticeId !== noticeId;
 
   const navItems = [
     { id: 'home', label: isBn ? 'নীড়পাতা' : 'Home', icon: Sparkles },
@@ -69,13 +81,35 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* Optional Top Announcement Bar */}
-      {settings.topBannerEnabled && (
-        <div className="bg-gradient-to-r from-[#800020] via-[#9E1B32] to-[#800020] text-amber-100 text-xs py-2 px-4 text-center border-b border-amber-500/20 shadow-inner flex items-center justify-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
-          <span className="font-bengali font-medium">
-            {isBn ? settings.topBannerText_bn : settings.topBannerText_en}
+      {/* Dismissible, admin-managed notice banner */}
+      {showTopNotice && (
+        <div
+          role={topNotice?.priority === 'Urgent' ? 'alert' : 'status'}
+          className={`text-xs py-2 px-3 sm:px-4 text-center border-b shadow-inner flex items-center justify-center gap-2 ${
+            topNotice?.priority === 'Urgent'
+              ? 'bg-rose-950 text-rose-50 border-rose-400/40'
+              : topNotice?.priority === 'Important'
+                ? 'bg-amber-100 dark:bg-amber-950/90 text-amber-950 dark:text-amber-100 border-amber-500/30'
+                : 'bg-gradient-to-r from-[#800020] via-[#9E1B32] to-[#800020] text-amber-100 border-amber-500/20'
+          }`}
+        >
+          {topNotice?.priority === 'Urgent'
+            ? <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+            : <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+          <span className="font-bengali font-medium min-w-0">
+            {topNotice
+              ? `${isBn ? topNotice.title_bn : topNotice.title_en}${(isBn ? topNotice.description_bn : topNotice.description_en) ? ` · ${isBn ? topNotice.description_bn : topNotice.description_en}` : ''}`
+              : (isBn ? settings.topBannerText_bn : settings.topBannerText_en)}
           </span>
+          <button
+            type="button"
+            onClick={() => setDismissedNoticeId(noticeId)}
+            aria-label={isBn ? 'বিজ্ঞপ্তি বন্ধ করুন' : 'Dismiss notice'}
+            title={isBn ? 'বন্ধ করুন' : 'Dismiss'}
+            className="shrink-0 rounded-md p-1 hover:bg-black/10 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-current"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
