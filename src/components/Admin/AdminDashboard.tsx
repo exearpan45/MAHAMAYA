@@ -59,7 +59,6 @@ const deriveEnglishPujaDayName = (bengaliName: string, fallback: string) => {
 
 export const AdminDashboard: React.FC = () => {
   const {
-    language,
     currentUser,
     login,
     setActiveView,
@@ -220,7 +219,7 @@ export const AdminDashboard: React.FC = () => {
       window.localStorage.setItem('mahamaya_publish_trash_v1', JSON.stringify(failedPublishes.slice(0, 50)));
     } catch {
       setPublishNotice(isBn
-        ? 'ট্র্যাশ বিন সংরক্ষণ করা যায়নি। ব্রাউজারের স্টোরেজ পূর্ণ হতে পারে।'
+        ? 'Could not save the Trash Bin. Browser storage may be full.'
         : 'Could not save the Trash Bin. Browser storage may be full.');
     }
   }, [failedPublishes, isBn]);
@@ -252,23 +251,23 @@ export const AdminDashboard: React.FC = () => {
     setIsPublishing(true);
     try {
       await publishContent();
-      recordActivity(isBn ? 'পরিবর্তন প্রকাশ করা হয়েছে' : 'Changes published');
-      setPublishNotice(isBn ? 'পরিবর্তনগুলি প্রকাশিত হয়েছে। Cloudflare এখন সাইটটি পুনর্নির্মাণ করবে।' : 'Changes published. Cloudflare Pages will rebuild the website automatically.');
+      recordActivity('Changes published');
+      setPublishNotice('Changes published. Cloudflare Pages will rebuild the website automatically.');
       window.setTimeout(() => setPublishNotice(''), 7000);
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Publishing failed for an unknown reason.';
       const stageMatch = reason.match(/(?:Stage|stage):\s*([^.)]+)/);
       const failedItem: FailedPublish = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        title: isBn ? 'ওয়েবসাইট প্রকাশ ব্যর্থ' : 'Website publish failed',
+        title: 'Website publish failed',
         reason: reason.slice(0, 1800),
         stage: stageMatch?.[1]?.trim() || (reason.toLowerCase().includes('compress') ? 'Compression' : 'Publish request / validation'),
         at: new Date().toISOString(),
       };
       setFailedPublishes((items) => [failedItem, ...items].slice(0, 50));
-      recordActivity(isBn ? 'প্রকাশ ব্যর্থ হয়েছে; ট্র্যাশ বিনে সংরক্ষিত' : 'Publish failed; saved to Trash Bin');
+      recordActivity('Publish failed; saved to Trash Bin');
       setPublishNotice(isBn
-        ? 'প্রকাশ ব্যর্থ হয়েছে। কারণটি অ্যাডমিন ট্র্যাশ বিনে সংরক্ষণ করা হয়েছে।'
+        ? 'Publishing failed. The reason was saved in the Admin Trash Bin.'
         : 'Publishing failed. The reason was saved in the Admin Trash Bin.');
       setActiveTab('trash');
     } finally {
@@ -287,12 +286,12 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <h2 className="text-2xl font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
-                {isBn ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}
+                Admin Panel
               </h2>
 
               <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
                 {isBn
-                  ? 'অনুমোদিত মন্দির কমিটি অ্যাডমিনদের জন্য'
+                  ? 'For authorized temple committee administrators only'
                   : 'For authorized temple committee administrators only'}
               </p>
             </div>
@@ -300,7 +299,7 @@ export const AdminDashboard: React.FC = () => {
             <form onSubmit={handleAdminLogin} className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-neutral-700 dark:text-neutral-200">
-                  {isBn ? 'ইমেইল' : 'Email'}
+                  Email
                 </label>
                 <input
                   type="email"
@@ -315,7 +314,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-neutral-700 dark:text-neutral-200">
-                  {isBn ? 'পাসওয়ার্ড' : 'Password'}
+                  Password
                 </label>
                 <input
                   type="password"
@@ -354,7 +353,7 @@ export const AdminDashboard: React.FC = () => {
               className="mt-5 flex w-full items-center justify-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#9E1B32]"
             >
               <ArrowLeft className="h-4 w-4" />
-              {isBn ? 'ওয়েবসাইটে ফিরে যান' : 'Return to Website'}
+              Return to Website
             </button>
           </div>
         </div>
@@ -367,11 +366,11 @@ export const AdminDashboard: React.FC = () => {
       <div className="py-24 text-center space-y-4 max-w-md mx-auto px-4">
         <Shield className="w-12 h-12 mx-auto text-rose-500" />
         <h2 className="text-xl font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
-          {isBn ? 'অননুমোদিত প্রবেশ' : 'Unauthorized Access'}
+          Unauthorized Access
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
           {isBn
-            ? 'শুধুমাত্র অনুমোদিত মন্দির কমিটি অ্যাডমিনদের এই প্যানেলে প্রবেশাধিকার রয়েছে।'
+            ? 'Only approved temple committee administrators may access this management console.'
             : 'Only approved temple committee administrators may access this management console.'}
         </p>
         <button
@@ -386,7 +385,7 @@ export const AdminDashboard: React.FC = () => {
 
 
   const handleExport = () => {
-    recordActivity(isBn ? 'ব্যাকআপ JSON এক্সপোর্ট করা হয়েছে' : 'Backup JSON exported');
+    recordActivity('Backup JSON exported');
     const jsonStr = exportDataJSON();
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -404,14 +403,14 @@ export const AdminDashboard: React.FC = () => {
 
     // Keep restores predictable on low-memory devices and avoid accidental overwrites.
     if (file.size > 10 * 1024 * 1024) {
-      setImportNotice(isBn ? 'ব্যাকআপ ফাইল ১০ MB-এর বেশি। ছোট ফাইল ব্যবহার করুন।' : 'Backup file is larger than 10 MB. Choose a smaller file.');
+      setImportNotice('Backup file is larger than 10 MB. Choose a smaller file.');
       input.value = '';
       return;
     }
 
     const confirmed = window.confirm(
       isBn
-        ? 'এই ব্যাকআপের ডেটা বর্তমান অ্যাডমিন এডিটরে লোড হবে। পরে প্রকাশ করতে হবে। এগিয়ে যাবেন?'
+        ? 'Load this backup into the current admin editor? Review it and click Publish Changes to make it live.'
         : 'Load this backup into the current admin editor? Review it and click Publish Changes to make it live.'
     );
     if (!confirmed) {
@@ -421,13 +420,13 @@ export const AdminDashboard: React.FC = () => {
 
     void file.text().then(async (content) => {
       const success = await importDataJSON(content);
-      if (success) recordActivity(isBn ? 'ব্যাকআপ রিস্টোর করা হয়েছে (প্রকাশের অপেক্ষায়)' : 'Backup restored to editor (not yet published)');
+      if (success) recordActivity('Backup restored to editor (not yet published)');
       setImportNotice(success
-        ? (isBn ? 'ব্যাকআপ এডিটরে লোড হয়েছে। লাইভ করতে Publish Changes চাপুন।' : 'Backup loaded into the editor. Click Publish Changes to make it live.')
-        : (isBn ? 'ভুল ফরম্যাট! ব্যাকআপ ফাইলটি সঠিক নয়।' : 'Invalid backup JSON file.'));
+        ? ('Backup loaded into the editor. Click Publish Changes to make it live.')
+        : ('Invalid backup JSON file.'));
       window.setTimeout(() => setImportNotice(''), 5000);
     }).catch(() => {
-      setImportNotice(isBn ? 'ব্যাকআপ ফাইল পড়া যায়নি।' : 'Could not read the backup file.');
+      setImportNotice('Could not read the backup file.');
     }).finally(() => {
       input.value = '';
     });
@@ -451,7 +450,7 @@ export const AdminDashboard: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-[#9E1B32] dark:text-[#E5C158]" />
                 <h1 className="text-xl sm:text-2xl font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
-                  {isBn ? 'মন্দির কমিটি অ্যাডমিন পোর্টাল' : 'Temple Administration Portal'}
+                  Temple Administration Portal
                 </h1>
               </div>
               <p className="text-xs text-neutral-500">
@@ -473,7 +472,7 @@ export const AdminDashboard: React.FC = () => {
               title={isBn ? 'প্রকাশের আগে খসড়া দেখুন' : 'Preview your draft before publishing'}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{isBn ? 'প্রিভিউ দেখুন' : 'Preview Draft'}</span>
+              <span>Preview Draft</span>
             </button>
             <button
               onClick={() => void handlePublish()}
@@ -482,14 +481,14 @@ export const AdminDashboard: React.FC = () => {
               title={isBn ? 'সকল পরিবর্তন প্রকাশ করুন' : 'Publish all changes'}
             >
               <Check className="w-3.5 h-3.5" />
-              <span>{isPublishing ? (isBn ? 'প্রকাশ হচ্ছে...' : 'Publishing...') : (isBn ? 'পরিবর্তন প্রকাশ' : 'Publish Changes')}</span>
+              <span>{isPublishing ? 'Publishing...' : 'Publish Changes'}</span>
             </button>
             <button
               onClick={handleExport}
               className="px-3 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>{isBn ? 'ব্যাকআপ JSON' : 'Export JSON'}</span>
+              <span>Export JSON</span>
             </button>
 
             <button
@@ -501,7 +500,7 @@ export const AdminDashboard: React.FC = () => {
               title={isBn ? 'লগআউট করুন' : 'Log Out'}
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>{isBn ? 'লগআউট' : 'Log Out'}</span>
+              <span>Log Out</span>
             </button>
           </div>
         </div>
@@ -550,10 +549,10 @@ export const AdminDashboard: React.FC = () => {
             <section aria-label={isBn ? 'কনটেন্ট পরিসংখ্যান' : 'Content analytics'} className="space-y-3">
               <div>
                 <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
-                  {isBn ? 'সাইট কনটেন্টের সংক্ষিপ্ত পরিসংখ্যান' : 'Content at a glance'}
+                  Content at a glance
                 </h3>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                  {isBn ? 'বর্তমান অ্যাডমিন ডেটা থেকে স্বয়ংক্রিয়ভাবে গণনা করা হয়েছে।' : 'Automatically calculated from the content currently loaded in the admin panel.'}
+                  Automatically calculated from the content currently loaded in the admin panel.
                 </p>
               </div>
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
