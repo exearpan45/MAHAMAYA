@@ -21,6 +21,7 @@ import { GallerySection } from './components/GallerySection';
 import { VideoGallery } from './components/VideoGallery';
 import { HistorySection } from './components/HistorySection';
 import { VisitSection } from './components/VisitSection';
+import { DigitalPujaExperience } from './components/DigitalPujaExperience';
 import { Footer } from './components/Footer';
 
 // Modals & Panels
@@ -268,6 +269,7 @@ const MainLayout: React.FC = () => {
           <Countdown />
           <PujaCalendar />
           <AboutMahamaya />
+          <DigitalPujaExperience />
           <FourDayExperience />
           <EventsSection />
           <CulturalPrograms />
