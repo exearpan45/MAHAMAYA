@@ -6,7 +6,8 @@ export const Announcements: React.FC = () => {
   const { language, announcements } = useApp();
   const isBn = language === 'bn';
 
-  const activeAnnouncements = announcements.filter((a) => a.active);
+  const now = Date.now();
+  const activeAnnouncements = announcements.filter((a) => a.active && (!a.expiresAt || new Date(a.expiresAt).getTime() > now));
 
   return (
     <section id="announcements" className="py-20 bg-[#F7F2E8]/80 dark:bg-[#12080B]/85 text-neutral-900 dark:text-neutral-100 transition-colors duration-200 border-t border-[#D4AF37]/20 backdrop-blur-[1px]">
