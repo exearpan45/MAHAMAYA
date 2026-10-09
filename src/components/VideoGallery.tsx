@@ -35,6 +35,7 @@ export const VideoGallery: React.FC = () => {
   const { language, videos } = useApp();
   const isBn = language === 'bn';
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+  const [showAllVideos, setShowAllVideos] = useState(false);
 
   const featuredVideos = useMemo(
     () => videos.filter((video) => video.featured),
@@ -46,6 +47,8 @@ export const VideoGallery: React.FC = () => {
     const rest = videos.filter((video) => !video.featured);
     return [...featured, ...rest];
   }, [videos]);
+
+  const displayedVideos = showAllVideos ? orderedVideos : orderedVideos.slice(0, 3);
 
   useEffect(() => {
     if (!activeVideo) return;
@@ -108,7 +111,7 @@ export const VideoGallery: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {orderedVideos.map((video) => (
+          {displayedVideos.map((video) => (
             <button
               type="button"
               key={video.id}
@@ -122,6 +125,9 @@ export const VideoGallery: React.FC = () => {
                     alt={isBn ? video.title_bn : video.title_en}
                     loading="lazy"
                     decoding="async"
+                    fetchPriority="low"
+                    width={640}
+                    height={360}
                     referrerPolicy="no-referrer"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -157,6 +163,20 @@ export const VideoGallery: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {orderedVideos.length > 3 && (
+          <div className="flex justify-center -mt-4">
+            <button
+              type="button"
+              onClick={() => setShowAllVideos((value) => !value)}
+              className="rounded-xl border border-[#D4AF37]/40 bg-[#FFFDF9] dark:bg-[#1A0C11] px-5 py-3 text-sm font-semibold text-[#9E1B32] dark:text-[#E5C158] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/60"
+            >
+              {showAllVideos
+                ? (isBn ? 'কম ভিডিও দেখুন' : 'Show fewer videos')
+                : (isBn ? `সব ভিডিও দেখুন (${orderedVideos.length})` : `View all videos (${orderedVideos.length})`)}
+            </button>
+          </div>
+        )}
 
         {activeVideo && (
           <div
