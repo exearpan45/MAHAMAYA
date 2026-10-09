@@ -441,7 +441,41 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'overview' && (
           <div className="space-y-6 animate-in fade-in duration-200">
 
-            {/* KPI Cards */}
+            {/* Live content analytics */}
+            <section aria-label={isBn ? 'কনটেন্ট পরিসংখ্যান' : 'Content analytics'} className="space-y-3">
+              <div>
+                <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {isBn ? 'সাইট কনটেন্টের সংক্ষিপ্ত পরিসংখ্যান' : 'Content at a glance'}
+                </h3>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  {isBn ? 'বর্তমান অ্যাডমিন ডেটা থেকে স্বয়ংক্রিয়ভাবে গণনা করা হয়েছে।' : 'Automatically calculated from the content currently loaded in the admin panel.'}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+                {[
+                  { label: isBn ? 'অনুষ্ঠান' : 'Events', value: events.length, detail: isBn ? 'সব অনুষ্ঠান' : 'All events', icon: Calendar },
+                  { label: isBn ? 'সক্রিয় বিজ্ঞপ্তি' : 'Active notices', value: announcements.filter((item) => item.active && (!item.expiresAt || new Date(item.expiresAt).getTime() > Date.now())).length, detail: isBn ? 'মেয়াদ শেষ হয়নি' : 'Not expired', icon: Bell },
+                  { label: isBn ? 'ছবি' : 'Photos', value: gallery.length, detail: isBn ? 'ফটো অ্যালবাম' : 'Photo archive', icon: ImageIcon },
+                  { label: isBn ? 'ভিডিও' : 'Videos', value: videos.length, detail: isBn ? 'ভিডিও অ্যালবাম' : 'Video archive', icon: Film },
+                  { label: isBn ? 'ইতিহাসের তথ্য' : 'History entries', value: historyMilestones.length, detail: isBn ? 'ঐতিহাসিক মাইলস্টোন' : 'Historical milestones', icon: History },
+                  { label: isBn ? 'সাংস্কৃতিক অনুষ্ঠান' : 'Cultural programs', value: culturalPrograms.length, detail: isBn ? 'প্রোগ্রাম তালিকা' : 'Program listings', icon: Music },
+                  { label: isBn ? 'পূজা বছর' : 'Puja years', value: pujaYears.length, detail: isBn ? 'সংরক্ষিত পঞ্জিকা' : 'Saved calendars', icon: CalendarDays },
+                  { label: isBn ? 'পূজা দিবস' : 'Puja days', value: pujaYears.reduce((total, year) => total + year.days.length, 0), detail: isBn ? 'সব বছরের মোট' : 'Across all years', icon: Clock },
+                ].map((metric) => {
+                  const Icon = metric.icon;
+                  return (
+                    <div key={metric.label} className="min-w-0 rounded-2xl border border-[#D4AF37]/30 bg-[#FFFDF9] dark:bg-[#1A0C11] p-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">{metric.label}</span>
+                        <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-[#9E1B32] dark:text-[#E5C158]" />
+                      </div>
+                      <p className="mt-3 text-2xl font-extrabold tabular-nums text-[#4A0E17] dark:text-[#FBF6EF]">{metric.value}</p>
+                      <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">{metric.detail}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
 
             {/* Quick Actions & Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
