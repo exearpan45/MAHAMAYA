@@ -751,3 +751,68 @@ footer {
   }
   html { scroll-behavior: auto !important; }
 }
+
+
+/* Contrast repair: enforce readable text on ivory/light panels across all sections. */
+#main-content > section:nth-of-type(even):not(.hero-premium),
+#main-content > section:nth-of-type(even):not(.hero-premium) > div {
+  color: #35151b !important;
+}
+#main-content > section:nth-of-type(even):not(.hero-premium) p,
+#main-content > section:nth-of-type(even):not(.hero-premium) li,
+#main-content > section:nth-of-type(even):not(.hero-premium) label,
+#main-content > section:nth-of-type(even):not(.hero-premium) small,
+#main-content > section:nth-of-type(even):not(.hero-premium) span:not([class*="text-amber"]):not([class*="text-yellow"]):not([class*="text-orange"]),
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-400,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-500,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-600,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-700,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-gray-400,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-gray-500,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-gray-600 {
+  color: #59464a !important;
+}
+#main-content > section:nth-of-type(even):not(.hero-premium) h1,
+#main-content > section:nth-of-type(even):not(.hero-premium) h2,
+#main-content > section:nth-of-type(even):not(.hero-premium) h3,
+#main-content > section:nth-of-type(even):not(.hero-premium) h4,
+#main-content > section:nth-of-type(even):not(.hero-premium) strong {
+  color: #4b0713 !important;
+}
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-white,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-100,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-200,
+#main-content > section:nth-of-type(even):not(.hero-premium) .text-neutral-300 {
+  color: #59464a !important;
+}
+/* Preserve explicit white copy on dark image overlays and dark cards. */
+#main-content > section:nth-of-type(even):not(.hero-premium) .bg-neutral-900,
+#main-content > section:nth-of-type(even):not(.hero-premium) .bg-black,
+#main-content > section:nth-of-type(even):not(.hero-premium) [class*="from-black"] {
+  color: #fff8eb !important;
+}
+#main-content > section:nth-of-type(even):not(.hero-premium) .bg-neutral-900 p,
+#main-content > section:nth-of-type(even):not(.hero-premium) .bg-black p,
+#main-content > section:nth-of-type(even):not(.hero-premium) [class*="from-black"] p {
+  color: #f8efe4 !important;
+}
+/* Shared accessible contrast for controls and muted helper text. */
+#main-content button,
+#main-content a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+#main-content :focus-visible,
+header :focus-visible,
+footer :focus-visible {
+  outline: 2px solid #d4af37 !important;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  #main-content *, header *, footer * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
