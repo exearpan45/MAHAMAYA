@@ -422,6 +422,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const addVideo = (item: Omit<VideoItem, 'id' | 'createdAt'>) => {
     if (videos.length >= MAX_VIDEOS) throw new Error('Video gallery limit reached. You can keep up to 200 videos.');
+    if (item.videoUrl.startsWith('data:video/') && videos.some((video) => video.videoUrl.startsWith('data:video/'))) {
+      throw new Error('Publish the current uploaded video before adding another video file. You can still add HTTPS YouTube/Vimeo links.');
+    }
     let parsed: URL;
     if (!item.videoUrl.startsWith('data:video/')) {
       try {
