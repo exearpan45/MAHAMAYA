@@ -94,15 +94,28 @@ export const PujaCalendar: React.FC = () => {
       '</p></header><section class="grid">' + cards + '</section><footer class="footer">' +
       escapeHtml(isBn ? 'পূজার সময়সূচী কমিটির সিদ্ধান্ত অনুযায়ী পরিবর্তনযোগ্য।' : 'Timings may change according to committee guidance.') +
       '<br>' + escapeHtml(window.location.origin) + '</footer></main></body></html>';
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'pinrra-durga-mandir-' + currentPujaYear.year + '-designed-calendar.html';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+    // Open the designed calendar in a separate tab and invoke the browser's
+    // print dialog, where visitors can save a shareable PDF without extra software.
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      // Popup-blocker fallback: keep the standalone designed calendar available.
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pinrra-durga-mandir-' + currentPujaYear.year + '-designed-calendar.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.addEventListener('load', () => {
+      printWindow.setTimeout(() => printWindow.print(), 500);
+    }, { once: true });
   };
 
   const handleAddToCalendar = () => {
@@ -195,7 +208,7 @@ export const PujaCalendar: React.FC = () => {
               title={isBn ? 'সুন্দর নকশার ক্যালেন্ডার ফাইল ডাউনলোড করুন' : 'Download a designed calendar file'}
             >
               <Download className="w-4 h-4" />
-              <span>{isBn ? 'ক্যালেন্ডার ডাউনলোড' : 'Download Designed Calendar'}</span>
+              <span>{isBn ? 'PDF ডাউনলোড / সংরক্ষণ' : 'Download / Save as PDF'}</span>
             </button>
             <button
               onClick={() => setDownloadModalOpen(true)}
