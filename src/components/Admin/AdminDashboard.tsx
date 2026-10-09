@@ -1150,7 +1150,7 @@ export const AdminDashboard: React.FC = () => {
                 <p className="mt-1.5 text-[10px] text-neutral-400">
                   {galleryRemaining > 0
                     ? (isBn ? `${galleryRemaining}টি ছবি যোগ করা যাবে` : `${galleryRemaining} photo slots remaining`)
-                    : (isBn ? 'গ্যালারির ২০০টি ছবির সীমা পূর্ণ হয়েছে' : 'Gallery limit of 500 photos reached')}
+                    : (isBn ? 'গ্যালারির ৫০০টি ছবির সীমা পূর্ণ হয়েছে' : 'Gallery limit of 500 photos reached')}
                 </p>
               </div>
             </div>
