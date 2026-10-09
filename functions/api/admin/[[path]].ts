@@ -154,11 +154,11 @@ const publish = async (request: Request, env: Env) => {
     return response({ error: 'No website content was supplied.' }, 400);
   }
 
-  if (Array.isArray(content.gallery) && content.gallery.length > 200) {
-    return response({ error: 'Gallery limit reached. The website supports up to 200 photos.' }, 400);
+  if (Array.isArray(content.gallery) && content.gallery.length > 500) {
+    return response({ error: 'Gallery limit reached. The website supports up to 500 photos.' }, 400);
   }
-  if (Array.isArray(content.videos) && content.videos.length > 50) {
-    return response({ error: 'Video gallery limit reached. The website supports up to 50 videos.' }, 400);
+  if (Array.isArray(content.videos) && content.videos.length > 200) {
+    return response({ error: 'Video gallery limit reached. The website supports up to 200 videos.' }, 400);
   }
   if (Array.isArray(content.videos)) {
     for (const video of content.videos) {
