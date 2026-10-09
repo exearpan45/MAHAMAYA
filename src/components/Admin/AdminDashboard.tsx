@@ -114,6 +114,7 @@ export const AdminDashboard: React.FC = () => {
     | 'history'
     | 'settings'
     | 'activity'
+    | 'trash'
   >('overview');
 
   // State for new Event form
@@ -202,6 +203,30 @@ export const AdminDashboard: React.FC = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishNotice, setPublishNotice] = useState('');
+  type FailedPublish = { id: string; title: string; reason: string; stage: string; at: string };
+  const [failedPublishes, setFailedPublishes] = useState<FailedPublish[]>(() => {
+    try {
+      const saved = window.localStorage.getItem('mahamaya_publish_trash_v1');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed.filter((item) =>
+        item && typeof item.id === 'string' && typeof item.reason === 'string' && typeof item.at === 'string'
+      ).slice(0, 50) : [];
+    } catch { return []; }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('mahamaya_publish_trash_v1', JSON.stringify(failedPublishes.slice(0, 50)));
+    } catch {
+      setPublishNotice(isBn
+        ? 'ট্র্যাশ বিন সংরক্ষণ করা যায়নি। ব্রাউজারের স্টোরেজ পূর্ণ হতে পারে।'
+        : 'Could not save the Trash Bin. Browser storage may be full.');
+    }
+  }, [failedPublishes, isBn]);
+
+  const removeFailedPublish = (id: string) => {
+    setFailedPublishes((items) => items.filter((item) => item.id !== id));
+  };
 
   const handleAdminLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -230,7 +255,21 @@ export const AdminDashboard: React.FC = () => {
       setPublishNotice(isBn ? 'পরিবর্তনগুলি প্রকাশিত হয়েছে। Cloudflare এখন সাইটটি পুনর্নির্মাণ করবে।' : 'Changes published. Cloudflare Pages will rebuild the website automatically.');
       window.setTimeout(() => setPublishNotice(''), 7000);
     } catch (error) {
-      setPublishNotice(error instanceof Error ? error.message : 'Publishing failed.');
+      const reason = error instanceof Error ? error.message : 'Publishing failed for an unknown reason.';
+      const stageMatch = reason.match(/(?:Stage|stage):\\s*([^.)]+)/);
+      const failedItem: FailedPublish = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        title: isBn ? 'ওয়েবসাইট প্রকাশ ব্যর্থ' : 'Website publish failed',
+        reason: reason.slice(0, 1800),
+        stage: stageMatch?.[1]?.trim() || (reason.toLowerCase().includes('compress') ? 'Compression' : 'Publish request / validation'),
+        at: new Date().toISOString(),
+      };
+      setFailedPublishes((items) => [failedItem, ...items].slice(0, 50));
+      recordActivity(isBn ? 'প্রকাশ ব্যর্থ হয়েছে; ট্র্যাশ বিনে সংরক্ষিত' : 'Publish failed; saved to Trash Bin');
+      setPublishNotice(isBn
+        ? 'প্রকাশ ব্যর্থ হয়েছে। কারণটি অ্যাডমিন ট্র্যাশ বিনে সংরক্ষণ করা হয়েছে।'
+        : 'Publishing failed. The reason was saved in the Admin Trash Bin.');
+      setActiveTab('trash');
     } finally {
       setIsPublishing(false);
     }
@@ -480,6 +519,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'history', label_bn: 'ইতিহাস ও মাইলফলক', label_en: 'History', icon: History },
             { id: 'settings', label_bn: 'ওয়েবসাইট সেটিংস', label_en: 'Site Settings', icon: Settings },
             { id: 'activity', label_bn: 'কার্যকলাপের লগ', label_en: 'Activity Log', icon: ClipboardList },
+            { id: 'trash', label_bn: `ট্র্যাশ বিন (${failedPublishes.length})`, label_en: `Trash Bin (${failedPublishes.length})`, icon: Trash2 },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1630,6 +1670,52 @@ export const AdminDashboard: React.FC = () => {
                   <li key={item.id} className="flex flex-col gap-1 rounded-xl border border-neutral-200 bg-white/70 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/40 sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-sm font-medium">{item.action}</span>
                     <time dateTime={item.at} className="shrink-0 text-xs text-neutral-500">{new Date(item.at).toLocaleString(isBn ? 'bn-BD' : 'en-IN')}</time>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'trash' && (
+          <section className="space-y-4 animate-in fade-in duration-200" aria-label={isBn ? 'ব্যর্থ প্রকাশের ট্র্যাশ বিন' : 'Failed publish Trash Bin'}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">{isBn ? 'ব্যর্থ প্রকাশের ট্র্যাশ বিন' : 'Failed Publish Trash Bin'}</h2>
+                <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                  {isBn
+                    ? 'প্রতিটি রেকর্ডে ব্যর্থতার কারণ ও সময় আছে। এই তালিকা শুধু এই ব্রাউজারে সংরক্ষিত; এটি সার্ভার-সাইড স্টোরেজ নয়।'
+                    : 'Each record includes the failure reason and time. This list is stored in this browser only, not server-side storage.'}
+                </p>
+              </div>
+              {failedPublishes.length > 0 && <button type="button" onClick={() => {
+                if (window.confirm(isBn ? 'সব ব্যর্থ রেকর্ড স্থায়ীভাবে মুছবেন?' : 'Permanently clear every failed publish record?')) setFailedPublishes([]);
+              }} className="self-start rounded-xl border border-rose-300 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">
+                {isBn ? 'সব মুছুন' : 'Empty Trash'}
+              </button>}
+            </div>
+            {failedPublishes.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#D4AF37]/40 p-8 text-center text-sm text-neutral-500">
+                {isBn ? 'এখনও কোনো ব্যর্থ প্রকাশ নেই।' : 'No failed publishes recorded. Nice and tidy.'}
+              </div>
+            ) : (
+              <ol className="space-y-3">
+                {failedPublishes.map((item) => (
+                  <li key={item.id} className="rounded-2xl border border-rose-300/70 bg-rose-50/70 p-4 dark:border-rose-900/50 dark:bg-rose-950/20">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0 space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-rose-600/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-rose-700 dark:text-rose-300">{isBn ? 'ব্যর্থ' : 'Failed'}</span>
+                          <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">{isBn ? 'ধাপ:' : 'Stage:'} {item.stage}</span>
+                        </div>
+                        <h3 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">{item.title}</h3>
+                        <p className="break-words whitespace-pre-wrap text-sm text-rose-900 dark:text-rose-200">{item.reason}</p>
+                        <time dateTime={item.at} className="block text-xs text-neutral-500">{new Date(item.at).toLocaleString(isBn ? 'bn-BD' : 'en-IN')}</time>
+                      </div>
+                      <button type="button" onClick={() => removeFailedPublish(item.id)} className="shrink-0 rounded-lg border border-neutral-300 px-3 py-2 text-xs font-semibold hover:bg-white dark:border-neutral-700 dark:hover:bg-neutral-900">
+                        {isBn ? 'রেকর্ড মুছুন' : 'Delete record'}
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ol>
