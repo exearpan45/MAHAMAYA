@@ -324,3 +324,188 @@ body.puja-theme {
     animation: none !important;
   }
 }
+
+
+/* ===== MAHAMAYA A+B+C redesign: royal heritage + editorial clarity + cinematic restraint ===== */
+:root {
+  --mm-wine: #4A0E17;
+  --mm-wine-deep: #18080D;
+  --mm-gold: #D4AF37;
+  --mm-ivory: #FFF9EE;
+}
+
+/* Editorial rhythm and consistent spacing across every existing section. */
+#main-content > section:not(.hero-premium) {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(3.5rem, 7vw, 6.5rem);
+  border-top: 1px solid rgba(212, 175, 55, .18);
+}
+#main-content > section:not(.hero-premium)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1.25rem clamp(.6rem, 2.5vw, 2rem);
+  border: 1px solid rgba(212, 175, 55, .12);
+  border-radius: clamp(1rem, 2vw, 1.75rem);
+  pointer-events: none;
+}
+#main-content > section:not(.hero-premium) h2 {
+  letter-spacing: -.025em;
+  line-height: 1.12;
+}
+#main-content > section:not(.hero-premium) h2,
+#main-content > section:not(.hero-premium) h3 {
+  text-wrap: balance;
+}
+#main-content > section:not(.hero-premium) p {
+  line-height: 1.75;
+}
+#main-content > section:not(.hero-premium) .max-w-7xl,
+#main-content > section:not(.hero-premium) .max-w-6xl,
+#main-content > section:not(.hero-premium) .max-w-5xl {
+  position: relative;
+}
+
+/* Refined card system, applied to existing real content and features. */
+#main-content > section:not(.hero-premium) .rounded-2xl,
+#main-content > section:not(.hero-premium) .rounded-3xl {
+  border-color: rgba(180, 137, 49, .24);
+  box-shadow: 0 12px 34px rgba(40, 10, 16, .055);
+  transition: border-color 280ms ease, box-shadow 320ms ease, background-color 280ms ease;
+}
+#main-content > section:not(.hero-premium) .rounded-2xl:hover,
+#main-content > section:not(.hero-premium) .rounded-3xl:hover {
+  border-color: rgba(212, 175, 55, .48);
+  box-shadow: 0 18px 42px rgba(40, 10, 16, .09);
+}
+.dark #main-content > section:not(.hero-premium) .rounded-2xl,
+.dark #main-content > section:not(.hero-premium) .rounded-3xl {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .16);
+}
+#main-content > section:not(.hero-premium) img {
+  object-fit: cover;
+}
+
+/* Cinematic hero: real temple photo stays visible, with legible editorial overlays. */
+.hero-premium {
+  min-height: min(900px, calc(100svh - 5rem));
+  padding-block: clamp(4rem, 8vh, 7rem);
+  background: #18080D;
+}
+.hero-premium > div:first-child img {
+  transform: scale(1.025);
+  animation: mmHeroPhotoSettle 1500ms cubic-bezier(.2,.75,.25,1) both;
+}
+.hero-premium > div:first-child > div:first-of-type {
+  background: linear-gradient(90deg, rgba(18, 7, 10, .78), rgba(18, 7, 10, .38) 48%, rgba(18, 7, 10, .72)),
+    linear-gradient(0deg, rgba(18, 7, 10, .62), rgba(18, 7, 10, .08) 42%, rgba(18, 7, 10, .42)) !important;
+}
+.hero-premium > div:first-child > div:last-of-type {
+  background: radial-gradient(ellipse at 50% 42%, rgba(212,175,55,.12), transparent 60%) !important;
+}
+.hero-premium h1 {
+  color: #FFF8E9 !important;
+  text-shadow: 0 3px 24px rgba(0,0,0,.35);
+  animation: mmHeroTextIn 850ms 100ms cubic-bezier(.2,.8,.2,1) both;
+}
+.hero-premium h1 + p {
+  color: #F0D27A !important;
+  animation: mmHeroTextIn 900ms 200ms cubic-bezier(.2,.8,.2,1) both;
+}
+.hero-premium .inline-flex.rounded-full {
+  background: rgba(30, 9, 15, .7) !important;
+  border-color: rgba(226, 192, 93, .5) !important;
+  color: #F4D987 !important;
+  box-shadow: 0 10px 34px rgba(0,0,0,.16);
+  backdrop-filter: blur(12px);
+}
+.hero-premium .relative.z-10 {
+  max-width: 68rem;
+}
+.hero-premium .relative.z-10 > div:last-child button,
+.hero-premium .relative.z-10 > div:last-child a {
+  min-height: 48px;
+  border-radius: 999px;
+  padding-inline: 1.5rem;
+}
+.hero-premium .relative.z-10 > div:last-child button:first-child {
+  box-shadow: 0 10px 30px rgba(91, 9, 28, .32);
+}
+.hero-premium .relative.z-10 > div:last-child button:first-child:hover {
+  box-shadow: 0 14px 36px rgba(91, 9, 28, .42);
+}
+.hero-premium .relative.z-10 > div:last-child a {
+  border-color: rgba(212,175,55,.42);
+}
+
+/* Premium sticky navigation: a quieter, more deliberate glass finish. */
+header.sticky {
+  background: rgba(255, 249, 238, .91);
+  border-bottom-color: rgba(180, 137, 49, .3);
+  box-shadow: 0 8px 28px rgba(46, 12, 18, .055);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+.dark header.sticky {
+  background: rgba(21, 7, 12, .9);
+  border-bottom-color: rgba(212,175,55,.22);
+  box-shadow: 0 8px 30px rgba(0,0,0,.16);
+}
+header.sticky button:focus-visible,
+header.sticky a:focus-visible {
+  outline: 2px solid var(--mm-gold);
+  outline-offset: 3px;
+}
+footer {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(158,27,50,.18), transparent 55%),
+    #140609 !important;
+}
+
+/* Gentle reveal timing for page opening and real-photo entrance. */
+@keyframes mmHeroPhotoSettle {
+  from { opacity: .65; transform: scale(1.07); }
+  to { opacity: 1; transform: scale(1.025); }
+}
+@keyframes mmHeroTextIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile-first: less decoration, no hover-only effects, and comfortable tap targets. */
+@media (max-width: 640px) {
+  #main-content > section:not(.hero-premium) {
+    padding-block: 3.25rem;
+  }
+  #main-content > section:not(.hero-premium)::before {
+    inset: .65rem .4rem;
+    border-radius: 1rem;
+  }
+  .hero-premium {
+    min-height: 82svh;
+  }
+  .hero-premium .relative.z-10 {
+    padding-top: 4.5rem;
+    padding-bottom: 3.5rem;
+  }
+  .hero-premium .relative.z-10 > div:last-child {
+    gap: .65rem;
+  }
+  .hero-premium .relative.z-10 > div:last-child button,
+  .hero-premium .relative.z-10 > div:last-child a {
+    min-height: 46px;
+    padding-inline: 1rem;
+  }
+  #main-content > section:not(.hero-premium) .rounded-2xl:hover,
+  #main-content > section:not(.hero-premium) .rounded-3xl:hover {
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-premium > div:first-child img,
+  .hero-premium h1,
+  .hero-premium h1 + p {
+    animation: none !important;
+    transform: none !important;
+  }
+}
