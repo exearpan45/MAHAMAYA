@@ -236,7 +236,7 @@ const MainLayout: React.FC = () => {
     );
   }
 
-  if (window.location.pathname.replace(/\\/+$/, '') === '/gallery') {
+  if (window.location.pathname === '/gallery') {
     return (
       <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
         <MaaDurgaWebsiteBackground />
