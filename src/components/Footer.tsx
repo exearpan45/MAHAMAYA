@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import {
   Compass,
@@ -10,6 +10,8 @@ import {
   Sun,
   Moon,
   Sparkles,
+  Share2,
+  Check,
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -25,6 +27,37 @@ export const Footer: React.FC = () => {
   } = useApp();
 
   const isBn = language === 'bn';
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+
+  const handleShareWebsite = async () => {
+    const shareData = {
+      title: isBn ? settings.templeName_bn : settings.templeName_en,
+      text: isBn
+        ? 'পিন্দ্রা দুর্গা মন্দিরের ইতিহাস, পূজা সূচি ও ছবিগুলি দেখুন।'
+        : 'Explore Pinrra Durga Mandir, its heritage, Puja schedule, photos and videos.',
+      url: window.location.origin,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareData.url);
+        setShareStatus('copied');
+        window.setTimeout(() => setShareStatus('idle'), 2400);
+        return;
+      }
+
+      window.prompt(isBn ? 'ওয়েবসাইটের লিঙ্ক কপি করুন:' : 'Copy the website link:', shareData.url);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      setShareStatus('error');
+      window.setTimeout(() => setShareStatus('idle'), 3000);
+    }
+  };
 
   const handleNavClick = (id: string) => {
     setActiveView('home');
@@ -205,6 +238,22 @@ export const Footer: React.FC = () => {
               <span>{isBn ? 'গুগল ম্যাপে খুলুন' : 'Open in Google Maps'}</span>
               <ExternalLink className="w-3 h-3" />
             </a>
+
+            <button
+              type="button"
+              onClick={handleShareWebsite}
+              className="inline-flex items-center gap-2 rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/[0.07] px-3 py-2 text-xs font-semibold text-[#FFD700] transition-colors hover:bg-[#D4AF37]/15 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+              aria-live="polite"
+            >
+              {shareStatus === 'copied' ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
+              <span>
+                {shareStatus === 'copied'
+                  ? (isBn ? 'লিঙ্ক কপি হয়েছে!' : 'Link copied!')
+                  : shareStatus === 'error'
+                  ? (isBn ? 'শেয়ার করা যায়নি' : 'Could not share')
+                  : (isBn ? 'ওয়েবসাইট শেয়ার করুন' : 'Share Website')}
+              </span>
+            </button>
 
             <div className="pt-4 flex items-center gap-3">
               {/* Language switcher */}
