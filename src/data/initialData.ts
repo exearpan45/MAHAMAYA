@@ -175,7 +175,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     category: 'Durga Puja',
     status: 'Upcoming',
     location: 'Pinrra Durga Mandir Mandap',
-    image: '/src/assets/images/mandir_heritage_1791376373749.jpg',
+    image: '/real_maa_durga.jpg',
   },
   {
     id: 'evt-2',
@@ -204,7 +204,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     category: 'Bhog',
     status: 'Upcoming',
     location: 'Pinrra Mandir Community Dining Pavilion',
-    image: '/src/assets/images/bhog_prasad_1791376439598.jpg',
+    image: '/real_maa_durga.jpg',
   },
   {
     id: 'evt-4',
@@ -219,7 +219,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     category: 'Puja Ritual',
     status: 'Upcoming',
     location: 'Main Deity Altar',
-    image: '/src/assets/images/sandhi_puja_diyas_1791376395307.jpg',
+    image: '/real_maa_durga.jpg',
   },
   {
     id: 'evt-5',
@@ -234,7 +234,7 @@ export const INITIAL_EVENTS: EventItem[] = [
     category: 'Community Event',
     status: 'Upcoming',
     location: 'Pinrra Durga Mandir Courtyard',
-    image: '/src/assets/images/sindoor_khela_1791376410172.jpg',
+    image: '/real_maa_durga.jpg',
   },
 ];
 
@@ -288,7 +288,7 @@ export const INITIAL_GALLERY: GalleryPhoto[] = [
   },
   {
     id: 'gal-2',
-    imageUrl: '/src/assets/images/mandir_heritage_1791376373749.jpg',
+    imageUrl: '/real_maa_durga.jpg',
     title_en: 'Historic Mandir Courtyard & Puja Mandap',
     title_bn: 'ঐতিহাসিক মন্দির প্রাঙ্গণ ও পূজামণ্ডপ',
     description_en: 'The sanctified grounds of Pinrra Durga Mandir where generations of the Brahman Goswami community have worshipped.',
@@ -301,7 +301,7 @@ export const INITIAL_GALLERY: GalleryPhoto[] = [
   },
   {
     id: 'gal-3',
-    imageUrl: '/src/assets/images/sandhi_puja_diyas_1791376395307.jpg',
+    imageUrl: '/real_maa_durga.jpg',
     title_en: 'Sandhi Puja with 108 Sacred Diyas',
     title_bn: '১০৮ মঙ্গল প্রদীপে আলোকিত পুণ্য সন্ধিপূজা',
     description_en: 'The divine glow of 108 earthen lamps lit at the sacred juncture of Maha Ashtami and Maha Navami.',
@@ -314,7 +314,7 @@ export const INITIAL_GALLERY: GalleryPhoto[] = [
   },
   {
     id: 'gal-4',
-    imageUrl: '/src/assets/images/bhog_prasad_1791376439598.jpg',
+    imageUrl: '/real_maa_durga.jpg',
     title_en: 'Sacred Anna Bhog Prasad Offering',
     title_bn: 'মায়ের ভোগ নিবেদন ও মহাপ্রসাদ',
     description_en: 'Devotional offering of khichuri, labra, payesh, and sweets distributed on all principal days.',
@@ -327,7 +327,7 @@ export const INITIAL_GALLERY: GalleryPhoto[] = [
   },
   {
     id: 'gal-5',
-    imageUrl: '/src/assets/images/sindoor_khela_1791376410172.jpg',
+    imageUrl: '/real_maa_durga.jpg',
     title_en: 'Vijaya Dashami Sindoor Utsav',
     title_bn: 'বিজয়া দশমীর ঐতিহ্যবাহী সিঁদুর উৎসব',
     description_en: 'Joyous and respectful farewell to Maa Durga celebrated with vermilion and heartfelt prayers.',
@@ -350,7 +350,7 @@ export const INITIAL_HISTORY_MILESTONES: HistoryMilestone[] = [
     title_bn: 'কমিউনিটি পূজার শুভ সূচনা',
     description_en: 'The sacred Durga Puja was established through the collective faith and dedication of the Brahman Goswami community of Brahman Para. There is no single individual founder; it is an enduring community legacy.',
     description_bn: 'ব্রাহ্মণ পাড়ার ব্রাহ্মণ গোস্বামী সমাজের সম্মিলিত শ্রদ্ধা ও আন্তরিক প্রচেষ্টায় এই পূজার সূচনা। এই পূজার কোনো একক প্রতিষ্ঠাতা নেই; এটি সম্পূর্ণ একটি সর্বজনীন ও সম্প্রদায়গত ঐতিহ্যের ফল।',
-    image: '/src/assets/images/mandir_heritage_1791376373749.jpg',
+    image: '/real_maa_durga.jpg',
   },
   {
     id: 'hist-2',
