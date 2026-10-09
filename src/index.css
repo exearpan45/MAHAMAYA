@@ -95,3 +95,24 @@
   font-family: var(--font-serif-bn) !important;
   font-feature-settings: "kern", "liga";
 }
+
+
+/* Accessibility and performance: honor devices/users that request less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Avoid costly hover transforms on touch-first devices. */
+@media (hover: none), (pointer: coarse) {
+  .group:hover img {
+    transform: none !important;
+  }
+}
