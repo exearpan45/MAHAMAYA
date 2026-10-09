@@ -21,6 +21,7 @@ import { GallerySection } from './components/GallerySection';
 import { VideoGallery } from './components/VideoGallery';
 import { HistorySection } from './components/HistorySection';
 import { VisitSection } from './components/VisitSection';
+import { CommitteeSection } from './components/CommitteeSection';
 import { DigitalPujaExperience } from './components/DigitalPujaExperience';
 import { Footer } from './components/Footer';
 
@@ -278,6 +279,7 @@ const MainLayout: React.FC = () => {
           <VideoGallery />
           <HistorySection />
           <VisitSection />
+          <CommitteeSection />
         </main>
         <Footer />
         <ReturnToTop />
