@@ -8,6 +8,7 @@ export const GallerySection: React.FC = () => {
   const isBn = language === 'bn';
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
   const categories: { id: string; label_bn: string; label_en: string }[] = [
@@ -24,6 +25,8 @@ export const GallerySection: React.FC = () => {
     if (selectedCategory === 'all') return true;
     return p.category === selectedCategory;
   });
+
+  const displayedPhotos = showAllPhotos ? filteredPhotos : filteredPhotos.slice(0, 8);
 
   const handleNextPhoto = () => {
     if (!activePhoto) return;
@@ -69,7 +72,7 @@ export const GallerySection: React.FC = () => {
             return (
               <button
                 key={c.id}
-                onClick={() => setSelectedCategory(c.id)}
+                onClick={() => { setSelectedCategory(c.id); setShowAllPhotos(false); }}
                 className={`px-4 py-2 text-xs font-semibold rounded-xl transition cursor-pointer ${
                   isSelected
                     ? 'bg-[#9E1B32] text-white shadow-sm'
@@ -84,7 +87,7 @@ export const GallerySection: React.FC = () => {
 
         {/* Photos Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPhotos.map((photo) => (
+          {displayedPhotos.map((photo) => (
             <div
               key={photo.id}
               onClick={() => setActivePhoto(photo)}
@@ -94,8 +97,12 @@ export const GallerySection: React.FC = () => {
                 src={photo.imageUrl}
                 alt={isBn ? photo.title_bn : photo.title_en}
                 loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+                width={640}
+                height={480}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover motion-safe:group-hover:scale-105 motion-reduce:transform-none transition-transform duration-300"
               />
 
               {/* Gradient Overlay */}
@@ -131,6 +138,20 @@ export const GallerySection: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {filteredPhotos.length > 8 && (
+          <div className="flex justify-center pt-2">
+            <button
+              type="button"
+              onClick={() => setShowAllPhotos((value) => !value)}
+              className="rounded-xl border border-[#D4AF37]/40 bg-[#FFFDF9] dark:bg-[#1A0C11] px-5 py-3 text-sm font-semibold text-[#9E1B32] dark:text-[#E5C158] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/60"
+            >
+              {showAllPhotos
+                ? (isBn ? 'কম ছবি দেখুন' : 'Show fewer photos')
+                : (isBn ? `সব ছবি দেখুন (${filteredPhotos.length})` : `View all photos (${filteredPhotos.length})`)}
+            </button>
+          </div>
+        )}
 
         {/* Fullscreen Modal Lightbox */}
         {activePhoto && (
