@@ -120,6 +120,13 @@ export const Header: React.FC = () => {
               ? `${isBn ? topNotice.title_bn : topNotice.title_en}${(isBn ? topNotice.description_bn : topNotice.description_en) ? ` · ${isBn ? topNotice.description_bn : topNotice.description_en}` : ''}`
               : (isBn ? settings.topBannerText_bn : settings.topBannerText_en)}
           </span>
+          <a
+            href="#announcements"
+            onClick={() => setMobileMenuOpen(false)}
+            className="shrink-0 rounded-md border border-current/25 px-2 py-1 font-semibold hover:bg-black/10 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-current"
+          >
+            {isBn ? 'বিস্তারিত' : 'Details'}
+          </a>
           <button
             type="button"
             onClick={() => setDismissedNoticeId(noticeId)}
