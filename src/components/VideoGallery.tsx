@@ -35,6 +35,7 @@ export const VideoGallery: React.FC = () => {
   const { language, videos } = useApp();
   const isBn = language === 'bn';
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+  const [selectedVideoYear, setSelectedVideoYear] = useState<number | 'all'>('all');
   const [showAllVideos, setShowAllVideos] = useState(false);
 
   const featuredVideos = useMemo(
@@ -42,11 +43,19 @@ export const VideoGallery: React.FC = () => {
     [videos],
   );
 
+  const videoYears = useMemo(
+    () => Array.from(new Set(videos.map((video) => video.pujaYear)))
+      .filter((year) => Number.isFinite(year))
+      .sort((a, b) => b - a),
+    [videos],
+  );
+
   const orderedVideos = useMemo(() => {
-    const featured = videos.filter((video) => video.featured);
-    const rest = videos.filter((video) => !video.featured);
+    const yearVideos = videos.filter((video) => selectedVideoYear === 'all' || video.pujaYear === selectedVideoYear);
+    const featured = yearVideos.filter((video) => video.featured);
+    const rest = yearVideos.filter((video) => !video.featured);
     return [...featured, ...rest];
-  }, [videos]);
+  }, [videos, selectedVideoYear]);
 
   const displayedVideos = showAllVideos ? orderedVideos : orderedVideos.slice(0, 3);
 
@@ -109,6 +118,48 @@ export const VideoGallery: React.FC = () => {
             )}
           </div>
         </div>
+
+        {videoYears.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {isBn ? 'বছর অনুযায়ী ভিডিও অ্যালবাম' : 'Video Albums by Year'}
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  {isBn ? 'একটি বছর বেছে নিয়ে সেই বছরের ভিডিও দেখুন।' : 'Choose a year to browse its videos.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setSelectedVideoYear('all'); setShowAllVideos(false); }}
+                aria-pressed={selectedVideoYear === 'all'}
+                className={`rounded-lg border px-3 py-2 text-xs font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${selectedVideoYear === 'all' ? 'border-[#9E1B32] text-[#9E1B32] dark:text-[#E5C158]' : 'border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300'}`}
+              >
+                {isBn ? 'সব বছর' : 'All years'}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {videoYears.map((year) => {
+                const count = videos.filter((video) => video.pujaYear === year).length;
+                const selected = selectedVideoYear === year;
+                return (
+                  <button
+                    type="button"
+                    key={year}
+                    onClick={() => { setSelectedVideoYear(year); setShowAllVideos(false); }}
+                    aria-pressed={selected}
+                    className={`inline-flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${selected ? 'bg-[#9E1B32] text-white border-[#D4AF37]/60' : 'bg-[#FFFDF9] dark:bg-[#1A0C11] text-[#4A0E17] dark:text-[#FBF6EF] border-[#D4AF37]/30 hover:border-[#9E1B32]/60'}`}
+                  >
+                    <Film className="w-4 h-4" />
+                    <span>{year}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] ${selected ? 'bg-white/15' : 'bg-neutral-100 dark:bg-neutral-800'}`}>{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedVideos.map((video) => (
