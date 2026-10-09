@@ -9,7 +9,7 @@ export const GallerySection: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedPujaYear, setSelectedPujaYear] = useState<number | 'all'>('all');
-  const isFullGalleryPage = window.location.pathname.replace(/\\/+$/, '') === '/gallery';
+  const isFullGalleryPage = window.location.pathname === '/gallery';
   const [showAllPhotos, setShowAllPhotos] = useState(isFullGalleryPage);
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
