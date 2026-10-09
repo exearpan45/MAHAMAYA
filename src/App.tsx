@@ -229,12 +229,19 @@ const MainLayout: React.FC = () => {
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
 
-    revealTargets.forEach((element) => {
+    revealTargets.forEach((element, sectionIndex) => {
       element.classList.add('scroll-reveal-section');
-      const cards = element.querySelectorAll<HTMLElement>('.grid > *, [data-scroll-reveal]');
-      cards.forEach((card, index) => {
-        card.classList.add('scroll-reveal-card');
-        card.style.setProperty('--reveal-order', String(Math.min(index, 7)));
+      element.classList.add(sectionIndex % 2 === 0 ? 'scroll-reveal-from-left' : 'scroll-reveal-from-right');
+
+      // Reveal meaningful content blocks in sequence, not every tiny element.
+      const contentBlocks = element.querySelectorAll<HTMLElement>(
+        ':scope > div > div, .grid > *, [data-scroll-reveal]'
+      );
+      contentBlocks.forEach((block, index) => {
+        if (index > 7) return;
+        block.classList.add('scroll-reveal-card');
+        block.style.setProperty('--reveal-order', String(index));
+        block.classList.add(index % 2 === 0 ? 'scroll-reveal-card-left' : 'scroll-reveal-card-right');
       });
       observer.observe(element);
     });
