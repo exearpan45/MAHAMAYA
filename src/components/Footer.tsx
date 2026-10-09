@@ -299,8 +299,8 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          <div className="text-[11px] text-neutral-500 flex items-center gap-1.5">
-            <span>Built with devotion for the Brahman Para community</span>
+          <div className="text-[10px] text-neutral-600 text-center sm:text-right">
+            <span>Designed &amp; developed by Arpan Goswami</span>
           </div>
         </div>
       </div>
