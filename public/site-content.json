@@ -345,6 +345,22 @@
       "uploaderName": "Admin",
       "uploaderEmail": "",
       "uploaderId": "local-admin"
+    },
+    {
+      "title_en": "Joy maa",
+      "title_bn": "Joy maa",
+      "description_en": "Joy maa",
+      "description_bn": "Joy maa",
+      "category": "Durga Puja",
+      "pujaYear": 2026,
+      "featured": false,
+      "id": "d8864634-1d3f-4df1-8eae-ff8427efcb9c",
+      "createdAt": "2026-10-09T11:52:10.316Z",
+      "imageUrl": "/uploads/gallery-1a2f1ad3-f5d2-4c08-a1e8-aeb022d2b728.webp",
+      "thumbnailUrl": "/uploads/gallery-1a2f1ad3-f5d2-4c08-a1e8-aeb022d2b728.webp",
+      "uploaderName": "Admin",
+      "uploaderEmail": "",
+      "uploaderId": "local-admin"
     }
   ],
   "historyMilestones": [
