@@ -254,9 +254,15 @@ const MainLayout: React.FC = () => {
       <MaaDurgaWebsiteBackground />
       <div className="relative z-10">
         {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
+        <a
+          href="#main-content"
+          className="fixed left-3 top-3 z-[100] -translate-y-24 rounded-lg border border-[#D4AF37]/50 bg-[#12080B] px-4 py-3 text-sm font-semibold text-[#FFE9A6] shadow-xl transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+        >
+          {language === 'bn' ? 'মূল বিষয়বস্তুতে যান' : 'Skip to main content'}
+        </a>
         <ScrollProgress />
         <Header />
-        <main id="main-content">
+        <main id="main-content" tabIndex={-1}>
           <Hero />
           <HeritageSection />
           <Countdown />
