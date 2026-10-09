@@ -196,7 +196,7 @@ const startOpeningAnimation = () => {
 startOpeningAnimation();
 
 const MainLayout: React.FC = () => {
-  const { hasChosenLanguage, activeView, apiError, language } = useApp();
+  const { hasChosenLanguage, activeView, apiError, language, currentUser, setActiveView } = useApp();
 
   useEffect(() => {
     const lang = language === 'bn' ? 'bn' : 'en';
@@ -264,6 +264,17 @@ const MainLayout: React.FC = () => {
         </a>
         <ScrollProgress />
         <Header />
+        {currentUser && ['ADMIN', 'SUPER_ADMIN'].includes(currentUser.role) && (
+          <div role="status" className="relative z-20 mx-auto mt-3 flex max-w-7xl flex-col gap-2 rounded-2xl border border-amber-400/50 bg-[#FFF8E8] px-4 py-3 text-sm text-[#6B3D00] shadow-md dark:bg-[#2A160A] dark:text-[#F6D98B] sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <strong>{language === 'bn' ? 'অ্যাডমিন প্রিভিউ মোড' : 'Admin Preview Mode'}</strong>
+              <span className="ml-1">{language === 'bn' ? 'আপনি সম্পাদকের বর্তমান খসড়া দেখছেন। এটি এখনও লাইভে প্রকাশিত হয়নি।' : 'You are viewing the current editor draft. These changes are not live yet.'}</span>
+            </div>
+            <button type="button" onClick={() => setActiveView('admin')} className="shrink-0 rounded-xl bg-[#9E1B32] px-4 py-2 text-xs font-bold text-white hover:bg-[#7F1528] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+              {language === 'bn' ? 'অ্যাডমিনে ফিরুন' : 'Return to Admin'}
+            </button>
+          </div>
+        )}
         <main id="main-content" tabIndex={-1}>
           <Hero />
           <HeritageSection />
