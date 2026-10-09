@@ -2,7 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { MapPin, ExternalLink, Navigation, Compass, AlertCircle, CheckCircle2, Route } from 'lucide-react';
 
-const ALTERNATE_MAP_URL = 'https://maps.app.goo.gl/X52P5RKuM9J54jsl9';
+const ALTERNATE_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Pinrra%20Durga%20Mandir%2C%20Brahman%20Para%2C%20Pinrra%2C%20West%20Bengal';
 
 export const VisitSection: React.FC = () => {
   const { language, settings } = useApp();
