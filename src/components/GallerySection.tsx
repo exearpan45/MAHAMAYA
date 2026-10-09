@@ -119,7 +119,7 @@ export const GallerySection: React.FC = () => {
                   >
                     <div className="relative aspect-[16/9] bg-[#F3E9D8] dark:bg-neutral-900">
                       {cover && (
-                        <img
+                        <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                           src={cover.thumbnailUrl || cover.imageUrl}
                           alt=""
                           loading="lazy"
@@ -170,7 +170,7 @@ export const GallerySection: React.FC = () => {
               onClick={() => setActivePhoto(photo)}
               className="group relative cursor-pointer overflow-hidden rounded-2xl bg-neutral-900 border border-[#D4AF37]/35 shadow-sm hover:shadow-xl transition-all duration-300 aspect-[4/3]"
             >
-              <img
+              <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                 src={photo.imageUrl}
                 alt={isBn ? photo.title_bn : photo.title_en}
                 loading="lazy"
@@ -263,7 +263,7 @@ export const GallerySection: React.FC = () => {
             {/* Main Lightbox View */}
             <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center space-y-4">
               <div className="max-h-[72vh] overflow-hidden rounded-xl border border-[#D4AF37]/40 shadow-2xl">
-                <img
+                <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                   src={activePhoto.imageUrl}
                   alt={isBn ? activePhoto.title_bn : activePhoto.title_en}
                   referrerPolicy="no-referrer"
