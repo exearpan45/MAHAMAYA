@@ -52,6 +52,59 @@ export const PujaCalendar: React.FC = () => {
   const escapeIcsText = (value: string) =>
     value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 
+  const handleDownloadDesignedCalendar = () => {
+    const escapeHtml = (value: string) => value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const dateLabel = (value: string) => {
+      const date = new Date(value + 'T00:00:00');
+      return date.toLocaleDateString(isBn ? 'bn-IN' : 'en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      });
+    };
+    const cards = currentPujaYear.days.map((day, index) => {
+      const rituals = (isBn ? day.rituals_bn : day.rituals_en)
+        .map((ritual) => '<li>' + escapeHtml(ritual) + '</li>').join('');
+      const title = isBn ? day.dayName_bn : day.dayName_en;
+      const timing = day.startTime
+        ? '<p class="meta">◷ ' + escapeHtml(day.startTime) + (day.endTime ? ' – ' + escapeHtml(day.endTime) : '') + '</p>'
+        : '';
+      const bhog = day.bhogTimings
+        ? '<p class="bhog">✦ ' + escapeHtml(isBn ? 'ভোগ বিতরণ: ' : 'Bhog: ') + escapeHtml(day.bhogTimings) + '</p>'
+        : '';
+      const note = isBn ? day.specialNotes_bn : day.specialNotes_en;
+      return '<article class="day"><div class="number">' + String(index + 1).padStart(2, '0') +
+        '</div><p class="date">' + escapeHtml(dateLabel(day.date)) + '</p><h2>' + escapeHtml(title) +
+        '</h2><p class="bengali-date">' + escapeHtml(day.bengaliDate || '') + '</p><ul>' + rituals +
+        '</ul>' + timing + bhog + (note ? '<p class="note">' + escapeHtml(note) + '</p>' : '') + '</article>';
+    }).join('');
+    const html = '<!doctype html><html lang="' + (isBn ? 'bn' : 'en') + '"><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"><title>' +
+      escapeHtml(settings.templeName_en + ' ' + currentPujaYear.year + ' Puja Calendar') +
+      '</title><style>*{box-sizing:border-box}body{margin:0;background:#f7f1e8;color:#32121a;font-family:Arial,"Noto Sans Bengali",sans-serif;line-height:1.55}.sheet{max-width:1100px;margin:24px auto;padding:clamp(18px,4vw,42px);background:#fffdf8;border:1px solid #d4af37;box-shadow:0 12px 36px #32121a12}.hero{text-align:center;padding:18px 12px 28px;border-bottom:3px double #b58b28}.eyebrow{letter-spacing:.18em;color:#9e1b32;font-size:12px;font-weight:bold}.hero h1{font-size:clamp(27px,5vw,42px);margin:10px 0 0;color:#4a0e17}.hero h2{font-size:18px;margin:4px 0;color:#76515a}.edition{font-size:13px;color:#75666a}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}.day{position:relative;padding:18px;border:1px solid #e5d8b9;border-radius:14px;background:linear-gradient(145deg,#fffdf8,#fff8ed);break-inside:avoid}.number{float:right;color:#b58b28;font-size:12px;font-weight:bold;border:1px solid #e5d8b9;border-radius:99px;padding:3px 8px}.date{font-size:12px;color:#9e1b32;font-weight:bold;margin:0 30px 5px 0}.day h2{font-size:22px;margin:4px 0;color:#4a0e17}.bengali-date{font-size:12px;color:#88777a;margin:0 0 12px}.day ul{padding-left:19px;margin:8px 0;font-size:13px}.day li{margin:4px 0}.meta,.bhog,.note{font-size:12px;margin:9px 0 0}.bhog{color:#176b4a;font-weight:bold}.note{background:#f7f1e8;padding:8px;border-radius:8px;color:#725c60}.footer{text-align:center;border-top:1px solid #e5d8b9;padding-top:18px;margin-top:24px;font-size:12px;color:#76666a}.actions{display:flex;justify-content:center;gap:10px;margin:0 auto 16px}.actions button{border:0;border-radius:9px;background:#9e1b32;color:white;padding:10px 16px;font-weight:bold;cursor:pointer}@media(max-width:650px){.grid{grid-template-columns:1fr}.sheet{margin:0;border:0}.day h2{font-size:20px}}@media print{body{background:white}.sheet{margin:0;max-width:none;border:0;box-shadow:none;padding:8mm}.actions{display:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.day{padding:12px}.day h2{font-size:17px}.day ul{font-size:11px}@page{size:A4;margin:10mm}}</style></head><body><main class="sheet"><div class="actions"><button onclick="window.print()">' +
+      escapeHtml(isBn ? 'প্রিন্ট / PDF হিসেবে সংরক্ষণ' : 'Print / Save as PDF') +
+      '</button></div><header class="hero"><p class="eyebrow">॥ শ্রী শ্রী দুর্গায়ৈ নমঃ ॥</p><h1>' +
+      escapeHtml(settings.templeName_bn) + '</h1><h2>' + escapeHtml(settings.templeName_en) +
+      '</h2><p class="edition">' + escapeHtml(settings.committeeName_bn) + ' • ' +
+      escapeHtml(String(currentPujaYear.edition)) + 'তম বর্ষ · ' + escapeHtml(String(currentPujaYear.year)) +
+      '</p><p class="edition">' + escapeHtml(isBn ? 'ব্রাহ্মণ পাড়া, পিন্দ্রা' : 'Brahman Para, Pinrra') +
+      '</p></header><section class="grid">' + cards + '</section><footer class="footer">' +
+      escapeHtml(isBn ? 'পূজার সময়সূচী কমিটির সিদ্ধান্ত অনুযায়ী পরিবর্তনযোগ্য।' : 'Timings may change according to committee guidance.') +
+      '<br>' + escapeHtml(window.location.origin) + '</footer></main></body></html>';
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'pinrra-durga-mandir-' + currentPujaYear.year + '-designed-calendar.html';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+  };
+
   const handleAddToCalendar = () => {
     const formatDate = (value: string) => value.replace(/-/g, '');
     const events = currentPujaYear.days.map((day, index) => {
@@ -150,6 +203,14 @@ export const PujaCalendar: React.FC = () => {
                     ? (isBn ? 'কপি হয়নি' : 'Copy failed')
                     : (isBn ? 'বিবরণ কপি করুন' : 'Copy Details')}
               </span>
+            </button>
+            <button
+              onClick={handleDownloadDesignedCalendar}
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#9E1B32] hover:bg-[#7F1528] text-white text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
+              title={isBn ? 'সুন্দর নকশার ক্যালেন্ডার ফাইল ডাউনলোড করুন' : 'Download a designed calendar file'}
+            >
+              <Download className="w-4 h-4" />
+              <span>{isBn ? 'ক্যালেন্ডার ডাউনলোড' : 'Download Designed Calendar'}</span>
             </button>
             <button
               onClick={handleAddToCalendar}
