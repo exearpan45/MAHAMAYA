@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Calendar, Clock, Sparkles, Download, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const PujaCalendar: React.FC = () => {
-  const { language, currentPujaYear, setDownloadModalOpen } = useApp();
+  const { language, currentPujaYear, setDownloadModalOpen, settings } = useApp();
   const isBn = language === 'bn';
   const escapeIcsText = (value: string) =>
     value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
@@ -28,19 +28,19 @@ export const PujaCalendar: React.FC = () => {
         day.startTime ? (isBn ? 'সময়: ' : 'Time: ') + day.startTime : '',
         day.bhogTimings ? (isBn ? 'ভোগ: ' : 'Bhog: ') + day.bhogTimings : '',
         window.location.origin,
-      ].filter(Boolean).join('\\n');
+      ].filter(Boolean).join('\n');
 
       return [
         'BEGIN:VEVENT',
         'UID:mahamaya-' + currentPujaYear.year + '-' + (day.id || index) + '@mahamaya',
-        'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\\.\\d{3}/, ''),
+        'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''),
         'DTSTART;VALUE=DATE:' + start,
         'DTEND;VALUE=DATE:' + end,
         'SUMMARY:' + escapeIcsText(settings.templeName_en + ' — ' + title),
         'DESCRIPTION:' + escapeIcsText(description),
         'LOCATION:' + escapeIcsText('Pinrra Durga Mandir, Brahman Para'),
         'END:VEVENT',
-      ].join('\\r\\n');
+      ].join('\r\n');
     });
 
     const calendar = [
@@ -51,7 +51,7 @@ export const PujaCalendar: React.FC = () => {
       'METHOD:PUBLISH',
       ...events,
       'END:VCALENDAR',
-    ].join('\\r\\n');
+    ].join('\r\n');
 
     const blob = new Blob([calendar], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
