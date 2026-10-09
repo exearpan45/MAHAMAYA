@@ -236,6 +236,23 @@ const MainLayout: React.FC = () => {
     );
   }
 
+  if (window.location.pathname.replace(/\\/+$/, '') === '/gallery') {
+    return (
+      <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+        <MaaDurgaWebsiteBackground />
+        <div className="relative z-10">
+          {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
+          <Header />
+          <main id="main-content" tabIndex={-1}>
+            <GallerySection />
+          </main>
+          <Footer />
+          <PolicyModals />
+        </div>
+      </div>
+    );
+  }
+
   if (activeView === 'profile') {
     return (
       <div className="relative min-h-screen text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
