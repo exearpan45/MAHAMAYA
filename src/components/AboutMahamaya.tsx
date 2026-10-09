@@ -32,7 +32,7 @@ export const AboutMahamaya: React.FC = () => {
           {/* Authentic Pratima Image Feature */}
           <div className="lg:col-span-5 relative group">
             <div className="relative rounded-2xl overflow-hidden border border-[#D4AF37]/40 shadow-xl bg-neutral-900 aspect-[4/3]">
-              <img
+              <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                 src={settings.heroDeityImage}
                 alt={isBn ? 'পিন্দ্রা দুর্গা মন্দিরে মা দুর্গার ডাকের সাজ' : 'Maa Durga Daaker Saaj pratima'}
                 referrerPolicy="no-referrer"
