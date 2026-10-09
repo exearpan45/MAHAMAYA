@@ -114,40 +114,45 @@
   }
 }
 
-/* Scroll-in reveal styles used by the landing-page observer */
+/* Scroll-in reveal styles. Keep content visible even if an observer fails. */
 .scroll-reveal-section,
 .scroll-reveal-card {
-  opacity: 0;
-  transform: translate3d(-42px, 0, 0);
-  transition:
-    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-
-.scroll-reveal-section.scroll-reveal-from-right,
-.scroll-reveal-card.scroll-reveal-card-right {
-  transform: translate3d(42px, 0, 0);
-}
-
-.scroll-reveal-section.scroll-reveal-visible,
-.scroll-reveal-card.scroll-reveal-visible {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: none;
+  will-change: auto;
 }
 
-.scroll-reveal-section .scroll-reveal-card {
-  transition-delay: calc(var(--reveal-order, 0) * 75ms);
+@keyframes sectionEnterFromLeft {
+  from { opacity: 0.25; transform: translate3d(-28px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes sectionEnterFromRight {
+  from { opacity: 0.25; transform: translate3d(28px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.scroll-reveal-section.scroll-reveal-visible {
+  animation: sectionEnterFromLeft 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.scroll-reveal-section.scroll-reveal-from-right.scroll-reveal-visible {
+  animation-name: sectionEnterFromRight;
+}
+
+.scroll-reveal-section.scroll-reveal-visible .scroll-reveal-card {
+  animation: sectionEnterFromLeft 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-order, 0) * 65ms);
+}
+
+.scroll-reveal-section.scroll-reveal-visible .scroll-reveal-card-right {
+  animation-name: sectionEnterFromRight;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-reveal-section,
-  .scroll-reveal-card,
-  .scroll-reveal-section.scroll-reveal-from-right,
-  .scroll-reveal-card.scroll-reveal-card-right {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
+  .animate-from-left,
+  .scroll-reveal-section.scroll-reveal-visible,
+  .scroll-reveal-section.scroll-reveal-visible .scroll-reveal-card {
+    animation: none !important;
   }
 }
