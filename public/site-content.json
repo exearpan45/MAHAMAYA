@@ -329,6 +329,22 @@
       "uploaderName": "MAHAMAYA Committee",
       "createdAt": "2026-10-05T10:00:00Z",
       "featured": true
+    },
+    {
+      "title_en": "Maa durga",
+      "title_bn": "Maa durga",
+      "description_en": "Maa durga",
+      "description_bn": "Maa durga",
+      "category": "Durga Puja",
+      "pujaYear": 2026,
+      "featured": false,
+      "id": "d0a7dd98-cb11-4cce-84fa-d5253dd4b1dc",
+      "createdAt": "2026-10-09T10:33:25.275Z",
+      "imageUrl": "/uploads/gallery-51fd303d-6398-4d74-a3cd-2897ba25549c.webp",
+      "thumbnailUrl": "/uploads/gallery-51fd303d-6398-4d74-a3cd-2897ba25549c.webp",
+      "uploaderName": "Admin",
+      "uploaderEmail": "",
+      "uploaderId": "local-admin"
     }
   ],
   "historyMilestones": [
