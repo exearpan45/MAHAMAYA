@@ -80,7 +80,7 @@ export const Header: React.FC = () => {
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
-    const onGalleryPage = window.location.pathname.replace(/\\/+$/, '') === '/gallery';
+    const onGalleryPage = window.location.pathname === '/gallery';
     if (id === 'gallery') {
       if (!onGalleryPage) window.location.assign('/gallery');
       else window.scrollTo({ top: 0, behavior: 'smooth' });
