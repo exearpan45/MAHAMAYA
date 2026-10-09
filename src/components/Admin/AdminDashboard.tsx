@@ -396,6 +396,15 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
             <button
+              type="button"
+              onClick={() => setActiveView('home')}
+              className="px-3.5 py-2 rounded-xl border border-[#D4AF37]/50 bg-[#FFF8E8] dark:bg-[#2A160A] text-[#7A4A00] dark:text-[#F6D98B] text-xs font-bold flex items-center gap-1.5 hover:bg-[#FDECC2] dark:hover:bg-[#3A2110] transition"
+              title={isBn ? 'প্রকাশের আগে খসড়া দেখুন' : 'Preview your draft before publishing'}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{isBn ? 'প্রিভিউ দেখুন' : 'Preview Draft'}</span>
+            </button>
+            <button
               onClick={() => void handlePublish()}
               disabled={isPublishing}
               className="px-3.5 py-2 rounded-xl bg-[#9E1B32] text-white text-xs font-bold flex items-center gap-1.5 shadow-lg hover:bg-[#7F1528] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
