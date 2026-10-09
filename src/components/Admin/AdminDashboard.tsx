@@ -100,7 +100,8 @@ export const AdminDashboard: React.FC = () => {
     toggleFeatureVideo,
   } = useApp();
 
-  const isBn = language === 'bn';
+  // Keep the admin interface English regardless of the public website language.
+  const isBn = false;
 
   const [activeTab, setActiveTab] = useState<
     | 'overview'
@@ -449,7 +450,7 @@ export const AdminDashboard: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-[#9E1B32] dark:text-[#E5C158]" />
-                <h1 className="text-xl sm:text-2xl font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+                <h1 className="text-xl sm:text-2xl font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                   {isBn ? 'মন্দির কমিটি অ্যাডমিন পোর্টাল' : 'Temple Administration Portal'}
                 </h1>
               </div>
@@ -584,27 +585,27 @@ export const AdminDashboard: React.FC = () => {
             {/* Quick Actions & Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-                <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+                <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#D4AF37]" />
                   <span>{isBn ? 'উৎসব স্থিতি ও বছর' : 'Puja Edition & Year'}</span>
                 </h3>
                 <div className="space-y-2 text-xs text-neutral-600 dark:text-neutral-400">
-                  <p>বর্তমান শারদোৎসব: <strong className="text-neutral-900 dark:text-neutral-100">{settings.currentYear} ({settings.currentEdition}তম বর্ষ)</strong></p>
-                  <p>মহা ষষ্ঠীর তারিখ: <strong className="text-neutral-900 dark:text-neutral-100">{currentPujaYear.shasthiDate}</strong></p>
-                  <p>বিজয়া দশমীর তারিখ: <strong className="text-neutral-900 dark:text-neutral-100">{currentPujaYear.dashamiDate}</strong></p>
-                  <p>টপ অ্যানাউন্সমেন্ট বার: <strong className="text-neutral-900 dark:text-neutral-100">{settings.topBannerEnabled ? 'চালু (Enabled)' : 'বন্ধ (Disabled)'}</strong></p>
+                  <p>Current Durga Puja: <strong className="text-neutral-900 dark:text-neutral-100">{settings.currentYear} ({settings.currentEdition}th edition)</strong></p>
+                  <p>Maha Shashthi date: <strong className="text-neutral-900 dark:text-neutral-100">{currentPujaYear.shasthiDate}</strong></p>
+                  <p>Vijaya Dashami date: <strong className="text-neutral-900 dark:text-neutral-100">{currentPujaYear.dashamiDate}</strong></p>
+                  <p>Top announcement bar: <strong className="text-neutral-900 dark:text-neutral-100">{settings.topBannerEnabled ? 'Enabled' : 'Disabled'}</strong></p>
                 </div>
               </div>
 
               <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-                <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+                <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                   <Shield className="w-4 h-4 text-[#9E1B32] dark:text-[#E5C158]" />
                   <span>{isBn ? 'কমিটি নিরাপত্তা ও নিয়মাবলী' : 'Safety & Integrity'}</span>
                 </h3>
                 <ul className="text-xs text-neutral-600 dark:text-neutral-400 space-y-1 list-disc list-inside">
-                  <li>কোনো সাধারণ ব্যবহারকারী নিজে নিজে অ্যাডমিন হতে পারে না।</li>
-                  <li>কোনো অনুদান ব্যবস্থা, ব্যাংক অ্যাকাউন্ট বা বিজ্ঞাপন যুক্ত নেই।</li>
-                  <li>সকল ডেটা সম্পূর্ণ ব্যাকআপযোগ্য ও অফলাইনে সুরক্ষিত।</li>
+                  <li>Public visitors cannot grant themselves admin access.</li>
+                  <li>No donation system, bank account, or advertising is configured.</li>
+                  <li>Content can be backed up and restored using the provided JSON tools.</li>
                 </ul>
               </div>
             </div>
@@ -616,8 +617,8 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
-                  {currentPujaYear.year} শ্রী শ্রী শারদীয়া দুর্গাপূজা পঞ্জিকা
+                <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {currentPujaYear.year} Durga Puja Calendar
                 </h3>
                 <p className="text-xs text-neutral-500 font-sans">
                   {isBn ? 'প্রতিটি তিথির আচার ও সময়সূচী সম্পাদনা করুন।' : 'Edit dates, rituals, and timings for each day.'}
@@ -633,7 +634,7 @@ export const AdminDashboard: React.FC = () => {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">তারিখ (YYYY-MM-DD)</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">Date (YYYY-MM-DD)</label>
                       <input
                         type="date"
                         value={day.date}
@@ -647,7 +648,7 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">বাংলা তিথি / তারিখ</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">Bengali ritual date</label>
                       <input
                         type="text"
                         value={day.bengaliDate}
@@ -656,12 +657,12 @@ export const AdminDashboard: React.FC = () => {
                           updatedDays[dIdx] = { ...day, bengaliDate: e.target.value };
                           updatePujaYear({ ...currentPujaYear, days: updatedDays });
                         }}
-                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
+                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">তিথির নাম (বাংলা) • English automatically generated</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">Ritual name (Bengali) • English auto-generated</label>
                       <input
                         type="text"
                         value={day.dayName_bn}
@@ -675,15 +676,15 @@ export const AdminDashboard: React.FC = () => {
                           };
                           updatePujaYear({ ...currentPujaYear, days: updatedDays });
                         }}
-                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
+                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent"
                       />
-                      <p className="mt-1 text-[10px] text-neutral-400">বাংলা নাম পরিবর্তন করলে English নামও স্বয়ংক্রিয়ভাবে আপডেট হবে।</p>
+                      <p className="mt-1 text-[10px] text-neutral-400">Changing a known Bengali ritual name automatically updates its English equivalent.</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">আচার ও অনুষ্ঠান (কমা দিয়ে পৃথক)</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">Rituals and activities (comma-separated)</label>
                       <input
                         type="text"
                         value={day.rituals_bn.join(', ')}
@@ -696,16 +697,16 @@ export const AdminDashboard: React.FC = () => {
                           };
                           updatePujaYear({ ...currentPujaYear, days: updatedDays });
                         }}
-                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
+                        className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-semibold text-neutral-500 block">ভোগ বিতরণ সময়সূচী</label>
+                      <label className="text-[11px] font-semibold text-neutral-500 block">Bhog distribution schedule</label>
                       <input
                         type="text"
                         value={day.bhogTimings || ''}
-                        placeholder="যেমন: 01:00 PM - 03:00 PM"
+                        placeholder="e.g. 01:00 PM - 03:00 PM"
                         onChange={(e) => {
                           const updatedDays = [...currentPujaYear.days];
                           updatedDays[dIdx] = { ...day, bhogTimings: e.target.value };
@@ -724,7 +725,7 @@ export const AdminDashboard: React.FC = () => {
         {/* ================= TAB 3: COUNTDOWN & YEAR ================= */}
         {activeTab === 'countdown' && (
           <div className="space-y-6 max-w-2xl animate-in fade-in duration-200">
-            <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+            <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
               {isBn ? 'কাউন্টডাউন ও উৎসব বছর কনফিগারেশন' : 'Countdown Target & Years Configuration'}
             </h3>
 
@@ -785,19 +786,19 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-8 animate-in fade-in duration-200">
             {/* Create New Event Form */}
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                 <Plus className="w-4 h-4 text-[#9E1B32]" />
                 <span>{isBn ? 'নতুন অনুষ্ঠান সংযোজন' : 'Add New Event or Bhog Schedule'}</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="text-[11px] font-semibold text-neutral-500 block">শিরোনাম / Title</label>
+                  <label className="text-[11px] font-semibold text-neutral-500 block">Title</label>
                   <input
                     type="text"
                     value={newEventTitle}
                     onChange={(e) => setNewEventTitle(e.target.value)}
-                    placeholder="যেমন: ভোগ বিতরণ"
+                    placeholder="e.g. Bhog distribution"
                     className="w-full mt-1 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent"
                   />
                 </div>
@@ -813,7 +814,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-neutral-500 block">সময় / Start Time</label>
+                  <label className="text-[11px] font-semibold text-neutral-500 block">Start time</label>
                   <input
                     type="text"
                     value={newEventStartTime}
@@ -824,7 +825,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-neutral-500 block">বিভাগ / Category</label>
+                  <label className="text-[11px] font-semibold text-neutral-500 block">Category</label>
                   <select
                     value={newEventCategory}
                     onChange={(e) => setNewEventCategory(e.target.value as EventCategory)}
@@ -840,12 +841,12 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-neutral-500 block">বিবরণ / Description</label>
+                <label className="text-[11px] font-semibold text-neutral-500 block">Description</label>
                 <textarea
                   rows={2}
                   value={newEventDesc}
                   onChange={(e) => setNewEventDesc(e.target.value)}
-                  placeholder="বিস্তারিত বিবরণ..."
+                  placeholder="Enter details..."
                   className="w-full mt-1 px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent"
                 />
               </div>
@@ -858,7 +859,7 @@ export const AdminDashboard: React.FC = () => {
                     title_en: newEventTitle,
                     title_bn: newEventTitle,
                     description_en: newEventDesc || 'Event details',
-                    description_bn: newEventDesc || 'অনুষ্ঠানের বিবরণ',
+                    description_bn: newEventDesc || 'Event description',
                     date: newEventDate,
                     startTime: newEventStartTime,
                     endTime: '',
@@ -886,7 +887,7 @@ export const AdminDashboard: React.FC = () => {
                   className="p-4 rounded-xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-neutral-200 dark:border-neutral-800 flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF] font-bengali">
+                    <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                       {evt.title_bn}
                     </p>
                     <p className="text-[11px] text-neutral-500">
@@ -912,7 +913,7 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'cultural' && (
           <div className="space-y-8 animate-in fade-in duration-200">
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                 <Music className="w-4 h-4 text-[#E56717]" />
                 <span>{isBn ? 'সাংস্কৃতিক অনুষ্ঠান সংযোজন' : 'Add Cultural Performance'}</span>
               </h3>
@@ -1022,7 +1023,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-8 animate-in fade-in duration-200">
             {/* Create Announcement Form */}
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                 <Bell className="w-4 h-4 text-[#E56717]" />
                 <span>{isBn ? 'নতুন বিজ্ঞপ্তি প্রকাশ' : 'Publish New Notice'}</span>
               </h3>
@@ -1122,7 +1123,7 @@ export const AdminDashboard: React.FC = () => {
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800">
                         {ann.priority}
                       </span>
-                      <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF] font-bengali">
+                      <p className="text-xs font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                         {ann.title_bn}
                       </p>
                     </div>
@@ -1163,7 +1164,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-200">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+                <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                   {isBn ? 'চিত্রশালা নিয়ন্ত্রণ ও মডারেশন' : 'Gallery Moderation & Review'}
                 </h3>
                 <p className="text-xs text-neutral-500">
@@ -1352,7 +1353,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-200">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+                <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                   {isBn ? 'ভিডিও আর্কাইভ নিয়ন্ত্রণ' : 'Video Gallery Management'}
                 </h3>
                 <p className="text-xs text-neutral-500 mt-1 max-w-2xl">
@@ -1564,7 +1565,7 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'history' && (
           <div className="space-y-8 animate-in fade-in duration-200">
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF] flex items-center gap-2">
                 <Plus className="w-4 h-4 text-[#9E1B32]" />
                 <span>{isBn ? 'নতুন ঐতিহাসিক মাইলফলক সংযোজন' : 'Add Historical Milestone'}</span>
               </h3>
@@ -1726,13 +1727,13 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'settings' && (
           <div className="space-y-8 max-w-2xl animate-in fade-in duration-200">
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                 {isBn ? 'ওয়েবসাইট ব্র্যান্ডিং ও ব্যানার' : 'Branding & Announcement Bar'}
               </h3>
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                  টপ ব্যানার অন/অফ (Top Banner Toggle)
+                  Top banner toggle
                 </label>
                 <div className="flex items-center gap-2 pt-1">
                   <input
@@ -1743,7 +1744,7 @@ export const AdminDashboard: React.FC = () => {
                     className="w-4 h-4 cursor-pointer"
                   />
                   <label htmlFor="bannerToggle" className="text-xs text-neutral-600 dark:text-neutral-300 cursor-pointer">
-                    হোমপেজের শীর্ষে ঘোষণা ব্যানার চালু রাখুন
+                    Show the announcement banner at the top of the homepage
                   </label>
                 </div>
               </div>
@@ -1756,7 +1757,7 @@ export const AdminDashboard: React.FC = () => {
                   type="text"
                   value={settings.topBannerText_bn}
                   onChange={(e) => updateSettings({ topBannerText_bn: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent font-bengali"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent"
                 />
               </div>
 
@@ -1811,7 +1812,7 @@ export const AdminDashboard: React.FC = () => {
             {/* Editable Website Copy */}
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-5">
               <div>
-                <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">Website Content Editor</h3>
+                <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">Website Content Editor</h3>
                 <p className="mt-1 text-xs text-neutral-500">Edit the important yearly-independent copy shown across About, Heritage, Bhog and Visit. Publish after editing.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1877,7 +1878,7 @@ export const AdminDashboard: React.FC = () => {
 
             {/* Backup, Restore & Reset */}
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
-              <h3 className="text-base font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+              <h3 className="text-base font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
                 {isBn ? 'ব্যাকআপ ও সিস্টেম রিস্টোর' : 'Backup & Restore Database'}
               </h3>
 
