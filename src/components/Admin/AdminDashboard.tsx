@@ -1317,8 +1317,8 @@ export const AdminDashboard: React.FC = () => {
                 </h3>
                 <p className="text-xs text-neutral-500 mt-1 max-w-2xl">
                   {isBn
-                    ? 'YouTube, Vimeo বা HTTPS MP4/WebM লিঙ্ক যোগ করুন। ভিডিও ফাইল সরাসরি সাইটে আপলোড করা হয় না, তাই GitHub ও Cloudflare Pages দ্রুত ও হালকা থাকে।'
-                    : 'Add YouTube, Vimeo, or HTTPS MP4/WebM links. Video binaries are not uploaded into the site, keeping GitHub and Cloudflare Pages fast and lightweight.'}
+                    ? 'একবারে একটি ভিডিও যোগ করুন। YouTube, Vimeo বা HTTPS MP4/WebM লিঙ্ক ব্যবহার করুন, যাতে GitHub ও Cloudflare Pages দ্রুত থাকে।'
+                    : 'Add one video at a time using YouTube, Vimeo, or an HTTPS MP4/WebM link. Avoid large video binaries to keep GitHub and Cloudflare Pages fast.'}
                 </p>
               </div>
               <div className="shrink-0 rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF9] dark:bg-[#1A0C11] px-4 py-3 min-w-[180px]">
@@ -1339,7 +1339,7 @@ export const AdminDashboard: React.FC = () => {
               <div>
                 <h4 className="text-sm font-bold text-[#4A0E17] dark:text-[#FBF6EF]">{isBn ? 'নতুন ভিডিও যোগ করুন' : 'Add Video'}</h4>
                 <p className="mt-1 text-[10px] text-neutral-400">
-                  {isBn ? 'HTTPS লিঙ্ক ব্যবহার করুন। YouTube/Vimeo স্বয়ংক্রিয়ভাবে এম্বেড হবে।' : 'Use an HTTPS link. YouTube and Vimeo links are embedded automatically.'}
+                  {isBn ? 'একবারে একটি ভিডিও যোগ করুন। HTTPS YouTube/Vimeo লিঙ্ক স্বয়ংক্রিয়ভাবে এম্বেড হবে।' : 'Add and save one video at a time. HTTPS YouTube and Vimeo links are embedded automatically.'}
                 </p>
               </div>
 
