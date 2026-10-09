@@ -25,7 +25,7 @@ export const PujaCalendar: React.FC = () => {
       (isBn ? 'স্থান: ' : 'Venue: ') + 'Pinrra Durga Mandir, Brahman Para',
       window.location.origin,
     ];
-    const textToCopy = lines.join('\\n');
+    const textToCopy = lines.join('\n');
 
     try {
       if (navigator.clipboard?.writeText && window.isSecureContext) {
@@ -152,7 +152,7 @@ export const PujaCalendar: React.FC = () => {
               </span>
             </button>
             <button
-              onClick={handleAddToCalendar
+              onClick={handleAddToCalendar}
               className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
               title={isBn ? 'ফোন বা কম্পিউটারের ক্যালেন্ডারে যোগ করুন' : 'Import Puja dates into your calendar app'}
             >
