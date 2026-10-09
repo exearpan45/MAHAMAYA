@@ -63,14 +63,32 @@ const ReturnToTop: React.FC = () => {
   const isBn = language === 'bn';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setVisible(window.scrollY > 500);
+    let frame = 0;
+    let lastVisible = false;
+
+    const updateVisibility = () => {
+      frame = 0;
+      const nextVisible = window.scrollY > 500;
+      // Avoid scheduling React updates for every scroll event while dragging fast.
+      if (nextVisible !== lastVisible) {
+        lastVisible = nextVisible;
+        setVisible(nextVisible);
+      }
     };
 
-    handleScroll();
+    const handleScroll = () => {
+      if (frame === 0) {
+        frame = window.requestAnimationFrame(updateVisibility);
+      }
+    };
+
+    updateVisibility();
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame !== 0) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   if (!visible) return null;
