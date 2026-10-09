@@ -3,8 +3,12 @@ import { useApp } from '../context/AppContext';
 import { History, Calendar, Landmark, Info } from 'lucide-react';
 
 export const HistorySection: React.FC = () => {
-  const { language, historyMilestones } = useApp();
+  const { language, historyMilestones, gallery, videos } = useApp();
   const isBn = language === 'bn';
+  const archiveYears = Array.from(new Set([
+    ...gallery.map((photo) => photo.pujaYear),
+    ...videos.map((video) => video.pujaYear),
+  ])).filter((year) => Number.isFinite(year)).sort((a, b) => b - a);
 
   return (
     <section id="history" className="py-20 bg-[#F7F2E8]/80 dark:bg-[#12080B]/85 text-neutral-900 dark:text-neutral-100 transition-colors duration-200 border-t border-[#D4AF37]/20 backdrop-blur-[1px]">
@@ -26,6 +30,54 @@ export const HistorySection: React.FC = () => {
               ? 'ব্রাহ্মণ পাড়ার ব্রাহ্মণ গোস্বামী সমাজের নিষ্ঠা ও আন্তরিকতায় লালিত ১১৮ বছরের সর্বজনীন শারদোৎসব।'
               : 'The sacred 118-year legacy of Pinrra Durga Mandir, organized with collective faith by the Brahman Goswami community and MAHAMAYA committee.'}
           </p>
+        </div>
+
+        {/* Previous Years Archive: counts come from existing published media metadata */}
+        <div id="puja-archive" className="space-y-5 scroll-mt-24">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#9E1B32] dark:text-[#E5C158]">
+              <Landmark className="w-4 h-4" />
+              <span>{isBn ? 'ডিজিটাল পূজা আর্কাইভ' : 'Digital Puja Archive'}</span>
+            </div>
+            <h3 className="mt-2 text-2xl sm:text-3xl font-bold font-bengali text-[#4A0E17] dark:text-[#FBF6EF]">
+              {isBn ? 'বছর ধরে স্মৃতি সংরক্ষণ' : 'Memories Through the Years'}
+            </h3>
+            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+              {isBn ? 'গ্যালারিতে সংরক্ষিত ছবি ও ভিডিও থেকে বছরের তালিকা তৈরি হয়েছে।' : 'Years are listed from the photos and videos currently in the archive.'}
+            </p>
+          </div>
+          {archiveYears.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {archiveYears.map((year) => {
+                const yearPhotos = gallery.filter((photo) => photo.pujaYear === year);
+                const yearVideos = videos.filter((video) => video.pujaYear === year);
+                const cover = yearPhotos.find((photo) => photo.featured) || yearPhotos[0];
+                return (
+                  <article key={year} className="overflow-hidden rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF9] dark:bg-[#1A0C11]">
+                    <div className="relative h-36 bg-gradient-to-br from-[#3A101B] via-[#1A0C11] to-[#5A2025]">
+                      {cover && <img src={cover.thumbnailUrl || cover.imageUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <span className="absolute bottom-3 left-4 text-2xl font-bold text-white">{year}</span>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div className="flex flex-wrap gap-3 text-xs text-neutral-600 dark:text-neutral-300">
+                        <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#9E1B32] dark:text-[#E5C158]" />{yearPhotos.length} {isBn ? 'টি ছবি' : yearPhotos.length === 1 ? 'photo' : 'photos'}</span>
+                        <span className="inline-flex items-center gap-1.5"><Info className="w-3.5 h-3.5 text-[#9E1B32] dark:text-[#E5C158]" />{yearVideos.length} {isBn ? 'টি ভিডিও' : yearVideos.length === 1 ? 'video' : 'videos'}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <a href="#gallery" className="inline-flex items-center rounded-lg border border-[#D4AF37]/40 px-3 py-2 text-xs font-semibold text-[#7A1224] dark:text-[#E5C158] hover:border-[#9E1B32] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">{isBn ? 'ছবি দেখুন' : 'Explore photos'}</a>
+                        <a href="#videos" className="inline-flex items-center rounded-lg border border-[#D4AF37]/40 px-3 py-2 text-xs font-semibold text-[#7A1224] dark:text-[#E5C158] hover:border-[#9E1B32] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">{isBn ? 'ভিডিও দেখুন' : 'Explore videos'}</a>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-[#D4AF37]/40 p-6 text-center text-sm text-neutral-600 dark:text-neutral-300">
+              {isBn ? 'আর্কাইভে ছবি বা ভিডিও যোগ হলে এখানে বছর অনুযায়ী দেখা যাবে।' : 'Year cards will appear here as photos or videos are added to the archive.'}
+            </div>
+          )}
         </div>
 
         {/* Visual Timeline */}
