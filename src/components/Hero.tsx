@@ -44,7 +44,7 @@ export const Hero: React.FC = () => {
         </div>
         <div className="hero-visual">
           <div className="hero-photo-frame">
-            <img src={settings.heroDeityImage} alt={isBn ? 'পিন্দ্রা দুর্গা মন্দিরের প্রকৃত দুর্গা প্রতিমা' : 'Real Maa Durga idol at Pinrra Durga Mandir'} referrerPolicy="no-referrer" fetchPriority="high" />
+            <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }} src={settings.heroDeityImage} alt={isBn ? 'পিন্দ্রা দুর্গা মন্দিরের প্রকৃত দুর্গা প্রতিমা' : 'Real Maa Durga idol at Pinrra Durga Mandir'} referrerPolicy="no-referrer" fetchPriority="high" />
             <div className="hero-photo-vignette" aria-hidden="true" />
             <div className="hero-photo-caption"><span className="hero-photo-caption-mark" aria-hidden="true">॥</span><span><strong>{isBn ? 'শ্রী শ্রী দুর্গা পূজা' : 'Shree Shree Durga Puja'}</strong><small>{isBn ? 'পিন্দ্রা দুর্গা মন্দির · ব্রাহ্মণ পাড়া' : 'Pinrra Durga Mandir · Brahman Para'}</small></span></div>
           </div>
