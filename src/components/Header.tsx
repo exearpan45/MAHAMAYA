@@ -18,7 +18,7 @@ import {
   Flame,
 } from 'lucide-react';
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{ forceEnglish?: boolean }> = ({ forceEnglish = false }) => {
   const {
     language,
     setLanguage,
@@ -55,7 +55,7 @@ export const Header: React.FC = () => {
     };
   }, []);
 
-  const isBn = language === 'bn';
+  const isBn = !forceEnglish && language === 'bn';
   const now = Date.now();
   const topNotice = announcements
     .filter((notice) => notice.active && notice.showInTopBanner && (!notice.expiresAt || new Date(notice.expiresAt).getTime() > now))
@@ -270,7 +270,7 @@ export const Header: React.FC = () => {
             </button>
 
             {/* Language Switcher */}
-            <div className="flex items-center rounded-lg border border-[#D4AF37]/35 p-0.5 text-xs bg-neutral-100/80 dark:bg-neutral-900/80">
+            <div className={`flex items-center rounded-lg border border-[#D4AF37]/35 p-0.5 text-xs bg-neutral-100/80 dark:bg-neutral-900/80 ${forceEnglish ? 'hidden' : ''}`}>
               <button
                 onClick={() => setLanguage('bn')}
                 className={`px-2 py-1 rounded font-bengali font-semibold transition-colors cursor-pointer ${
