@@ -9,7 +9,7 @@ export const GallerySection: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedPujaYear, setSelectedPujaYear] = useState<number | 'all'>('all');
-  const isFullGalleryPage = window.location.pathname === '/gallery';
+  const isFullGalleryPage = window.location.pathname.replace(/\/+$/, '') === '/gallery';
   const [showAllPhotos, setShowAllPhotos] = useState(isFullGalleryPage);
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
@@ -71,7 +71,7 @@ export const GallerySection: React.FC = () => {
                 : 'A curated visual record of Maa Durga pratima, festive traditions, Sandhi Puja, and community memories.'}
             </p>
             {!isFullGalleryPage && (
-              <a href="/gallery" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#9E1B32] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7F1528] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+              <a href="/gallery/" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#9E1B32] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7F1528] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
                 {isBn ? 'সব ছবি দেখুন' : 'View full gallery'}
                 <span aria-hidden="true">→</span>
               </a>
