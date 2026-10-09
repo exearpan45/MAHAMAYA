@@ -39,6 +39,7 @@ interface AppContextType {
   language: Language; setLanguage: (lang: Language) => void;
   hasChosenLanguage: boolean; setHasChosenLanguage: (chosen: boolean) => void;
   theme: 'light' | 'dark'; setTheme: (theme: 'light' | 'dark') => void; toggleTheme: () => void;
+  pujaTheme: boolean; togglePujaTheme: () => void;
   isAudioPlaying: boolean; toggleAudio: () => void;
   currentUser: User | null;
   login: (email: string, password: string) => Promise<User>;
@@ -85,6 +86,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [language, setLanguageState] = useState<Language>(() => preference('pinrra_lang') === 'en' ? 'en' : 'bn');
   const [hasChosenLanguage, setHasChosenLanguageState] = useState(() => preference('pinrra_lang_chosen') === 'true');
   const [theme, setThemeState] = useState<'light' | 'dark'>('dark');
+  const [pujaTheme, setPujaTheme] = useState(() => preference('pinrra_puja_theme') === 'on');
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [settings, setSettings] = useState<SiteSettings>(INITIAL_SETTINGS);
@@ -151,6 +153,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const toggleTheme = () => setTheme('dark');
 
   useEffect(() => applyThemeToDOM(theme), [theme]);
+
+  const togglePujaTheme = () => {
+    setPujaTheme((current) => {
+      const next = !current;
+      savePreference('pinrra_puja_theme', next ? 'on' : 'off');
+      document.documentElement.classList.toggle('puja-theme', next);
+      document.body.classList.toggle('puja-theme', next);
+      document.documentElement.setAttribute('data-puja-theme', next ? 'on' : 'off');
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('puja-theme', pujaTheme);
+    document.body.classList.toggle('puja-theme', pujaTheme);
+    document.documentElement.setAttribute('data-puja-theme', pujaTheme ? 'on' : 'off');
+  }, [pujaTheme]);
 
   const toggleAudio = () => setIsAudioPlaying(devotionalAudio.toggle());
 
@@ -714,6 +733,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   return (
     <AppContext.Provider value={{
       language, setLanguage, hasChosenLanguage, setHasChosenLanguage, theme, setTheme, toggleTheme,
+      pujaTheme, togglePujaTheme,
       isAudioPlaying, toggleAudio, currentUser, login, logout,
       settings, updateSettings, setRealMaaDurgaPhoto, pujaYears, currentPujaYear, updatePujaYear, addPujaYear,
       events, addEvent, updateEvent, deleteEvent, announcements, addAnnouncement, updateAnnouncement, deleteAnnouncement,
