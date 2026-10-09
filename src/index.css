@@ -816,3 +816,142 @@ footer :focus-visible {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* ===== Puja calendar: explicit component-level contrast and action visibility ===== */
+#puja {
+  background: linear-gradient(135deg, #fff8eb 0%, #f2e4cb 100%) !important;
+  color: #35151b !important;
+}
+#puja > div > div:first-child {
+  align-items: center;
+  gap: 1.25rem;
+}
+#puja > div > div:first-child > div:first-child {
+  min-width: 0;
+  flex: 1 1 28rem;
+}
+#puja h2 {
+  color: #4b0713 !important;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+#puja > div > div:first-child p {
+  color: #59464a !important;
+}
+#puja > div > div:first-child .text-\[\#9E1B32\],
+#puja > div > div:first-child .text-\[\#9e1b32\] {
+  color: #8e1730 !important;
+}
+#puja > div > div:first-child > div:last-child {
+  display: flex !important;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .65rem;
+}
+#puja > div > div:first-child > div:last-child button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 46px;
+  max-width: 100%;
+  white-space: normal;
+  color: #fffaf0 !important;
+  background: linear-gradient(135deg, #a51d37, #7f1027) !important;
+  border: 1px solid #d4af37 !important;
+  border-radius: 12px;
+  box-shadow: 0 7px 18px rgba(75, 7, 19, .18);
+  text-shadow: none !important;
+}
+#puja > div > div:first-child > div:last-child button:hover {
+  color: #fffaf0 !important;
+  background: linear-gradient(135deg, #83132a, #5c0b1b) !important;
+  transform: translateY(-1px);
+}
+#puja > div > div:first-child > div:last-child button span {
+  color: inherit !important;
+}
+#puja > div > div:first-child > div:last-child button svg {
+  color: #f4d987 !important;
+  flex-shrink: 0;
+}
+
+/* Calendar day cards use a deliberate dark surface with readable warm text. */
+#puja .grid > .group {
+  min-width: 0;
+  min-height: 300px;
+  background: linear-gradient(145deg, #210c12, #14090d) !important;
+  color: #fff4e0 !important;
+  border: 1px solid rgba(212,175,55,.58) !important;
+  border-radius: 17px;
+  box-shadow: 0 12px 30px rgba(50, 18, 26, .12);
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+}
+#puja .grid > .group:hover {
+  border-color: #e7c75d !important;
+  box-shadow: 0 17px 36px rgba(50,18,26,.2);
+  transform: translateY(-2px);
+}
+#puja .grid > .group > div:first-child {
+  border-color: rgba(255,248,235,.15) !important;
+}
+#puja .grid > .group h3 {
+  color: #f4d987 !important;
+}
+#puja .grid > .group h3:hover {
+  color: #ffe8a3 !important;
+}
+#puja .grid > .group .text-neutral-400,
+#puja .grid > .group .text-neutral-500,
+#puja .grid > .group .text-neutral-600,
+#puja .grid > .group .text-neutral-700,
+#puja .grid > .group .text-gray-400,
+#puja .grid > .group .text-gray-500,
+#puja .grid > .group .text-gray-600 {
+  color: #d3c2c0 !important;
+}
+#puja .grid > .group li span {
+  color: #f0e4df !important;
+}
+#puja .grid > .group .text-emerald-700 {
+  color: #75dfb0 !important;
+}
+#puja .grid > .group .text-\[\#9E1B32\],
+#puja .grid > .group .text-\[\#9e1b32\] {
+  color: #f4d987 !important;
+}
+#puja .grid > .group .bg-neutral-100\/60,
+#puja .grid > .group .bg-neutral-900\/60 {
+  background: rgba(255,248,235,.055) !important;
+  border-color: rgba(255,248,235,.12) !important;
+}
+#puja .grid > .group .border-neutral-200,
+#puja .grid > .group .border-neutral-100 {
+  border-color: rgba(255,248,235,.15) !important;
+}
+#puja > div > div:last-child {
+  color: #59464a !important;
+  background: rgba(255,255,255,.52) !important;
+}
+@media (max-width: 767px) {
+  #puja > div > div:first-child > div:last-child {
+    width: 100%;
+  }
+  #puja > div > div:first-child > div:last-child button {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  #puja .grid > .group {
+    min-height: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #puja .grid > .group,
+  #puja > div > div:first-child > div:last-child button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
