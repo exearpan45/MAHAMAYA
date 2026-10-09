@@ -297,6 +297,25 @@ export const Header: React.FC = () => {
            </div>
         )}
       </header>
+
+      {/* Always-visible floating devotional music control */}
+      <button
+        type="button"
+        onClick={toggleAudio}
+        aria-label={isAudioPlaying ? (isBn ? 'ভক্তিমূলক সঙ্গীত বন্ধ করুন' : 'Turn devotional music off') : (isBn ? 'ভক্তিমূলক সঙ্গীত চালু করুন' : 'Turn devotional music on')}
+        aria-pressed={isAudioPlaying}
+        title={isAudioPlaying ? (isBn ? 'সঙ্গীত বন্ধ করুন' : 'Turn music off') : (isBn ? 'সঙ্গীত চালু করুন' : 'Play devotional music')}
+        className={`fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-[60] inline-flex items-center gap-2 rounded-full border px-4 py-3 shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 dark:focus:ring-offset-[#16090E] cursor-pointer ${isAudioPlaying ? 'border-emerald-400/70 bg-[#174B35] text-white hover:bg-[#205C42]' : 'border-[#F0D77A] bg-[#9E1B32] text-white hover:bg-[#7F1426]'}`}
+      >
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+          {isAudioPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+          {isAudioPlaying && <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-emerald-300 ring-2 ring-[#174B35]" />}
+        </span>
+        <span className="flex flex-col items-start leading-tight">
+          <span className="text-sm font-bold">{isAudioPlaying ? (isBn ? 'সঙ্গীত চলছে' : 'Music Playing') : (isBn ? 'পূজার সঙ্গীত' : 'Puja Music')}</span>
+          <span className="mt-0.5 text-[10px] opacity-85">{isAudioPlaying ? (isBn ? 'বন্ধ করতে চাপুন' : 'Tap to turn off') : (isBn ? 'শুনতে চাপুন' : 'Tap to listen')}</span>
+        </span>
+      </button>
     </>
   );
 };
