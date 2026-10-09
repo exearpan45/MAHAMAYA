@@ -9,7 +9,8 @@ export const GallerySection: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedPujaYear, setSelectedPujaYear] = useState<number | 'all'>('all');
-  const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const isFullGalleryPage = window.location.pathname.replace(/\\/+$/, '') === '/gallery';
+  const [showAllPhotos, setShowAllPhotos] = useState(isFullGalleryPage);
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
   const categories: { id: string; label_bn: string; label_en: string }[] = [
@@ -69,6 +70,17 @@ export const GallerySection: React.FC = () => {
                 ? 'পিন্দ্রা দুর্গা মন্দিরের মা দুর্গার পবিত্র প্রতিমা, ঐতিহ্যবাহী আচার ও ভক্তবৃন্দের পূণ্য মুহূর্তের আলোকচিত্র।'
                 : 'A curated visual record of Maa Durga pratima, festive traditions, Sandhi Puja, and community memories.'}
             </p>
+            {!isFullGalleryPage && (
+              <a href="/gallery" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#9E1B32] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7F1528] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                {isBn ? 'সব ছবি দেখুন' : 'View full gallery'}
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+            {isFullGalleryPage && (
+              <p className="text-xs font-medium text-[#9E1B32] dark:text-[#E5C158]">
+                {isBn ? 'সম্পূর্ণ ছবি সংগ্রহ' : 'Full photo collection'} · {gallery.length} {isBn ? 'টি ছবি' : gallery.length === 1 ? 'photo' : 'photos'}
+              </p>
+            )}
           </div>
 
         {/* Puja year photo albums, derived from existing gallery metadata */}
