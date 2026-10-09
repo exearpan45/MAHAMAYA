@@ -55,7 +55,7 @@ export const HistorySection: React.FC = () => {
                 return (
                   <article key={year} className="overflow-hidden rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF9] dark:bg-[#1A0C11]">
                     <div className="relative h-36 bg-gradient-to-br from-[#3A101B] via-[#1A0C11] to-[#5A2025]">
-                      {cover && <img src={cover.thumbnailUrl || cover.imageUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />}
+                      {cover && <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }} src={cover.thumbnailUrl || cover.imageUrl} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                       <span className="absolute bottom-3 left-4 text-2xl font-bold text-white">{year}</span>
                     </div>
@@ -113,7 +113,7 @@ export const HistorySection: React.FC = () => {
 
                 {m.image && (
                   <div className="rounded-xl overflow-hidden max-h-56 mt-3 border border-neutral-200 dark:border-neutral-800">
-                    <img
+                    <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                       src={m.image}
                       alt={isBn ? m.title_bn : m.title_en}
                       referrerPolicy="no-referrer"
