@@ -47,11 +47,11 @@ const MaaDurgaWebsiteBackground: React.FC = () => {
         className="w-full h-full object-cover object-center scale-100 transition-opacity duration-700 brightness-[0.92] dark:brightness-[0.35] contrast-[1.05]"
       />
       {/* Light mode sacred warm golden veil to keep all content 100% readable while clearly showing Maa Durga */}
-      <div className="absolute inset-0 bg-[#FDFBF7]/80 backdrop-blur-[2px] transition-colors duration-200 dark:hidden" />
+      <div className="absolute inset-0 bg-[#FDFBF7]/80 dark:hidden" />
       {/* Dark mode sacred deep velvet veil */}
-      <div className="absolute inset-0 hidden dark:block bg-[#12080B]/85 backdrop-blur-[2px] transition-colors duration-200" />
+      <div className="absolute inset-0 hidden dark:block bg-[#12080B]/85" />
       {/* Sacred golden atmospheric vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0%,rgba(0,0,0,0.18)_100%)] dark:bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,rgba(0,0,0,0.45)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.06)_0%,rgba(0,0,0,0.12)_100%)] dark:bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.04)_0%,rgba(0,0,0,0.35)_100%)]" />
     </div>
   );
 };
