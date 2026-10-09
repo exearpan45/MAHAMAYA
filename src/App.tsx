@@ -218,7 +218,7 @@ const MainLayout: React.FC = () => {
         <MaaDurgaWebsiteBackground />
         <div className="relative z-10">
           {apiError && <div role="alert" className="fixed top-24 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-50 dark:bg-rose-950/90 px-4 py-3 text-xs text-rose-700 dark:text-rose-200 shadow-lg">{apiError}</div>}
-          <Header />
+          <Header forceEnglish />
           <Suspense
             fallback={
               <div className="flex min-h-[60vh] items-center justify-center px-4">
