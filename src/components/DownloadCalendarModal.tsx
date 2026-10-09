@@ -41,7 +41,7 @@ export const DownloadCalendarModal: React.FC = () => {
         </div>
 
         {/* Printable Document Content */}
-        <div className="space-y-6 print:space-y-4">
+        <div id="calendar-print-root" className="space-y-6 print:space-y-4">
           
           {/* Header Banner */}
           <div className="text-center space-y-2 border-b-2 border-[#9E1B32] pb-6">
@@ -118,7 +118,7 @@ export const DownloadCalendarModal: React.FC = () => {
               পূজার নির্ঘণ্ট ও ভোগের সময়সূচী আবহাওয়া ও পঞ্জিকার তিথি সাপেক্ষে সমন্বয়যোগ্য।
             </p>
             <p className="font-sans">
-              অফিসিয়াল ওয়েবসাইট: mahamaya.pages.dev • গুগল ম্যাপস: maps.app.goo.gl/w5C1sACBhUxz5t1w6
+              অফিসিয়াল ওয়েবসাইট: mahamaya-bsm.pages.dev • গুগল ম্যাপস: maps.app.goo.gl/w5C1sACBhUxz5t1w6
             </p>
           </div>
         </div>
