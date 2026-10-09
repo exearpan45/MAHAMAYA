@@ -205,6 +205,43 @@ const MainLayout: React.FC = () => {
     document.documentElement.classList.add('notranslate');
   }, [language]);
 
+  // Reveal each content section as it enters the viewport, with staggered cards.
+  // IntersectionObserver keeps this lightweight and avoids scroll-event work.
+  useEffect(() => {
+    if (!hasChosenLanguage) return;
+
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
+    const footer = document.querySelector<HTMLElement>('footer');
+    const revealTargets = [...sections.slice(1), ...(footer ? [footer] : [])];
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    if (!('IntersectionObserver' in window)) {
+      revealTargets.forEach((element) => element.classList.add('scroll-reveal-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('scroll-reveal-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
+
+    revealTargets.forEach((element) => {
+      element.classList.add('scroll-reveal-section');
+      const cards = element.querySelectorAll<HTMLElement>('.grid > *, [data-scroll-reveal]');
+      cards.forEach((card, index) => {
+        card.classList.add('scroll-reveal-card');
+        card.style.setProperty('--reveal-order', String(Math.min(index, 7)));
+      });
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, [hasChosenLanguage, activeView]);
+
   // 1. First-time Language Gate Screen
   if (!hasChosenLanguage) {
     return <LanguageGate />;
