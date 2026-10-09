@@ -256,7 +256,7 @@ export const AdminDashboard: React.FC = () => {
       window.setTimeout(() => setPublishNotice(''), 7000);
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Publishing failed for an unknown reason.';
-      const stageMatch = reason.match(/(?:Stage|stage):\\s*([^.)]+)/);
+      const stageMatch = reason.match(/(?:Stage|stage):\s*([^.)]+)/);
       const failedItem: FailedPublish = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         title: isBn ? 'ওয়েবসাইট প্রকাশ ব্যর্থ' : 'Website publish failed',
