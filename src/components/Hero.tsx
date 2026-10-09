@@ -23,7 +23,7 @@ export const Hero: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#FFFDF9] dark:bg-[#180A0E] text-[#4A0E17] dark:text-[#FBF6EE] transition-colors duration-200">
+    <section className="hero-premium relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#FFFDF9] dark:bg-[#180A0E] text-[#4A0E17] dark:text-[#FBF6EE] transition-colors duration-200">
       {/* Background authentic idol image with subtle ambient overlay */}
       <div className="absolute inset-0 z-0">
         <img
