@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import {
   Volume2,
@@ -32,6 +32,25 @@ export const Header: React.FC = () => {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dismissedNoticeId, setDismissedNoticeId] = useState<string | null>(null);
+  const [showFloatingMusic, setShowFloatingMusic] = useState(() => typeof window === 'undefined' || window.scrollY <= 500);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const shouldShow = window.scrollY <= 500;
+      setShowFloatingMusic((current) => current === shouldShow ? current : shouldShow);
+    };
+    const onScroll = () => {
+      if (frame === 0) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame !== 0) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   const isBn = language === 'bn';
   const now = Date.now();
@@ -298,8 +317,8 @@ export const Header: React.FC = () => {
         )}
       </header>
 
-      {/* Always-visible floating devotional music control */}
-      <button
+      {/* Keep music control at the top; let Return to Top take its place while scrolling */}
+      {showFloatingMusic && <button
         type="button"
         onClick={toggleAudio}
         aria-label={isAudioPlaying ? (isBn ? 'ভক্তিমূলক সঙ্গীত বন্ধ করুন' : 'Turn devotional music off') : (isBn ? 'ভক্তিমূলক সঙ্গীত চালু করুন' : 'Turn devotional music on')}
@@ -315,7 +334,7 @@ export const Header: React.FC = () => {
           <span className="text-sm font-bold">{isAudioPlaying ? (isBn ? 'সঙ্গীত চলছে' : 'Music Playing') : (isBn ? 'পূজার সঙ্গীত' : 'Puja Music')}</span>
           <span className="mt-0.5 text-[10px] opacity-85">{isAudioPlaying ? (isBn ? 'বন্ধ করতে চাপুন' : 'Tap to turn off') : (isBn ? 'শুনতে চাপুন' : 'Tap to listen')}</span>
         </span>
-      </button>
+      </button>}
     </>
   );
 };
