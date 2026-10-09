@@ -205,49 +205,6 @@ const MainLayout: React.FC = () => {
     document.documentElement.classList.add('notranslate');
   }, [language]);
 
-  // Reveal each content section as it enters the viewport, with staggered cards.
-  // IntersectionObserver keeps this lightweight and avoids scroll-event work.
-  useEffect(() => {
-    if (!hasChosenLanguage) return;
-
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
-    const footer = document.querySelector<HTMLElement>('footer');
-    const revealTargets = [...sections.slice(1), ...(footer ? [footer] : [])];
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    if (!('IntersectionObserver' in window)) {
-      revealTargets.forEach((element) => element.classList.add('scroll-reveal-visible'));
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('scroll-reveal-visible');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
-
-    revealTargets.forEach((element, sectionIndex) => {
-      element.classList.add('scroll-reveal-section');
-      element.classList.add(sectionIndex % 2 === 0 ? 'scroll-reveal-from-left' : 'scroll-reveal-from-right');
-
-      // Reveal meaningful content blocks in sequence, not every tiny element.
-      const contentBlocks = element.querySelectorAll<HTMLElement>(
-        ':scope > div > div, .grid > *, [data-scroll-reveal]'
-      );
-      contentBlocks.forEach((block, index) => {
-        if (index > 7) return;
-        block.classList.add('scroll-reveal-card');
-        block.style.setProperty('--reveal-order', String(index));
-        block.classList.add(index % 2 === 0 ? 'scroll-reveal-card-left' : 'scroll-reveal-card-right');
-      });
-      observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, [hasChosenLanguage, activeView]);
 
   // 1. First-time Language Gate Screen
   if (!hasChosenLanguage) {
