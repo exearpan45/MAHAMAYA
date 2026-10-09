@@ -8,6 +8,7 @@ export const GallerySection: React.FC = () => {
   const isBn = language === 'bn';
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedPujaYear, setSelectedPujaYear] = useState<number | 'all'>('all');
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
@@ -21,9 +22,14 @@ export const GallerySection: React.FC = () => {
     { id: 'Community', label_bn: 'সর্বজনীন মুহূর্ত', label_en: 'Community' },
   ];
 
+  const pujaYears = Array.from(new Set(gallery.map((photo) => photo.pujaYear)))
+    .filter((year) => Number.isFinite(year))
+    .sort((a, b) => b - a);
+
   const filteredPhotos = gallery.filter((p) => {
-    if (selectedCategory === 'all') return true;
-    return p.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+    const matchesYear = selectedPujaYear === 'all' || p.pujaYear === selectedPujaYear;
+    return matchesCategory && matchesYear;
   });
 
   const displayedPhotos = showAllPhotos ? filteredPhotos : filteredPhotos.slice(0, 8);
@@ -64,6 +70,64 @@ export const GallerySection: React.FC = () => {
                 : 'A curated visual record of Maa Durga pratima, festive traditions, Sandhi Puja, and community memories.'}
             </p>
           </div>
+
+        {/* Puja year photo albums, derived from existing gallery metadata */}
+        {pujaYears.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+                  {isBn ? 'পূজাবর্ষের অ্যালবাম' : 'Puja Year Albums'}
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  {isBn ? 'বছর নির্বাচন করে সেই বছরের স্মৃতিচিত্র দেখুন।' : 'Choose a year to explore its photo memories.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setSelectedPujaYear('all'); setShowAllPhotos(false); }}
+                className={`text-xs font-semibold px-3 py-2 rounded-lg border cursor-pointer ${selectedPujaYear === 'all' ? 'border-[#9E1B32] text-[#9E1B32] dark:text-[#E5C158]' : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300'}`}
+              >
+                {isBn ? 'সব বছর' : 'All years'}
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {pujaYears.map((year) => {
+                const yearPhotos = gallery.filter((photo) => photo.pujaYear === year);
+                const cover = yearPhotos.find((photo) => photo.featured) || yearPhotos[0];
+                const selected = selectedPujaYear === year;
+                return (
+                  <button
+                    type="button"
+                    key={year}
+                    onClick={() => { setSelectedPujaYear(year); setShowAllPhotos(false); }}
+                    aria-pressed={selected}
+                    className={`group overflow-hidden rounded-xl border text-left transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${selected ? 'border-[#9E1B32] ring-1 ring-[#9E1B32]/40' : 'border-[#D4AF37]/30 hover:border-[#9E1B32]/60'}`}
+                  >
+                    <div className="relative aspect-[16/9] bg-[#F3E9D8] dark:bg-neutral-900">
+                      {cover && (
+                        <img
+                          src={cover.thumbnailUrl || cover.imageUrl}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                        />
+                      )}
+                      <span className="absolute top-2 right-2 rounded-full bg-black/65 text-white px-2 py-1 text-[10px] font-bold">
+                        {yearPhotos.length} {isBn ? 'টি ছবি' : yearPhotos.length === 1 ? 'photo' : 'photos'}
+                      </span>
+                    </div>
+                    <div className="p-3 bg-[#FFFDF9] dark:bg-[#1A0C11]">
+                      <p className="font-bold text-sm text-[#4A0E17] dark:text-[#FBF6EF]">{year}</p>
+                      <p className="text-[11px] text-neutral-500 mt-1">{isBn ? 'পূজার স্মৃতিচিত্র' : 'Puja memories'}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Category Filters */}
         <div className="flex flex-wrap items-center justify-center gap-2 pb-2">
