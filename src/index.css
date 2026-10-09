@@ -222,3 +222,105 @@ body.puja-theme {
     transition: none !important;
   }
 }
+
+
+/* MAHAMAYA premium heritage polish: keep effects restrained and GPU-friendly. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+
+  #site-opening {
+    background:
+      radial-gradient(ellipse at 50% 38%, rgba(158, 27, 50, 0.22), transparent 48%),
+      #12080B;
+  }
+
+  #site-opening::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 18px;
+    pointer-events: none;
+  }
+
+  #site-opening .opening-symbol {
+    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.035);
+    animation: premiumEmblemIn 900ms cubic-bezier(.2,.8,.2,1) 120ms both;
+  }
+
+  #site-opening .opening-divider span {
+    transform-origin: center;
+    animation: premiumLineIn 850ms cubic-bezier(.2,.8,.2,1) 250ms both;
+  }
+
+  #site-opening .opening-year {
+    letter-spacing: .24em;
+    animation: premiumTextIn 800ms cubic-bezier(.2,.8,.2,1) 320ms both;
+  }
+
+  @keyframes premiumEmblemIn {
+    from { opacity: 0; transform: translateY(12px) scale(.88); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes premiumLineIn {
+    from { opacity: 0; transform: scaleX(.15); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
+  @keyframes premiumTextIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  main > section {
+    scroll-margin-top: 5.5rem;
+  }
+
+  main > section h2 {
+    text-wrap: balance;
+  }
+
+  main > section .grid > * {
+    border-color: rgba(212, 175, 55, 0.2);
+  }
+
+  main > section img {
+    backface-visibility: hidden;
+  }
+
+  main > section .group img {
+    transition: transform 650ms cubic-bezier(.2,.75,.25,1);
+  }
+
+  main > section .group:hover img {
+    transform: scale(1.035);
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:not(:disabled), a[href] {
+    transition-timing-function: cubic-bezier(.2,.8,.2,1);
+  }
+
+  :focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  #site-opening::before { inset: 9px; border-radius: 13px; }
+  main > section .group:hover img { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  #site-opening .opening-symbol,
+  #site-opening .opening-divider span,
+  #site-opening .opening-year {
+    animation: none !important;
+  }
+}
