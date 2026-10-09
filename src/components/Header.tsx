@@ -188,17 +188,31 @@ export const Header: React.FC = () => {
             {navItems.map((item) => {
               const isActive = activeView === item.id;
               return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`px-3 py-1.5 text-xs xl:text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                    isActive
-                      ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/10 dark:bg-[#E5C158]/10 font-semibold'
-                      : 'text-neutral-700 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158]'
-                  }`}
-                >
-                  {item.label}
-                </button>
+                item.id === 'gallery' ? (
+                  <a
+                    key={item.id}
+                    href="/gallery"
+                    className={`px-3 py-1.5 text-xs xl:text-sm font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/10 dark:bg-[#E5C158]/10 font-semibold'
+                        : 'text-neutral-700 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158]'
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`px-3 py-1.5 text-xs xl:text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                      isActive
+                        ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/10 dark:bg-[#E5C158]/10 font-semibold'
+                        : 'text-neutral-700 dark:text-neutral-300 hover:text-[#9E1B32] dark:hover:text-[#E5C158]'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                )
               );
             })}
           </nav>
@@ -339,18 +353,34 @@ export const Header: React.FC = () => {
                 const Icon = item.icon;
                 const isActive = activeView === item.id;
                 return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`flex items-center gap-2 p-2.5 rounded-lg text-xs font-medium text-left transition-colors cursor-pointer ${
-                      isActive
-                        ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/15 dark:bg-[#E5C158]/15 font-semibold'
-                        : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                    <span>{item.label}</span>
-                  </button>
+                  item.id === 'gallery' ? (
+                    <a
+                      key={item.id}
+                      href="/gallery"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-2 p-2.5 rounded-lg text-xs font-medium text-left transition-colors ${
+                        isActive
+                          ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/15 dark:bg-[#E5C158]/15 font-semibold'
+                          : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                      <span>{item.label}</span>
+                    </a>
+                  ) : (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavClick(item.id)}
+                      className={`flex items-center gap-2 p-2.5 rounded-lg text-xs font-medium text-left transition-colors cursor-pointer ${
+                        isActive
+                          ? 'text-[#9E1B32] dark:text-[#E5C158] bg-[#9E1B32]/15 dark:bg-[#E5C158]/15 font-semibold'
+                          : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                      <span>{item.label}</span>
+                    </button>
+                  )
                 );
               })}
             </div>
