@@ -80,6 +80,17 @@ export const Header: React.FC = () => {
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
+    const onGalleryPage = window.location.pathname.replace(/\\/+$/, '') === '/gallery';
+    if (id === 'gallery') {
+      if (!onGalleryPage) window.location.assign('/gallery');
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (onGalleryPage) {
+      if (id === 'home') window.location.assign('/');
+      else window.location.assign('/#' + id);
+      return;
+    }
 
     if (id === 'admin' || id === 'profile') {
       setActiveView(id);
