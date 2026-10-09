@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://mahamaya.pages.dev/sitemap.xml
+Sitemap: https://mahamaya-bsm.pages.dev/sitemap.xml
