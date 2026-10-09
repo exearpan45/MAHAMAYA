@@ -1,1 +1,2 @@
-/gallery /index.html 200
+/gallery /gallery/ 301
+/gallery/ /index.html 200
