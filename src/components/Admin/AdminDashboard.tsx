@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   LayoutDashboard,
@@ -23,6 +23,7 @@ import {
   Sparkles,
   LogOut,
   Film,
+  ClipboardList,
 } from 'lucide-react';
 import {
   EventCategory,
@@ -112,6 +113,7 @@ export const AdminDashboard: React.FC = () => {
     | 'videos'
     | 'history'
     | 'settings'
+    | 'activity'
   >('overview');
 
   // State for new Event form
@@ -159,6 +161,32 @@ export const AdminDashboard: React.FC = () => {
   const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
 
   const [fullJson, setFullJson] = useState('');
+  const [activityLog, setActivityLog] = useState<Array<{ id: string; action: string; at: string }>>(() => {
+    try {
+      const saved = window.localStorage.getItem('mahamaya_admin_activity_v1');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed.filter((item) =>
+        item && typeof item.id === 'string' && typeof item.action === 'string' && typeof item.at === 'string'
+      ).slice(0, 30) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('mahamaya_admin_activity_v1', JSON.stringify(activityLog.slice(0, 30)));
+    } catch {
+      // Activity history is best-effort when browser storage is unavailable.
+    }
+  }, [activityLog]);
+
+  const recordActivity = (action: string) => {
+    setActivityLog((previous) => [
+      { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, action, at: new Date().toISOString() },
+      ...previous,
+    ].slice(0, 30));
+  };
 
   const MAX_GALLERY_PHOTOS = 200;
   const galleryCount = gallery.length;
@@ -198,6 +226,7 @@ export const AdminDashboard: React.FC = () => {
     setIsPublishing(true);
     try {
       await publishContent();
+      recordActivity(isBn ? 'পরিবর্তন প্রকাশ করা হয়েছে' : 'Changes published');
       setPublishNotice(isBn ? 'পরিবর্তনগুলি প্রকাশিত হয়েছে। Cloudflare এখন সাইটটি পুনর্নির্মাণ করবে।' : 'Changes published. Cloudflare Pages will rebuild the website automatically.');
       window.setTimeout(() => setPublishNotice(''), 7000);
     } catch (error) {
@@ -317,6 +346,7 @@ export const AdminDashboard: React.FC = () => {
 
 
   const handleExport = () => {
+    recordActivity(isBn ? 'ব্যাকআপ JSON এক্সপোর্ট করা হয়েছে' : 'Backup JSON exported');
     const jsonStr = exportDataJSON();
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -351,6 +381,7 @@ export const AdminDashboard: React.FC = () => {
 
     void file.text().then(async (content) => {
       const success = await importDataJSON(content);
+      if (success) recordActivity(isBn ? 'ব্যাকআপ রিস্টোর করা হয়েছে (প্রকাশের অপেক্ষায়)' : 'Backup restored to editor (not yet published)');
       setImportNotice(success
         ? (isBn ? 'ব্যাকআপ এডিটরে লোড হয়েছে। লাইভ করতে Publish Changes চাপুন।' : 'Backup loaded into the editor. Click Publish Changes to make it live.')
         : (isBn ? 'ভুল ফরম্যাট! ব্যাকআপ ফাইলটি সঠিক নয়।' : 'Invalid backup JSON file.'));
@@ -448,6 +479,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'videos', label_bn: 'ভিডিও আর্কাইভ', label_en: 'Video Gallery', icon: Film },
             { id: 'history', label_bn: 'ইতিহাস ও মাইলফলক', label_en: 'History', icon: History },
             { id: 'settings', label_bn: 'ওয়েবসাইট সেটিংস', label_en: 'Site Settings', icon: Settings },
+            { id: 'activity', label_bn: 'কার্যকলাপের লগ', label_en: 'Activity Log', icon: ClipboardList },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1579,6 +1611,32 @@ export const AdminDashboard: React.FC = () => {
 
 
         {/* ================= TAB 10: SITE SETTINGS & BACKUP ================= */}
+        {activeTab === 'activity' && (
+          <section className="space-y-4 animate-in fade-in duration-200" aria-label={isBn ? 'অ্যাডমিন কার্যকলাপের লগ' : 'Admin activity log'}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">{isBn ? 'সাম্প্রতিক অ্যাডমিন কার্যকলাপ' : 'Recent admin activity'}</h2>
+                <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{isBn ? 'এই ব্রাউজারে সর্বশেষ ৩০টি কার্যকলাপ সংরক্ষিত থাকে। এটি সার্ভার-সাইড নিরাপত্তা লগ নয়।' : 'The latest 30 actions are stored in this browser only. This is not a server-side security audit log.'}</p>
+              </div>
+              <button type="button" onClick={() => { if (window.confirm(isBn ? 'কার্যকলাপের ইতিহাস মুছে ফেলবেন?' : 'Clear this browser’s activity history?')) setActivityLog([]); }} className="self-start rounded-xl border border-neutral-300 px-3 py-2 text-xs font-semibold hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800">
+                {isBn ? 'লগ মুছুন' : 'Clear history'}
+              </button>
+            </div>
+            {activityLog.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#D4AF37]/40 p-8 text-center text-sm text-neutral-500">{isBn ? 'এখনও কোনো কার্যকলাপ রেকর্ড করা হয়নি।' : 'No activity recorded yet.'}</div>
+            ) : (
+              <ol className="space-y-2">
+                {activityLog.map((item) => (
+                  <li key={item.id} className="flex flex-col gap-1 rounded-xl border border-neutral-200 bg-white/70 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/40 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="text-sm font-medium">{item.action}</span>
+                    <time dateTime={item.at} className="shrink-0 text-xs text-neutral-500">{new Date(item.at).toLocaleString(isBn ? 'bn-BD' : 'en-IN')}</time>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        )}
+
         {activeTab === 'settings' && (
           <div className="space-y-8 max-w-2xl animate-in fade-in duration-200">
             <div className="p-6 rounded-2xl bg-[#FFFDF9] dark:bg-[#1A0C11] border border-[#D4AF37]/35 space-y-4">
