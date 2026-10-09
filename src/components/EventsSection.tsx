@@ -91,7 +91,7 @@ export const EventsSection: React.FC = () => {
                   {/* Stable image area: keeps every event card aligned even without an uploaded photo */}
                   <div className="h-44 w-full shrink-0 overflow-hidden relative bg-gradient-to-br from-[#3A101B] via-[#1A0C11] to-[#5A2025]">
                     {evt.image ? (
-                      <img
+                      <img onError={(event) => { if (new URL(event.currentTarget.src).pathname !== '/real_maa_durga.jpg') event.currentTarget.src = '/real_maa_durga.jpg'; }}
                         src={evt.image}
                         alt={isBn ? evt.title_bn : evt.title_en}
                         referrerPolicy="no-referrer"
