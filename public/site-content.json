@@ -329,58 +329,6 @@
       "uploaderName": "MAHAMAYA Committee",
       "createdAt": "2026-10-05T10:00:00Z",
       "featured": true
-    },
-    {
-      "id": "gal-2",
-      "imageUrl": "/real_maa_durga.jpg",
-      "title_en": "Historic Mandir Courtyard & Puja Mandap",
-      "title_bn": "ঐতিহাসিক মন্দির প্রাঙ্গণ ও পূজামণ্ডপ",
-      "description_en": "The sanctified grounds of Pinrra Durga Mandir where generations of the Brahman Goswami community have worshipped.",
-      "description_bn": "পিন্দ্রা দুর্গা মন্দিরের পবিত্র প্রাঙ্গণ, যেখানে ১১৮ বছর ধরে নিরবচ্ছিন্নভাবে পূজিত হচ্ছেন দেবী।",
-      "category": "Temple",
-      "pujaYear": 2026,
-      "uploaderName": "MAHAMAYA Committee",
-      "createdAt": "2026-10-05T10:15:00Z",
-      "featured": true
-    },
-    {
-      "id": "gal-3",
-      "imageUrl": "/real_maa_durga.jpg",
-      "title_en": "Sandhi Puja with 108 Sacred Diyas",
-      "title_bn": "১০৮ মঙ্গল প্রদীপে আলোকিত পুণ্য সন্ধিপূজা",
-      "description_en": "The divine glow of 108 earthen lamps lit at the sacred juncture of Maha Ashtami and Maha Navami.",
-      "description_bn": "অষ্টমী-নবমীর সন্ধিক্ষণে প্রজ্জ্বলিত ১০৮ প্রদীপের মহিমাময় দৃশ্য।",
-      "category": "Durga Puja",
-      "pujaYear": 2026,
-      "uploaderName": "MAHAMAYA Committee",
-      "createdAt": "2026-10-05T10:30:00Z",
-      "featured": true
-    },
-    {
-      "id": "gal-4",
-      "imageUrl": "/real_maa_durga.jpg",
-      "title_en": "Sacred Anna Bhog Prasad Offering",
-      "title_bn": "মায়ের ভোগ নিবেদন ও মহাপ্রসাদ",
-      "description_en": "Devotional offering of khichuri, labra, payesh, and sweets distributed on all principal days.",
-      "description_bn": "পূজার দিনগুলিতে মায়ের চরণে নিবেদিত তৃপ্তিদায়ক অন্নভোগ ও মহাপ্রসাদ।",
-      "category": "Bhog",
-      "pujaYear": 2026,
-      "uploaderName": "MAHAMAYA Committee",
-      "createdAt": "2026-10-05T10:45:00Z",
-      "featured": true
-    },
-    {
-      "id": "gal-5",
-      "imageUrl": "/real_maa_durga.jpg",
-      "title_en": "Vijaya Dashami Sindoor Utsav",
-      "title_bn": "বিজয়া দশমীর ঐতিহ্যবাহী সিঁদুর উৎসব",
-      "description_en": "Joyous and respectful farewell to Maa Durga celebrated with vermilion and heartfelt prayers.",
-      "description_bn": "দশমীর দিনে মা দুর্গাকে বিদায় জানানোর আনন্দঘন সিঁদুর খেলা ও শুভ বিজয়ার শুভেচ্ছা।",
-      "category": "Community",
-      "pujaYear": 2026,
-      "uploaderName": "MAHAMAYA Committee",
-      "createdAt": "2026-10-05T11:00:00Z",
-      "featured": true
     }
   ],
   "historyMilestones": [
