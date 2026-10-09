@@ -80,8 +80,6 @@ export const VideoGallery: React.FC = () => {
     };
   }, [activeVideo, orderedVideos]);
 
-  if (!videos.length) return null;
-
   const getEmbed = (video: VideoItem) => {
     const youtubeId = getYouTubeId(video.videoUrl);
     if (youtubeId) return { type: 'youtube' as const, src: `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0&modestbranding=1` };
@@ -118,6 +116,20 @@ export const VideoGallery: React.FC = () => {
             )}
           </div>
         </div>
+
+        {videos.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-[#D4AF37]/40 bg-[#FFFDF9]/70 dark:bg-[#1A0C11]/70 px-6 py-10 text-center">
+            <Film className="mx-auto h-10 w-10 text-[#9E1B32] dark:text-[#E5C158]" aria-hidden="true" />
+            <h3 className="mt-4 text-lg font-bold text-[#4A0E17] dark:text-[#FBF6EF]">
+              {isBn ? 'ভিডিও শীঘ্রই যোগ করা হবে' : 'Videos are coming soon'}
+            </h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-neutral-600 dark:text-neutral-300">
+              {isBn
+                ? 'মন্দির ও পূজার ভিডিও সংগ্রহ এখনো প্রস্তুত হচ্ছে। নতুন ভিডিও যোগ হলে এখানে দেখা যাবে।'
+                : 'The temple and Puja video collection is being prepared. New videos will appear here when they are added.'}
+            </p>
+          </div>
+        )}
 
         {videoYears.length > 0 && (
           <div className="space-y-4">
