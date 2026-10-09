@@ -102,6 +102,7 @@ export const GallerySection: React.FC = () => {
                     key={year}
                     onClick={() => { setSelectedPujaYear(year); setShowAllPhotos(false); }}
                     aria-pressed={selected}
+                    aria-label={isBn ? `${year} সালের পূজার ছবি, ${yearPhotos.length}টি` : `${year} Puja photo album, ${yearPhotos.length} photos`}
                     className={`group overflow-hidden rounded-xl border text-left transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${selected ? 'border-[#9E1B32] ring-1 ring-[#9E1B32]/40' : 'border-[#D4AF37]/30 hover:border-[#9E1B32]/60'}`}
                   >
                     <div className="relative aspect-[16/9] bg-[#F3E9D8] dark:bg-neutral-900">
