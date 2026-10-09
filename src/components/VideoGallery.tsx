@@ -149,6 +149,7 @@ export const VideoGallery: React.FC = () => {
                     key={year}
                     onClick={() => { setSelectedVideoYear(year); setShowAllVideos(false); }}
                     aria-pressed={selected}
+                    aria-label={isBn ? `${year} সালের ভিডিও অ্যালবাম, ${count}টি ভিডিও` : `${year} video album, ${count} videos`}
                     className={`inline-flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${selected ? 'bg-[#9E1B32] text-white border-[#D4AF37]/60' : 'bg-[#FFFDF9] dark:bg-[#1A0C11] text-[#4A0E17] dark:text-[#FBF6EF] border-[#D4AF37]/30 hover:border-[#9E1B32]/60'}`}
                   >
                     <Film className="w-4 h-4" />
