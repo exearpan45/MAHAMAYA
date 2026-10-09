@@ -128,6 +128,7 @@ const ScrollProgress: React.FC = () => {
           : 0;
 
       bar.style.transform = `scaleX(${progress})`;
+      bar.parentElement?.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
     };
 
     const handleScrollOrResize = () => {
