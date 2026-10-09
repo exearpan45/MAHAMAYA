@@ -161,16 +161,24 @@ const publish = async (request: Request, env: Env) => {
     return response({ error: 'Video gallery limit reached. The website supports up to 200 videos.' }, 400);
   }
   if (Array.isArray(content.videos)) {
-    for (const video of content.videos) {
+    const uploadedAssetPaths = new Set(
+      assets.map((asset: any) => cleanAssetPath(asset?.path)).filter(Boolean),
+    );
+    const isAllowedVideoUrl = (value: unknown, prefix: string) => {
+      const raw = String(value || '');
+      if (raw.startsWith(prefix)) return uploadedAssetPaths.has(cleanAssetPath('public' + raw));
       try {
-        const url = new URL(String(video?.videoUrl || ''));
-        if (url.protocol !== 'https:') throw new Error('invalid');
-        if (video?.thumbnailUrl) {
-          const thumbnail = new URL(String(video.thumbnailUrl));
-          if (thumbnail.protocol !== 'https:') throw new Error('invalid');
-        }
+        return new URL(raw).protocol === 'https:';
       } catch {
-        return response({ error: 'Every video and thumbnail link must be a valid HTTPS URL.' }, 400);
+        return false;
+      }
+    };
+    for (const video of content.videos) {
+      if (!isAllowedVideoUrl(video?.videoUrl, '/uploads/video-')) {
+        return response({ error: 'Every video must be an HTTPS link or an uploaded video file included with this publish.' }, 400);
+      }
+      if (video?.thumbnailUrl && !isAllowedVideoUrl(video.thumbnailUrl, '/uploads/video-thumb-')) {
+        return response({ error: 'Video thumbnails must use HTTPS or be included with this publish.' }, 400);
       }
     }
   }
