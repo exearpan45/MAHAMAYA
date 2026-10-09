@@ -536,6 +536,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const assets: Array<{ path: string; base64: string }> = [];
     const clone: any = JSON.parse(JSON.stringify(snapshot));
+    const pendingVideoFiles = clone.videos.filter((item: VideoItem) => typeof item.videoUrl === 'string' && item.videoUrl.startsWith('data:video/'));
+    if (pendingVideoFiles.length > 1) {
+      throw new Error('Publish one uploaded video file at a time. Publish the current video before uploading another file.');
+    }
 
     const uploadDataUrl = async (dataUrl: string, prefix: string) => {
       const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
