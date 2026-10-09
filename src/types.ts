@@ -65,6 +65,7 @@ export interface Announcement {
   priority: AnnouncementPriority;
   active: boolean;
   showInTopBanner?: boolean;
+  expiresAt?: string;
 }
 
 export type GalleryCategory =
