@@ -65,6 +65,23 @@
   animation: diyaFlicker 3s ease-in-out infinite;
 }
 
+/* Puja glow mode: a calm, static festive accent with no flashing animation. */
+html.puja-theme header {
+  box-shadow: 0 5px 22px rgba(212, 175, 55, 0.14), inset 0 -1px 0 rgba(212, 175, 55, 0.3);
+}
+
+html.puja-theme header button[aria-pressed="true"] {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.18), 0 0 14px rgba(229, 103, 23, 0.16);
+}
+
+html.puja-theme main section {
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.08);
+}
+
+html.puja-theme .bg-gradient-to-r {
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.08));
+}
+
 /* Print styles for downloadable Puja calendar */
 @media print {
   header, footer, nav, button, .no-print {
