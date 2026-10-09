@@ -190,35 +190,12 @@ export const PujaCalendar: React.FC = () => {
 
           <div className="shrink-0 flex flex-col sm:flex-row gap-2">
             <button
-              onClick={handleCopyDetails}
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
-              title={isBn ? 'পূজার তারিখ ও স্থান কপি করুন' : 'Copy Puja dates and venue'}
-              aria-live="polite"
-            >
-              {copyStatus === 'copied' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              <span>
-                {copyStatus === 'copied'
-                  ? (isBn ? 'কপি হয়েছে!' : 'Copied!')
-                  : copyStatus === 'error'
-                    ? (isBn ? 'কপি হয়নি' : 'Copy failed')
-                    : (isBn ? 'বিবরণ কপি করুন' : 'Copy Details')}
-              </span>
-            </button>
-            <button
               onClick={handleDownloadDesignedCalendar}
               className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#9E1B32] hover:bg-[#7F1528] text-white text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
               title={isBn ? 'সুন্দর নকশার ক্যালেন্ডার ফাইল ডাউনলোড করুন' : 'Download a designed calendar file'}
             >
               <Download className="w-4 h-4" />
               <span>{isBn ? 'ক্যালেন্ডার ডাউনলোড' : 'Download Designed Calendar'}</span>
-            </button>
-            <button
-              onClick={handleAddToCalendar}
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#8B6410] dark:text-[#E5C158] text-xs sm:text-sm font-semibold border border-[#D4AF37]/40 transition-colors cursor-pointer"
-              title={isBn ? 'ফোন বা কম্পিউটারের ক্যালেন্ডারে যোগ করুন' : 'Import Puja dates into your calendar app'}
-            >
-              <Calendar className="w-4 h-4" />
-              <span>{isBn ? 'ক্যালেন্ডারে যোগ করুন' : 'Add to Calendar'}</span>
             </button>
             <button
               onClick={() => setDownloadModalOpen(true)}
