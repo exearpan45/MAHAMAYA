@@ -364,6 +364,22 @@
       "uploaderName": "Admin",
       "uploaderEmail": "",
       "uploaderId": "local-admin"
+    },
+    {
+      "title_en": "Dasami  visarjan",
+      "title_bn": "Dasami  visarjan",
+      "description_en": "Durga maa idol visarjan 2026",
+      "description_bn": "Durga maa idol visarjan 2026",
+      "category": "Visarjan",
+      "pujaYear": 2026,
+      "featured": false,
+      "id": "9b457a64-ef77-4832-93c0-f993f72fd79b",
+      "createdAt": "2026-10-30T20:22:24.465Z",
+      "imageUrl": "/uploads/gallery-5fffcbca-99e8-4e20-a831-b5af2d8bda9c.webp",
+      "thumbnailUrl": "/uploads/gallery-5fffcbca-99e8-4e20-a831-b5af2d8bda9c.webp",
+      "uploaderName": "Admin",
+      "uploaderEmail": "",
+      "uploaderId": "local-admin"
     }
   ],
   "historyMilestones": [
