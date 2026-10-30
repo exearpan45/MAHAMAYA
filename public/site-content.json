@@ -348,6 +348,22 @@
       "uploaderName": "Admin",
       "uploaderEmail": "",
       "uploaderId": "local-admin"
+    },
+    {
+      "title_en": "Durga puja 2k26 ",
+      "title_bn": "Durga puja 2k26 ",
+      "description_en": "Durga puja 2k26 ",
+      "description_bn": "Durga puja 2k26 ",
+      "category": "Maa Durga",
+      "pujaYear": 2026,
+      "featured": false,
+      "id": "2dd6ffbe-9bf9-4de3-be42-dfd231b3e1d6",
+      "createdAt": "2026-10-30T20:20:56.104Z",
+      "imageUrl": "/uploads/gallery-cf8cef03-70ce-4fdf-b8fe-ca2b017cb9a4.webp",
+      "thumbnailUrl": "/uploads/gallery-cf8cef03-70ce-4fdf-b8fe-ca2b017cb9a4.webp",
+      "uploaderName": "Admin",
+      "uploaderEmail": "",
+      "uploaderId": "local-admin"
     }
   ],
   "historyMilestones": [
