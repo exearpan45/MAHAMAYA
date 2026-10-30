@@ -48,7 +48,7 @@
       "days": [
         {
           "id": "2026-d1",
-          "date": "2026-10-16",
+          "date": "2027-10-05",
           "bengaliDate": "২৯ আশ্বিন ১৪৩৩",
           "dayName_en": "Maha Shashthi",
           "dayName_bn": "মহা ষষ্ঠী",
@@ -66,10 +66,10 @@
         },
         {
           "id": "2026-d2",
-          "date": "2026-10-17",
+          "date": "2027-10-06",
           "bengaliDate": "৩০ আশ্বিন ১৪৩৩",
           "dayName_en": "Maha Saptami (Day 1)",
-          "dayName_bn": "মহা সপ্তমী (প্রথম পর্যায়)",
+          "dayName_bn": "মহা সপ্তমী ",
           "rituals_en": [
             "Kalparambha",
             "Akal Bodhon",
@@ -87,10 +87,10 @@
         },
         {
           "id": "2026-d3",
-          "date": "2026-10-18",
+          "date": "2027-10-07",
           "bengaliDate": "৩১ আশ্বিন ১৪৩৩",
           "dayName_en": "Maha Saptami (Day 2)",
-          "dayName_bn": "মহা সপ্তমী (দ্বিতীয় পর্যায়)",
+          "dayName_bn": "মহা astami  (prothom  porjai)",
           "rituals_en": [
             "Durga Saptami Puja",
             "Kolabou Snan (Nabapatrika Pravesh)",
@@ -109,7 +109,7 @@
         },
         {
           "id": "2026-d4",
-          "date": "2026-10-19",
+          "date": "2027-10-08",
           "bengaliDate": "০১ কার্তিক ১৪৩৩",
           "dayName_en": "Maha Ashtami",
           "dayName_bn": "মহা অষ্টমী",
@@ -133,7 +133,7 @@
         },
         {
           "id": "2026-d5",
-          "date": "2026-10-20",
+          "date": "2027-10-09",
           "bengaliDate": "০২ কার্তিক ১৪৩৩",
           "dayName_en": "Maha Navami",
           "dayName_bn": "মহা নবমী",
@@ -157,7 +157,7 @@
         },
         {
           "id": "2026-d6",
-          "date": "2026-10-21",
+          "date": "2027-10-10",
           "bengaliDate": "০৩ কার্তিক ১৪৩৩",
           "dayName_en": "Vijaya Dashami",
           "dayName_bn": "বিজয়া দশমী",
