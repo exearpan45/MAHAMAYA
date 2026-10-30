@@ -380,6 +380,22 @@
       "uploaderName": "Admin",
       "uploaderEmail": "",
       "uploaderId": "local-admin"
+    },
+    {
+      "title_en": "Subho bijoya ",
+      "title_bn": "Subho bijoya ",
+      "description_en": "MAHAMAYA durga puja committee toroj tekha sokolke subho bijoya",
+      "description_bn": "MAHAMAYA durga puja committee toroj tekha sokolke subho bijoya",
+      "category": "Visarjan",
+      "pujaYear": 2026,
+      "featured": false,
+      "id": "72b4e8a5-8763-47b9-aa67-6c1da987c2e7",
+      "createdAt": "2026-10-30T20:24:27.676Z",
+      "imageUrl": "/uploads/gallery-d1d97e59-cb29-4147-801c-85c9fb582fc1.webp",
+      "thumbnailUrl": "/uploads/gallery-d1d97e59-cb29-4147-801c-85c9fb582fc1.webp",
+      "uploaderName": "Admin",
+      "uploaderEmail": "",
+      "uploaderId": "local-admin"
     }
   ],
   "historyMilestones": [
