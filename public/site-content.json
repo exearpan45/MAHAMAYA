@@ -5,7 +5,7 @@
     "committeeName_en": "MAHAMAYA Durga Puja Committee",
     "committeeName_bn": "মহামায়া দুর্গোৎসব সমিতি",
     "currentYear": 2026,
-    "currentEdition": 118,
+    "currentEdition": 119,
     "heroDeityImage": "/real_maa_durga.jpg",
     "mapsUrl": "https://maps.app.goo.gl/w5C1sACBhUxz5t1w6",
     "heroKicker_bn": "॥ জয় মা দুর্গা ॥",
@@ -41,8 +41,8 @@
   "pujaYears": [
     {
       "year": 2026,
-      "shasthiDate": "2026-10-16",
-      "dashamiDate": "2026-10-21",
+      "shasthiDate": "2027-10-05",
+      "dashamiDate": "2027-10-10",
       "edition": 118,
       "active": true,
       "days": [
