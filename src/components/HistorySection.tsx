@@ -120,6 +120,7 @@ export const HistorySection: React.FC = () => {
                       className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
+                fetchPriority="low"
                     />
                   </div>
                 )}
