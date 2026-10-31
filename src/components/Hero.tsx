@@ -30,6 +30,11 @@ export const Hero: React.FC = () => {
           src={settings.heroDeityImage}
           alt={isBn ? 'পিন্দ্রা দুর্গা মন্দিরে মা দুর্গার পবিত্র মূল প্রতিমা' : 'Real Maa Durga idol at Pinrra Durga Mandir'}
           referrerPolicy="no-referrer"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          width={1600}
+          height={1000}
           className="w-full h-full object-cover object-center scale-105 transition-all duration-1000 ease-out filter brightness-[0.78] contrast-[1.05] dark:brightness-[0.45] dark:contrast-[1.08]"
         />
         {/* Sacred gradient vignette for light & dark modes */}
