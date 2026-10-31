@@ -283,6 +283,27 @@
     </style>
 
     <div id="root"></div>
+    <script>
+      // Never let the opening screen trap visitors if images, fonts, or app code stall.
+      (() => {
+        let dismissed = false;
+        const dismissOpening = () => {
+          if (dismissed) return;
+          dismissed = true;
+          const loader = document.getElementById('site-opening');
+          if (!loader) return;
+          loader.classList.add('opening-exit');
+          window.setTimeout(() => loader.remove(), 500);
+        };
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', dismissOpening, { once: true });
+        } else {
+          dismissOpening();
+        }
+        // Absolute fallback, including cases where the app bundle fails to load.
+        window.setTimeout(dismissOpening, 8000);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
