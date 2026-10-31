@@ -179,7 +179,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     let cancelled = false;
     const loadPublishedContent = async () => {
       try {
-        const response = await fetch('/site-content.json?ts=' + Date.now(), { cache: 'no-store' });
+        const response = await fetch('/site-content.json', { cache: 'default' });
         if (!response.ok) throw new Error('Published content could not be loaded.');
         const data = await response.json();
         if (!cancelled) applySnapshot({ ...data, currentUser: null });
@@ -193,6 +193,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   useEffect(() => {
+    // Public visitors do not need an admin-session network request.
+    if (activeView !== 'admin') return;
     let cancelled = false;
     const restoreAdminSession = async () => {
       try {
@@ -206,7 +208,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     void restoreAdminSession();
     return () => { cancelled = true; };
-  }, []);
+  }, [activeView]);
 
   const login = async (email: string, password: string): Promise<User> => {
     const response = await fetch('/api/admin/login', {
