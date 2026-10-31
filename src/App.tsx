@@ -42,12 +42,8 @@ const MaaDurgaWebsiteBackground: React.FC = () => {
       className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden"
       aria-hidden="true"
     >
-      {/* Authentic Maa Durga Photo Background */}
-      <img
-        src="/real_maa_durga.jpg"
-        alt=""
-        className="w-full h-full object-cover object-center scale-100 transition-opacity duration-700 brightness-[0.92] dark:brightness-[0.35] contrast-[1.05]"
-      />
+      {/* Lightweight atmospheric background. The deity photo is loaded once in the hero. */}
+      <div className="absolute inset-0 bg-[#FDFBF7] dark:bg-[#12080B]" />
       {/* Light mode sacred warm golden veil to keep all content 100% readable while clearly showing Maa Durga */}
       <div className="absolute inset-0 bg-[#FDFBF7]/80 dark:hidden" />
       {/* Dark mode sacred deep velvet veil */}
