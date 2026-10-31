@@ -98,6 +98,7 @@ export const EventsSection: React.FC = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         loading="lazy"
                         decoding="async"
+                        fetchPriority="low"
                       />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#D4AF37]/80" aria-hidden="true">
