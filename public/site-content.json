@@ -4,15 +4,15 @@
     "templeName_bn": "পিন্দ্রা দুর্গা মন্দির",
     "committeeName_en": "MAHAMAYA Durga Puja Committee",
     "committeeName_bn": "মহামায়া দুর্গোৎসব সমিতি",
-    "currentYear": 2026,
+    "currentYear": 2027,
     "currentEdition": 119,
     "heroDeityImage": "/real_maa_durga.jpg",
     "mapsUrl": "https://maps.app.goo.gl/w5C1sACBhUxz5t1w6",
     "heroKicker_bn": "॥ জয় মা দুর্গা ॥",
     "heroKicker_en": "॥ Jai Maa Durga ॥",
     "topBannerEnabled": true,
-    "topBannerText_bn": "শুভ শারদীয়া ২০২৬ — পিন্দ্রা দুর্গা মন্দিরে ১১৮তম বর্ষের শারদোৎসব উদযাপিত হচ্ছে।",
-    "topBannerText_en": "Subho Sharadiya 2026 — Celebrating 118 Years of Durga Puja at Pinrra Durga Mandir.",
+    "topBannerText_bn": "শুভ শারদীয়া ২০২৭ — পিন্দ্রা দুর্গা মন্দিরে ১১৯তম বর্ষের শারদোৎসবের প্রস্তুতি চলছে।",
+    "topBannerText_en": "Subho Sharadiya 2027 — Preparing to celebrate 119 years of Durga Puja at Pinrra Durga Mandir.",
     "aboutHeading_en": "Mahamaya — The Divine Mother",
     "aboutHeading_bn": "জগজ্জননী মা দুর্গা ও মহামায়া",
     "aboutIntro_en": "At Pinrra Durga Mandir, Goddess Durga is venerated as Mahamaya, the supreme mother bringing protection, peace, and spiritual harmony.",
@@ -25,10 +25,10 @@
     "aboutCommunityHeading_bn": "ভক্তি ও মিলনমেলা",
     "aboutCommunityText_en": "At Pinrra, Durga Puja is more than an observance; it is a sacred gathering of togetherness and peace where every devotee experiences the warmth of Mother Durga.",
     "aboutCommunityText_bn": "পিন্দ্রা গ্রামে দুর্গাপূজা শুধু একটি ধর্মীয় আচার নয়, এটি সকল মানুষের একত্রীকরণ, প্রীতি ও সৌহার্দ্যের উৎসব। ধর্ম-বর্ণ নির্বিশেষে প্রতিটি মানুষ মায়ের আশীর্বাদ গ্রহণ করেন।",
-    "heritageHeading_en": "118 Years of Devotion",
-    "heritageHeading_bn": "১১৮ বছরের শ্রদ্ধা ও ঐতিহ্য",
-    "heritageIntro_en": "Completing 118 years in 2026, the Durga Puja at Pinrra Durga Mandir has been sustained by the devotion of the Brahman Goswami community of Brahman Para.",
-    "heritageIntro_bn": "১৯০৮ সাল থেকে ২০২৬ — ব্রাহ্মণ পাড়ার ব্রাহ্মণ গোস্বামী সম্প্রদায়ের সম্মিলিত ভক্তি ও নিষ্ঠায় পিন্দ্রা দুর্গা মন্দির উদযাপন করছে শারদোৎসবের গৌরবময় ১১৮তম বর্ষ।",
+    "heritageHeading_en": "119 Years of Devotion",
+    "heritageHeading_bn": "১১৯ বছরের শ্রদ্ধা ও ঐতিহ্য",
+    "heritageIntro_en": "Completing 119 years in 2027, the Durga Puja at Pinrra Durga Mandir continues through the devotion of the Brahman Goswami community of Brahman Para.",
+    "heritageIntro_bn": "১৯০৮ সাল থেকে ২০২৭ — ব্রাহ্মণ পাড়ার ব্রাহ্মণ গোস্বামী সম্প্রদায়ের সম্মিলিত ভক্তি ও নিষ্ঠায় পিন্দ্রা দুর্গা মন্দির উদযাপন করছে শারদোৎসবের ১১৯তম বর্ষ।",
     "bhogHeading_en": "Puja, Sacred Bhog & Community Joy",
     "bhogHeading_bn": "পূজা, মহাপ্রসাদ ও সর্বজনীন মিলন",
     "bhogIntro_en": "Throughout Saptami, Ashtami, Navami, and Dashami, the temple comes alive with rituals, sacred Bhog, cultural evenings, and community bonding.",
@@ -41,10 +41,10 @@
   "pujaYears": [
     {
       "year": 2026,
-      "shasthiDate": "2027-10-05",
-      "dashamiDate": "2027-10-10",
+      "shasthiDate": "2026-10-17",
+      "dashamiDate": "2026-10-21",
       "edition": 118,
-      "active": true,
+      "active": false,
       "days": [
         {
           "id": "2026-d1",
@@ -183,25 +183,122 @@
     },
     {
       "year": 2027,
-      "shasthiDate": "2027-10-06",
+      "shasthiDate": "2027-10-05",
       "dashamiDate": "2027-10-10",
       "edition": 119,
-      "active": false,
+      "active": true,
       "days": [
         {
           "id": "2027-d1",
-          "date": "2027-10-06",
-          "bengaliDate": "আশ্বিন ১৪৩৪",
-          "dayName_en": "Maha Shashthi 2027",
-          "dayName_bn": "মহা ষষ্ঠী ২০২৭",
+          "date": "2027-10-05",
+          "bengaliDate": "১৮ আশ্বিন ১৪৩৪",
+          "dayName_en": "Maha Shashthi",
+          "dayName_bn": "মহা ষষ্ঠী",
           "rituals_en": [
-            "Bodhon and Adhivas"
+            "Kalparambha",
+            "Bilva Nimantran",
+            "Akal Bodhon, Amantran and Adhivas"
           ],
           "rituals_bn": [
-            "বোধন ও অধিবাস"
+            "কল্পারম্ভ",
+            "বিল্ব নিমন্ত্রণ",
+            "অকালবোধন, আমন্ত্রণ ও অধিবাস"
           ],
-          "specialNotes_en": "Schedule details will be finalized by the committee.",
-          "specialNotes_bn": "নির্দিষ্ট সময়সূচী পরবর্তীতে কমিটি কর্তৃক চূড়ান্ত করা হবে।"
+          "specialNotes_en": "Opening day of the main Durga Puja observances. Committee timings will be announced separately.",
+          "specialNotes_bn": "মূল দুর্গাপূজার সূচনা। কমিটির নির্ধারিত সময়সূচি পরে জানানো হবে।"
+        },
+        {
+          "id": "2027-d2",
+          "date": "2027-10-06",
+          "bengaliDate": "১৯ আশ্বিন ১৪৩৪",
+          "dayName_en": "Maha Saptami",
+          "dayName_bn": "মহা সপ্তমী",
+          "rituals_en": [
+            "Nabapatrika Pravesh (Kolabou Puja)",
+            "Durga Saptami Puja",
+            "Prana Pratishtha"
+          ],
+          "rituals_bn": [
+            "নবপত্রিকা প্রবেশ ও কলাবউ পূজা",
+            "দুর্গা সপ্তমী পূজা",
+            "প্রাণ প্রতিষ্ঠা"
+          ],
+          "specialNotes_en": "Ritual timings are subject to the committee's final schedule.",
+          "specialNotes_bn": "আচার-অনুষ্ঠানের সময় কমিটির চূড়ান্ত নির্ঘণ্ট অনুযায়ী জানানো হবে।"
+        },
+        {
+          "id": "2027-d3",
+          "date": "2027-10-07",
+          "bengaliDate": "২০ আশ্বিন ১৪৩৪",
+          "dayName_en": "Maha Ashtami",
+          "dayName_bn": "মহা অষ্টমী",
+          "rituals_en": [
+            "Durga Ashtami Puja",
+            "Pushpanjali",
+            "Kumari Puja (where observed)"
+          ],
+          "rituals_bn": [
+            "দুর্গা অষ্টমী পূজা",
+            "পুষ্পাঞ্জলি",
+            "কুমারী পূজা (প্রচলিত রীতি অনুযায়ী)"
+          ],
+          "specialNotes_en": "Check the temple noticeboard for the confirmed Anjali and ritual timings.",
+          "specialNotes_bn": "অঞ্জলি ও অন্যান্য আচার-অনুষ্ঠানের নির্দিষ্ট সময় মন্দিরের বিজ্ঞপ্তিতে জানানো হবে।"
+        },
+        {
+          "id": "2027-d4",
+          "date": "2027-10-08",
+          "bengaliDate": "২১ আশ্বিন ১৪৩৪",
+          "dayName_en": "Sandhi Puja",
+          "dayName_bn": "সন্ধিপূজা",
+          "rituals_en": [
+            "Sandhi Puja at the Ashtami–Navami transition",
+            "Traditional lamp and flower offerings"
+          ],
+          "rituals_bn": [
+            "অষ্টমী ও নবমীর সন্ধিক্ষণে সন্ধিপূজা",
+            "প্রচলিত প্রদীপ ও পুষ্প নিবেদন"
+          ],
+          "specialNotes_en": "The exact Sandhi Puja window depends on the local Panchang and will be published after verification.",
+          "specialNotes_bn": "স্থানীয় পঞ্জিকা যাচাই করে সন্ধিপূজার নির্দিষ্ট সময় পরে প্রকাশ করা হবে।"
+        },
+        {
+          "id": "2027-d5",
+          "date": "2027-10-09",
+          "bengaliDate": "২২ আশ্বিন ১৪৩৪",
+          "dayName_en": "Maha Navami",
+          "dayName_bn": "মহা নবমী",
+          "rituals_en": [
+            "Maha Navami Puja",
+            "Navami Homa (as per temple tradition)",
+            "Community prayers"
+          ],
+          "rituals_bn": [
+            "মহা নবমী পূজা",
+            "নবমী হোম (মন্দিরের প্রচলিত রীতি অনুযায়ী)",
+            "সর্বজনীন প্রার্থনা"
+          ],
+          "specialNotes_en": "Programme and Bhog timings have not yet been announced by the committee.",
+          "specialNotes_bn": "অনুষ্ঠান ও ভোগ বিতরণের সময় কমিটির পক্ষ থেকে এখনও ঘোষণা করা হয়নি।"
+        },
+        {
+          "id": "2027-d6",
+          "date": "2027-10-10",
+          "bengaliDate": "২৩ আশ্বিন ১৪৩৪",
+          "dayName_en": "Vijaya Dashami",
+          "dayName_bn": "বিজয়া দশমী",
+          "rituals_en": [
+            "Vijaya Dashami observances",
+            "Sindoor Utsav (as locally observed)",
+            "Durga Visarjan and Bijoya greetings"
+          ],
+          "rituals_bn": [
+            "বিজয়া দশমীর আচার",
+            "সিঁদুর উৎসব (স্থানীয় রীতি অনুযায়ী)",
+            "দেবী বিসর্জন ও বিজয়ার শুভেচ্ছা"
+          ],
+          "specialNotes_en": "Visarjan and event timings will be confirmed by the committee.",
+          "specialNotes_bn": "বিসর্জন ও অন্যান্য অনুষ্ঠানের সময় কমিটির পক্ষ থেকে নিশ্চিত করা হবে।"
         }
       ]
     }
@@ -418,11 +515,11 @@
     },
     {
       "id": "hist-3",
-      "year": "২০২৬",
-      "title_en": "Celebrating 118 Glorious Years",
-      "title_bn": "গৌরবোজ্জ্বল ১১৮তম বর্ষের শারদোৎসব",
-      "description_en": "In 2026, Pinrra Durga Mandir proudly commemorates 118 years of uninterrupted worship, organized with devotion by the MAHAMAYA Durga Puja Committee.",
-      "description_bn": "২০২৬ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৮ বছর।",
+      "year": "২০২৭",
+      "title_en": "Celebrating 119 Glorious Years",
+      "title_bn": "গৌরবোজ্জ্বল ১১৯তম বর্ষের শারদোৎসব",
+      "description_en": "In 2027, Pinrra Durga Mandir marks 119 years of community worship, organized with devotion by the MAHAMAYA Durga Puja Committee.",
+      "description_bn": "২০২৭ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৯ বছর।",
       "image": "/real_maa_durga.jpg"
     }
   ],
