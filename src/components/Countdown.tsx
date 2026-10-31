@@ -68,7 +68,7 @@ export const Countdown: React.FC = () => {
           statusBn = `পরবর্তী দুর্গাপূজা (${nextYear.year}) শুরু হতে বাকি`;
         } else {
           // If next year not yet configured, default 1 year ahead
-          targetDate = new Date(`${activeYear.year + 1}-10-06T00:00:00`);
+          targetDate = new Date(`${activeYear.year + 1}-10-05T00:00:00`);
           displayYear = activeYear.year + 1;
           statusEn = `Next Durga Puja (${displayYear}) begins in`;
           statusBn = `পরবর্তী দুর্গাপূজা (${displayYear}) শুরু হতে বাকি`;
@@ -153,8 +153,8 @@ export const Countdown: React.FC = () => {
 
           <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-sans">
             {isBn
-              ? `${toBnNum(16)} অক্টোবর ${toBnNum(2026)} — দেবী দুর্গার শুভ বোধন ও পূজারম্ভ`
-              : '16 October 2026 — Auspicious Bodhon & Commencement of Durga Puja'}
+              ? `${new Date(currentPujaYear.shasthiDate + 'T00:00:00').toLocaleDateString('bn-IN', { day: 'numeric', month: 'long', year: 'numeric' })} — দেবী দুর্গার শুভ বোধন ও পূজারম্ভ`
+              : `${new Date(currentPujaYear.shasthiDate + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} — Auspicious Bodhon & Commencement of Durga Puja`}
           </p>
         </div>
 
