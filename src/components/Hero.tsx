@@ -81,8 +81,8 @@ export const Hero: React.FC = () => {
         <div className="space-y-2 max-w-2xl mx-auto">
           <div className="inline-block px-4 py-1 text-sm sm:text-base font-semibold text-[#9E1B32] dark:text-[#FFD700] border-b border-[#D4AF37]/50 font-serif">
             {isBn
-              ? 'শারদোৎসবের ১১৮তম গৌরবময় বর্ষ • ২০২৬'
-              : 'Celebrating 118 Years of Durga Puja • 2026'}
+              ? 'শারদোৎসবের ১১৯তম গৌরবময় বর্ষ • ২০২৭'
+              : 'Celebrating 119 Years of Durga Puja • 2027'}
           </div>
           
           <p className="text-base sm:text-lg text-neutral-800 dark:text-neutral-300 font-medium font-sans">
@@ -110,7 +110,7 @@ export const Hero: React.FC = () => {
             className="px-5 py-3.5 rounded-xl bg-white/95 dark:bg-[#240E15]/90 hover:bg-neutral-50 dark:hover:bg-[#33141E] text-[#9E1B32] dark:text-[#E5C158] text-sm font-semibold border border-[#D4AF37]/50 shadow-sm transition cursor-pointer flex items-center gap-2"
           >
             <Calendar className="w-4 h-4 text-[#9E1B32] dark:text-[#E5C158]" />
-            <span>{isBn ? '২০২৬ পূজা পঞ্জিকা' : '2026 Puja Schedule'}</span>
+            <span>{isBn ? '২০২৭ পূজা পঞ্জিকা' : '2027 Puja Schedule'}</span>
           </button>
 
           <a
