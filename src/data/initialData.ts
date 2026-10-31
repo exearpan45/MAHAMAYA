@@ -467,7 +467,7 @@ export const INITIAL_HISTORY_MILESTONES: HistoryMilestone[] = [
     title_en: 'Celebrating 119 Glorious Years',
     title_bn: 'গৌরবোজ্জ্বল ১১৯তম বর্ষের শারদোৎসব',
     description_en: 'In 2027, Pinrra Durga Mandir marks 119 years of community worship, organized with devotion by the MAHAMAYA Durga Puja Committee.',
-    description_bn: '২০২৭ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৯ বছর।'
+    description_bn: '২০২৭ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৯ বছর।',
     image: '/real_maa_durga.jpg',
   },
 ];
