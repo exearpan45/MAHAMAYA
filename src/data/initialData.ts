@@ -50,10 +50,10 @@ export const INITIAL_SETTINGS: SiteSettings = {
 export const INITIAL_PUJA_YEARS: PujaYear[] = [
   {
     year: 2026,
-    shasthiDate: '2026-10-16',
+    shasthiDate: '2026-10-17',
     dashamiDate: '2026-10-21',
     edition: 118,
-    active: true,
+    active: false,
     days: [
       {
         id: '2026-d1',
@@ -463,11 +463,11 @@ export const INITIAL_HISTORY_MILESTONES: HistoryMilestone[] = [
   },
   {
     id: 'hist-3',
-    year: '২০২৬',
-    title_en: 'Celebrating 118 Glorious Years',
-    title_bn: 'গৌরবোজ্জ্বল ১১৮তম বর্ষের শারদোৎসব',
-    description_en: 'In 2026, Pinrra Durga Mandir proudly commemorates 118 years of uninterrupted worship, organized with devotion by the MAHAMAYA Durga Puja Committee.',
-    description_bn: '২০২৬ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৮ বছর।',
+    year: '২০২৭',
+    title_en: 'Celebrating 119 Glorious Years',
+    title_bn: 'গৌরবোজ্জ্বল ১১৯তম বর্ষের শারদোৎসব',
+    description_en: 'In 2027, Pinrra Durga Mandir marks 119 years of community worship, organized with devotion by the MAHAMAYA Durga Puja Committee.',
+    description_bn: '২০২৭ সালে মহামায়া দুর্গোৎসব সমিতির পরিচালনায় পিন্দ্রা দুর্গা মন্দির পূর্ণ করছে গৌরবময় ১১৯ বছর।'
     image: '/real_maa_durga.jpg',
   },
 ];
